@@ -1,36 +1,31 @@
 {
   "build": {
-    "beforeDevCommand": "yarn dev",
-    "beforeBuildCommand": "yarn build",
+    "beforeDevCommand": "pnpm dev",
+    "beforeBuildCommand": "pnpm build",
     "devPath": "http://localhost:1420",
-    "distDir": "../dist"
+    "distDir": "../dist",
+    "withGlobalTauri": false
   },
   "package": {
-    "productName": "GPT_all_in_one",
-    "version": "0.1.0"
+    "productName": "gpt_all",
+    "version": "0.2.0"
   },
   "tauri": {
     "allowlist": {
       "all": true,
-      "globalShortcut": {
-        "all": true
+      "shell": {
+        "all": false,
+        "open": true
       }
     },
     "bundle": {
       "active": true,
-      "category": "DeveloperTool",
-      "copyright": "",
-      "deb": {
-        "depends": []
-      },
-      "externalBin": [],
       "icon": [
-        "icons/chatgpt16.png",
-        "icons/chatgpt32.png",
-        "icons/chatgpt64.png",
-        "icons/chatgpt128.png",
-        "icons/chatgpt256.png",
-        "icons/chatgpt512.png"
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
       ],
       "identifier": "com.haoyu.gpt.allinone",
       "macOS": {
@@ -61,19 +56,29 @@
     "macOSPrivateApi": true,
     "windows": [
       {
-        "url": "https://yiyan.baidu.com/",
+        "label": "main",
         "fullscreen": false,
         "resizable": true,
-        "title": "Gpt聚合",
-        "height": 600,
+        "title": "gpt_all",
         "width": 450,
+        "height": 600,
         "visible": false,
+        "url": "https://freegpt.one/",
         "hiddenTitle": true,
         "decorations": false,
         "focus": true,
-        "transparent": true,
         "skipTaskbar": true,
         "alwaysOnTop": true
+      },
+      {
+        "label": "preference",
+        "fullscreen": false,
+        "resizable": true,
+        "title": "设置",
+        "visible": false,
+        "width": 400,
+        "height": 300,
+        "url": "index.html"
       }
     ],
     "systemTray": {

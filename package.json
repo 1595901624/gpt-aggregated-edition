@@ -1,23 +1,24 @@
 {
-  "name": "GPT_all_in_one",
+  "name": "gpt_all",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "type": "module",
   "scripts": {
-    "dev": "next dev -p 1420",
-    "build": "next build && next export -o dist",
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
     "tauri": "tauri"
   },
   "dependencies": {
-    "@tauri-apps/api": "^1.2.0",
-    "next": "^12.2.5",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "vue": "^3.2.45",
+    "@tauri-apps/api": "^1.2.0"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1.2.2",
-    "@types/node": "^18.7.11",
-    "@types/react": "^18.0.17",
-    "@types/react-dom": "^18.0.6",
-    "typescript": "^4.7.4"
+    "@types/node": "^18.7.10",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "typescript": "^4.6.4",
+    "vite": "^4.0.0",
+    "vue-tsc": "^1.0.11",
+    "@tauri-apps/cli": "^1.2.2"
   }
 }
