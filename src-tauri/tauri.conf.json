@@ -16,6 +16,18 @@
       "shell": {
         "all": false,
         "open": true
+      },
+      "fs": {
+        "scope": ["$AppConfig/*"],
+        "all": true,
+        "readFile": true,
+        "writeFile": true,
+        "readDir": true,
+        "copyFile": true,
+        "createDir": true,
+        "removeDir": true,
+        "removeFile": true,
+        "renameFile": true
       }
     },
     "bundle": {
@@ -59,11 +71,11 @@
         "label": "main",
         "fullscreen": false,
         "resizable": true,
-        "title": "gpt_all",
+        "title": "GPT聚合版",
         "width": 450,
         "height": 600,
         "visible": false,
-        "url": "https://freegpt.one/",
+        "url": "https://yiyan.baidu.com",
         "hiddenTitle": true,
         "decorations": false,
         "focus": true,
@@ -78,7 +90,8 @@
         "visible": false,
         "width": 400,
         "height": 300,
-        "url": "index.html"
+        "url": "index.html",
+        "hiddenTitle": true
       }
     ],
     "systemTray": {
