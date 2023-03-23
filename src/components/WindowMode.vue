@@ -19,7 +19,7 @@ async function get_window_mode() {
 
 async function set_window_mode() {
   console.log(mode.value);
-  await invoke("set_window_mode_handler", { mode: parseInt(mode.value) });
+  await invoke("set_window_mode_handler", { mode: parseInt(mode.value + "") });
 }
 </script>
 
