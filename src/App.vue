@@ -7,9 +7,9 @@ import WindowMode from "./components/WindowMode.vue";
 </script>
 
 <template>
-  <div class="container">
+  <el-card class="card">
     <WindowMode />
-  </div>
+  </el-card>
 </template>
 
 <style scoped>
@@ -19,5 +19,12 @@ import WindowMode from "./components/WindowMode.vue";
 
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #249b73);
+}
+
+.card {
+  height: 90vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 </style>
