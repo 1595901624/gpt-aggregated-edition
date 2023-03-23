@@ -1,14 +1,27 @@
 use std::path::PathBuf;
 
 use tauri::{
-    api::{
-        self,
-        path::{resolve_path, BaseDirectory},
-    },
+    api::path::{resolve_path, BaseDirectory},
     Env,
 };
 
 use crate::model::preference_model::{Preference, WindowMode};
+
+/// 初始化默认配置
+pub fn init_default_preference() {
+    let path = get_app_preference_path();
+    if path.exists() {
+        return;
+    }
+    let parent = path.parent().unwrap();
+    std::fs::create_dir_all(parent).unwrap();
+    // std::fs::File::create(path).unwrap();
+    let preference = Preference {
+        window_mode: WindowMode::Window,
+    };
+    let json = serde_json::to_string(&preference).unwrap();
+    let _ = std::fs::write(get_app_preference_path(), json);
+}
 
 /// 获取app的配置路径
 pub fn get_app_preference_path() -> PathBuf {
@@ -18,7 +31,7 @@ pub fn get_app_preference_path() -> PathBuf {
         context.package_info(),
         &Env::default(),
         "preference.json",
-        Some(BaseDirectory::AppData),
+        Some(BaseDirectory::AppConfig),
     )
     .unwrap();
 }
@@ -45,5 +58,24 @@ pub fn get_window_mode() -> WindowMode {
         return WindowMode::Window;
     }
     let perference = perference.unwrap();
-    return perference.window_mode.unwrap_or_else(|| WindowMode::Window);
+    return perference.window_mode;
+}
+
+/// 设置模式
+/// `mode` 1 是任务栏模式 其它是窗口模式
+pub fn set_window_mode(mode: i32) -> bool {
+    let perference = get_app_preference();
+    if perference.is_err() {
+        dbg!("读取配置文件失败");
+        return false;
+    }
+    let mut p = perference.unwrap();
+    if mode == 1 {
+        p.window_mode = WindowMode::TaskBar;
+    } else {
+        p.window_mode = WindowMode::Window;
+    }
+    let json = serde_json::to_string(&p).unwrap();
+    let _ = std::fs::write(get_app_preference_path(), json);
+    return true;
 }

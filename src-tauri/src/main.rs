@@ -7,35 +7,31 @@
 mod model;
 mod preference_util;
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
-
 use model::preference_model::WindowMode;
 use tauri::{
-    api, CustomMenuItem, GlobalShortcutManager, LogicalSize, Manager, SystemTray, SystemTrayEvent,
-    SystemTrayMenu, SystemTrayMenuItem,
+    api, generate_handler, CustomMenuItem, GlobalShortcutManager, LogicalSize, Manager, SystemTray,
+    SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
 };
 use tauri_plugin_positioner::{Position, WindowExt};
 
 fn main() {
-    let inject_script = r#"
-        if (window.location.href.includes("yiyan.baidu.com")) {
+    preference_util::init_default_preference();
+
+    let inject_yiyan_script = r#"
+    if (window.location.href.includes("yiyan.baidu.com")) {
         // 文心一言
         const style = document.createElement('style');
         style.innerHTML = `.ebhelper-hide { visibility: hidden !important; }`;
         document.head.appendChild(style);
-    
+
         // ai图片水印标记
         const aiImageWaterFlag = "x-bce-process=style/wm_ai";
     
         // 创建一个MutationObserver实例
         const observer = new MutationObserver(function (mutations) {
             // 获取水印元素
-            let watermark = document.querySelector("div[id^='eb_']");
-            if (watermark != null && !watermark.classList.contains('ebhelper-hide')) {
+            let watermark = getElementByRegex(/^[\w\d]{8}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{12}$/);
+            if (watermark != null && watermark.classList != null && !watermark.classList.contains('ebhelper-hide')) {
                 hideWatermark(watermark);
             }
     
@@ -98,7 +94,29 @@ fn main() {
                 }
             });
         }
+    
+        /**
+         * 正则匹配元素,获取第一个元素
+         * @param {*} pattern 
+         * @returns 
+         */
+        function getElementByRegex(pattern) {
+            let allElements = document.getElementsByTagName('div');
+            let result = "";
+    
+            for (let i = 0; i < allElements.length; i++) {
+                let element = allElements[i];
+                let attr = element.getAttribute('id');
+                if (attr != null && pattern.test(attr)) {
+                    result = element;
+                    break;
+                }
+            }
+    
+            return result;
+        }
     }
+    
         "#;
 
     let open = CustomMenuItem::new("open".to_string(), "打开窗口").accelerator("Cmd+Shift+O");
@@ -128,6 +146,11 @@ fn main() {
 
     // 初始化窗口
     tauri::Builder::default()
+        .invoke_handler(generate_handler![
+            greet,
+            get_window_mode_handler,
+            set_window_mode_handler
+        ])
         .plugin(tauri_plugin_positioner::init())
         .setup(|app| {
             let main_window = app.get_window("main").unwrap();
@@ -144,10 +167,18 @@ fn main() {
                 })
                 .unwrap_or_else(|err| println!("{:?}", err));
 
-            let main_window = app.get_window("main").unwrap();
-
-            // main_window.show().unwrap();
-            // main_window.set_focus().unwrap();
+            if preference_util::get_window_mode() == WindowMode::Window {
+                let main_window = app.get_window("main").unwrap();
+                main_window.eval(inject_yiyan_script).unwrap();
+                main_window.move_window(Position::Center).unwrap();
+                main_window.set_size(LogicalSize::new(800, 600)).unwrap();
+                main_window.set_decorations(true).unwrap();
+                main_window.set_always_on_top(false).unwrap();
+                main_window.set_skip_taskbar(false).unwrap();
+                main_window.menu_handle().hide().unwrap();
+                main_window.show().unwrap();
+                main_window.set_focus().unwrap();
+            }
             Ok(())
         })
         .menu(tauri::Menu::os_default(&context.package_info().name))
@@ -182,20 +213,20 @@ fn main() {
                     let mode = preference_util::get_window_mode();
                     if mode == WindowMode::TaskBar {
                         // 任务栏模式
-                        let _ = window.move_window(Position::TrayCenter);
-                        let _ = window.set_size(LogicalSize::new(800, 600));
-                        let _ = window.set_decorations(false);
-                        let _ = window.set_always_on_top(true);
-                        let _ = window.set_skip_taskbar(true);
-                        let _ = window.menu_handle().hide();
+                        window.move_window(Position::TrayCenter).unwrap();
+                        window.set_size(LogicalSize::new(450, 600)).unwrap();
+                        window.set_decorations(false).unwrap();
+                        window.set_always_on_top(true).unwrap();
+                        window.set_skip_taskbar(true).unwrap();
+                        window.menu_handle().hide().unwrap();
                     } else {
                         // 桌面模式
-                        let _ = window.move_window(Position::Center);
-                        let _ = window.set_size(LogicalSize::new(600, 450));
-                        let _ = window.set_decorations(true);
-                        let _ = window.set_always_on_top(false);
-                        let _ = window.set_skip_taskbar(false);
-                        let _ = window.menu_handle().hide();
+                        window.move_window(Position::Center).unwrap();
+                        window.set_size(LogicalSize::new(800, 600)).unwrap();
+                        window.set_decorations(true).unwrap();
+                        window.set_always_on_top(false).unwrap();
+                        window.set_skip_taskbar(false).unwrap();
+                        window.menu_handle().hide().unwrap();
                     }
 
                     if window.is_visible().unwrap() {
@@ -205,7 +236,7 @@ fn main() {
                         window.set_focus().unwrap();
 
                         window
-                            .eval(inject_script)
+                            .eval(inject_yiyan_script)
                             .map_err(|err| println!("{:?}", err))
                             .ok();
                     }
@@ -247,18 +278,22 @@ fn main() {
                         let main_window = app.get_window("main").unwrap();
                         main_window.show().unwrap();
                         main_window.set_focus().unwrap();
-                        main_window.eval(&format!(
-                            "window.location.replace('https://yiyan.baidu.com/')"
-                        ));
+                        main_window
+                            .eval(&format!(
+                                "window.location.replace('https://yiyan.baidu.com/')"
+                            ))
+                            .unwrap();
                         //main_window.eval("window.location.reload");
                     }
                     "chat_gpt" => {
                         let main_window = app.get_window("main").unwrap();
                         main_window.show().unwrap();
                         main_window.set_focus().unwrap();
+                        // main_window
+                        //     .eval(&format!("window.location.replace('https://freegpt.one/')"));
                         main_window
-                            .eval(&format!("window.location.replace('https://freegpt.one/')"));
-                        main_window.eval("window.location.href = 'https://freegpt.one/'");
+                            .eval("window.location.href = 'https://freegpt.one/'")
+                            .unwrap();
                         // let main_window = app.get_window("main").unwrap();
                         // main_window.show().unwrap();
                         // main_window.set_focus().unwrap();
@@ -270,9 +305,11 @@ fn main() {
                         let main_window = app.get_window("main").unwrap();
                         main_window.show().unwrap();
                         main_window.set_focus().unwrap();
-                        main_window.eval(&format!(
-                            "window.location.replace('https://chat.openai.com/chat')"
-                        ));
+                        main_window
+                            .eval(&format!(
+                                "window.location.replace('https://chat.openai.com/chat')"
+                            ))
+                            .unwrap();
                     }
                     "quit" => {
                         std::process::exit(0);
@@ -295,4 +332,20 @@ fn main() {
         })
         .run(context)
         .expect("error while running tauri application");
+}
+
+#[tauri::command]
+fn greet(name: &str) -> String {
+    format!("Hello, {}! You've been greeted from Rust!", name)
+}
+
+/// 获取
+#[tauri::command]
+fn get_window_mode_handler() -> i32 {
+    preference_util::get_window_mode() as i32
+}
+
+#[tauri::command]
+fn set_window_mode_handler(mode: i32) {
+    preference_util::set_window_mode(mode);
 }
