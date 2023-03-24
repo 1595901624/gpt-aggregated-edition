@@ -20,41 +20,41 @@ fn main() {
     let inject_yiyan_script = r#"
     if (window.location.href.includes("yiyan.baidu.com")) {
         // 文心一言
-        const style = document.createElement('style');
-        style.innerHTML = `.ebhelper-hide { visibility: hidden !important; }`;
-        document.head.appendChild(style);
-
+    
         // ai图片水印标记
         const aiImageWaterFlag = "x-bce-process=style/wm_ai";
-    
-        // 创建一个MutationObserver实例
-        const observer = new MutationObserver(function (mutations) {
+     
+        // 打开shadow-root
+        Element.prototype._attachShadow = Element.prototype.attachShadow;
+        Element.prototype.attachShadow = function () {
+            return this._attachShadow({ mode: "open" });
+        };
+     
+        // 自己调整频次 感觉10毫秒比较友好
+        setInterval(deal, 10);
+     
+        function deal() {
             // 获取水印元素
             let watermark = getElementByRegex(/^[\w\d]{8}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{12}$/);
             if (watermark != null && watermark.classList != null && !watermark.classList.contains('ebhelper-hide')) {
                 hideWatermark(watermark);
             }
-    
+            // Array.from(document.querySelectorAll('div')).filter(e => e.shadowRoot);
+     
             // 获取弹窗的元素
             let timeoutDialog = document.querySelector("div[class='ant-modal-root']");
             if (timeoutDialog != null && !timeoutDialog.classList.contains('ebhelper-hide')) {
                 hideTimeoutDialog(timeoutDialog);
             }
-    
+     
             // 隐藏图片水印并处理头像
             let allImage = document.querySelectorAll("img");
             if (allImage != null) {
                 hideAIImageWatermark(allImage);
             }
-        });
-    
-        // 开始观察document，并在节点添加或删除时检测变化
-        observer.observe(document, {
-            childList: true,
-            subtree: true
-        });
-    
-    
+        }
+     
+     
         /**
          * 隐藏超时弹窗
          */
@@ -62,16 +62,19 @@ fn main() {
             console.log("隐藏超时弹窗!");
             element.classList.add('ebhelper-hide');
         }
-    
-    
+     
+     
         /**
          * 隐藏水印
          */
         function hideWatermark(element) {
-            console.log("隐藏水印!");
-            element.classList.add('ebhelper-hide');
+            // console.log("隐藏水印!");
+            let shadows = element.shadowRoot.querySelectorAll('*');
+            for (let e of shadows) {
+                e.remove();
+            }
         }
-    
+     
         /**
          * 隐藏图片水印并处理头像
          */
@@ -94,7 +97,7 @@ fn main() {
                 }
             });
         }
-    
+     
         /**
          * 正则匹配元素,获取第一个元素
          * @param {*} pattern 
@@ -103,7 +106,7 @@ fn main() {
         function getElementByRegex(pattern) {
             let allElements = document.getElementsByTagName('div');
             let result = "";
-    
+     
             for (let i = 0; i < allElements.length; i++) {
                 let element = allElements[i];
                 let attr = element.getAttribute('id');
@@ -112,7 +115,7 @@ fn main() {
                     break;
                 }
             }
-    
+     
             return result;
         }
     }
