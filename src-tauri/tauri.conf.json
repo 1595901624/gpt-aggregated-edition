@@ -91,7 +91,7 @@
         "width": 400,
         "height": 300,
         "url": "index.html",
-        "hiddenTitle": true
+        "hiddenTitle": true,
       }
     ],
     "systemTray": {

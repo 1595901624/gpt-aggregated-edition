@@ -9,8 +9,8 @@ mod preference_util;
 
 use model::preference_model::WindowMode;
 use tauri::{
-    api, generate_handler, CustomMenuItem, GlobalShortcutManager, LogicalSize, Manager, SystemTray,
-    SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
+    api, generate_handler, CustomMenuItem, GlobalShortcutManager, LogicalSize, Manager, Menu,
+    MenuItem, Submenu, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
 };
 use tauri_plugin_positioner::{Position, WindowExt};
 
@@ -19,111 +19,16 @@ fn main() {
 
     let inject_yiyan_script = r#"
     if (window.location.href.includes("yiyan.baidu.com")) {
-        // 文心一言
-        const style = document.createElement('style');
-        style.innerHTML = `.ebhelper-hide { visibility: hidden !important; }`;
-        document.head.appendChild(style);
-
-        // ai图片水印标记
-        const aiImageWaterFlag = "x-bce-process=style/wm_ai";
-    
-        // 创建一个MutationObserver实例
-        const observer = new MutationObserver(function (mutations) {
-            // 获取水印元素
-            let watermark = getElementByRegex(/^[\w\d]{8}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{12}$/);
-            if (watermark != null && watermark.classList != null && !watermark.classList.contains('ebhelper-hide')) {
-                hideWatermark(watermark);
-            }
-    
-            // 获取弹窗的元素
-            let timeoutDialog = document.querySelector("div[class='ant-modal-root']");
-            if (timeoutDialog != null && !timeoutDialog.classList.contains('ebhelper-hide')) {
-                hideTimeoutDialog(timeoutDialog);
-            }
-    
-            // 隐藏图片水印并处理头像
-            let allImage = document.querySelectorAll("img");
-            if (allImage != null) {
-                hideAIImageWatermark(allImage);
-            }
-        });
-    
-        // 开始观察document，并在节点添加或删除时检测变化
-        observer.observe(document, {
-            childList: true,
-            subtree: true
-        });
-    
-    
-        /**
-         * 隐藏超时弹窗
-         */
-        function hideTimeoutDialog(element) {
-            console.log("隐藏超时弹窗!");
-            element.classList.add('ebhelper-hide');
-        }
-    
-    
-        /**
-         * 隐藏水印
-         */
-        function hideWatermark(element) {
-            console.log("隐藏水印!");
-            element.classList.add('ebhelper-hide');
-        }
-    
-        /**
-         * 隐藏图片水印并处理头像
-         */
-        function hideAIImageWatermark(images) {
-            images.forEach(element => {
-                let url = element.getAttribute("src");
-                // 去除水印
-                if (url != null && url.indexOf(aiImageWaterFlag) != -1) {
-                    if (url.indexOf(aiImageWaterFlag) != -1) {
-                        console.log("隐藏图片水印!");
-                        element.setAttribute("src", url.replace(aiImageWaterFlag, ""))
-                    }
-                }
-                // 处理头像
-                if (url != null
-                    && element.getAttribute("alt") == '头像'
-                    && url.indexOf('icon-rb') == '-1') {
-                    console.log("设置头像为默认值!");
-                    element.setAttribute("src", 'https://nlp-eb.cdn.bcebos.com/logo/favicon.ico')
-                }
-            });
-        }
-    
-        /**
-         * 正则匹配元素,获取第一个元素
-         * @param {*} pattern 
-         * @returns 
-         */
-        function getElementByRegex(pattern) {
-            let allElements = document.getElementsByTagName('div');
-            let result = "";
-    
-            for (let i = 0; i < allElements.length; i++) {
-                let element = allElements[i];
-                let attr = element.getAttribute('id');
-                if (attr != null && pattern.test(attr)) {
-                    result = element;
-                    break;
-                }
-            }
-    
-            return result;
-        }
     }
-    
         "#;
 
+    // 创建右下角菜单
     let open = CustomMenuItem::new("open".to_string(), "打开窗口").accelerator("Cmd+Shift+O");
     let quit = CustomMenuItem::new("quit".to_string(), "退出").accelerator("Cmd+Q");
     let chat_gpt = CustomMenuItem::new("chat_gpt".to_string(), "ChatGPT(免费版)");
     let chat_gpt_official = CustomMenuItem::new("chat_gpt_official".to_string(), "ChatGPT(官方版)");
     let ernie_bot = CustomMenuItem::new("ernie_bot".to_string(), "文心一言");
+    let poe = CustomMenuItem::new("poe".to_string(), "POE");
     let github = CustomMenuItem::new("github".to_string(), "访问 Github");
     let gitee = CustomMenuItem::new("gitee".to_string(), "访问 Gitee");
     let preference = CustomMenuItem::new("preference".to_string(), "设置");
@@ -133,6 +38,7 @@ fn main() {
         .add_item(ernie_bot)
         .add_item(chat_gpt)
         .add_item(chat_gpt_official)
+        .add_item(poe)
         .add_native_item(SystemTrayMenuItem::Separator)
         .add_item(github)
         .add_item(gitee)
@@ -144,6 +50,27 @@ fn main() {
 
     let context = tauri::generate_context!();
 
+    // 创建普通菜单
+    let chat_gpt = CustomMenuItem::new("chat_gpt".to_string(), "ChatGPT(免费版)");
+    let chat_gpt_official = CustomMenuItem::new("chat_gpt_official".to_string(), "ChatGPT(官方版)");
+    let ernie_bot = CustomMenuItem::new("ernie_bot".to_string(), "文心一言");
+    let poe = CustomMenuItem::new("poe".to_string(), "POE");
+    let github = CustomMenuItem::new("github".to_string(), "访问 Github");
+    let gitee = CustomMenuItem::new("gitee".to_string(), "访问 Gitee");
+    // let close = CustomMenuItem::new("close".to_string(), "Close");
+    let submenu = Submenu::new(
+        "模式切换",
+        Menu::new()
+            .add_item(ernie_bot)
+            .add_item(chat_gpt)
+            .add_item(chat_gpt_official)
+            .add_item(poe),
+    );
+    let menu = Menu::new()
+        .add_submenu(submenu)
+        .add_item(CustomMenuItem::new("refresh", "刷新"))
+        .add_item(CustomMenuItem::new("preference", "设置"));
+
     // 初始化窗口
     tauri::Builder::default()
         .invoke_handler(generate_handler![
@@ -151,6 +78,7 @@ fn main() {
             get_window_mode_handler,
             set_window_mode_handler
         ])
+        .menu(menu)
         .plugin(tauri_plugin_positioner::init())
         .setup(|app| {
             let main_window = app.get_window("main").unwrap();
@@ -169,20 +97,21 @@ fn main() {
 
             if preference_util::get_window_mode() == WindowMode::Window {
                 let main_window = app.get_window("main").unwrap();
-                main_window.eval(inject_yiyan_script).unwrap();
+                // main_window.eval(inject_yiyan_script).unwrap();
                 main_window.move_window(Position::Center).unwrap();
                 main_window.set_size(LogicalSize::new(800, 600)).unwrap();
                 main_window.set_decorations(true).unwrap();
                 main_window.set_always_on_top(false).unwrap();
                 main_window.set_skip_taskbar(false).unwrap();
-                main_window.menu_handle().hide().unwrap();
+                main_window.menu_handle().show().unwrap();
                 main_window.show().unwrap();
                 main_window.set_focus().unwrap();
             }
             Ok(())
         })
-        .menu(tauri::Menu::os_default(&context.package_info().name))
+        // .menu(tauri::Menu::os_default(&context.package_info().name))
         .system_tray(tray)
+        // 窗口监听
         .on_window_event(|event| match event.event() {
             tauri::WindowEvent::CloseRequested { api, .. } => {
                 event.window().hide().unwrap();
@@ -200,6 +129,65 @@ fn main() {
             }
             _ => {}
         })
+        // 窗口菜单监听
+        .on_menu_event(|event| {
+            match event.menu_item_id() {
+                "ernie_bot" => {
+                    event.window().set_focus().unwrap();
+                    event
+                        .window()
+                        .eval(&format!(
+                            "window.location.replace('https://yiyan.baidu.com/')"
+                        ))
+                        .unwrap();
+                    //main_window.eval("window.location.reload");
+                }
+                "chat_gpt" => {
+                    // main_window
+                    //     .eval(&format!("window.location.replace('https://freegpt.one/')"));
+                    event
+                        .window()
+                        .eval("window.location.href = 'https://freegpt.one/'")
+                        .unwrap();
+                    // event.window().get_window("main").unwrap().o
+                    // let main_window = app.get_window("main").unwrap();
+                    // main_window.show().unwrap();
+                    // main_window.set_focus().unwrap();
+                    // main_window.eval(&format!(
+                    //     "window.location.replace('https://sonnylab-gpt.vercel.app')"
+                    // ));
+                }
+                "chat_gpt_official" => {
+                    event
+                        .window()
+                        .eval(&format!(
+                            "window.location.replace('https://chat.openai.com/chat')"
+                        ))
+                        .unwrap();
+                }
+                "poe" => {
+                    event
+                        .window()
+                        .eval(&format!("window.location.replace('https://poe.com/')"))
+                        .unwrap();
+                }
+                "preference" => {
+                    let preference_window = event.window().get_window("preference").unwrap();
+                    preference_window.move_window(Position::Center).unwrap();
+                    preference_window.menu_handle().hide().unwrap();
+                    preference_window.show().unwrap();
+                    preference_window.set_focus().unwrap();
+                }
+                "refresh" => {
+                    event
+                        .window()
+                        .eval(&format!("window.location.replace(window.location.href)"))
+                        .unwrap();
+                }
+                _ => {}
+            }
+        })
+        // 任务栏菜单监听
         .on_system_tray_event(|app, event| {
             tauri_plugin_positioner::on_tray_event(app, &event);
             match event {
@@ -226,7 +214,7 @@ fn main() {
                         window.set_decorations(true).unwrap();
                         window.set_always_on_top(false).unwrap();
                         window.set_skip_taskbar(false).unwrap();
-                        window.menu_handle().hide().unwrap();
+                        window.menu_handle().show().unwrap();
                     }
 
                     if window.is_visible().unwrap() {
@@ -235,10 +223,10 @@ fn main() {
                         window.show().unwrap();
                         window.set_focus().unwrap();
 
-                        window
-                            .eval(inject_yiyan_script)
-                            .map_err(|err| println!("{:?}", err))
-                            .ok();
+                        // window
+                        //     .eval(inject_yiyan_script)
+                        //     .map_err(|err| println!("{:?}", err))
+                        //     .ok();
                     }
                     // app.get_window("main").unwrap().show().unwrap();
                     // app.get_window("main").unwrap().set_focus().unwrap();
@@ -309,6 +297,14 @@ fn main() {
                             .eval(&format!(
                                 "window.location.replace('https://chat.openai.com/chat')"
                             ))
+                            .unwrap();
+                    }
+                    "poe" => {
+                        let main_window = app.get_window("main").unwrap();
+                        main_window.show().unwrap();
+                        main_window.set_focus().unwrap();
+                        main_window
+                            .eval(&format!("window.location.replace('https://poe.com/')"))
                             .unwrap();
                     }
                     "quit" => {
