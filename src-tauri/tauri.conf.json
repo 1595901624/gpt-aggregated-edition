@@ -56,6 +56,9 @@
         "webviewInstallMode": {
           "silent": true,
           "type": "embedBootstrapper"
+        },
+        "wix": {
+          "language": "zh-CN"
         }
       }
     },
