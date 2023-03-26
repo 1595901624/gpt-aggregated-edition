@@ -7,8 +7,8 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "gpt_all",
-    "version": "0.2.0"
+    "productName": "GPT聚合版",
+    "version": "0.3.0"
   },
   "tauri": {
     "allowlist": {
@@ -91,7 +91,7 @@
         "width": 400,
         "height": 300,
         "url": "index.html",
-        "hiddenTitle": true,
+        "hiddenTitle": true
       }
     ],
     "systemTray": {

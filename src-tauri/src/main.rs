@@ -5,27 +5,37 @@
 )]
 
 mod model;
+mod plugin;
 mod preference_util;
 
 use model::preference_model::WindowMode;
 use tauri::{
     api, generate_handler, CustomMenuItem, GlobalShortcutManager, LogicalSize, Manager, Menu,
-    MenuItem, Submenu, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
+    Submenu, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
 };
 use tauri_plugin_positioner::{Position, WindowExt};
 
 fn main() {
     preference_util::init_default_preference();
 
-    let inject_yiyan_script = r#"
-    if (window.location.href.includes("yiyan.baidu.com")) {
-    }
-        "#;
+    // let inject_yiyan_script = r#"
+    // if (window.location.href.includes("yiyan.baidu.com")) {
+
+    // }
+    //     "#;
+
+    // let eb_inject = Arc::new(format!(
+    //     r#"if (window.location.href.includes("yiyan.baidu.com")) {{
+    //         {}
+    //     }}"#,
+    //     eb_js
+    // ));
 
     // 创建右下角菜单
     let open = CustomMenuItem::new("open".to_string(), "打开窗口").accelerator("Cmd+Shift+O");
     let quit = CustomMenuItem::new("quit".to_string(), "退出").accelerator("Cmd+Q");
     let chat_gpt = CustomMenuItem::new("chat_gpt".to_string(), "ChatGPT(免费版)");
+    let chat_chat = CustomMenuItem::new("chat_chat".to_string(), "ChatGPT(限额版)");
     let chat_gpt_official = CustomMenuItem::new("chat_gpt_official".to_string(), "ChatGPT(官方版)");
     let ernie_bot = CustomMenuItem::new("ernie_bot".to_string(), "文心一言");
     let poe = CustomMenuItem::new("poe".to_string(), "POE");
@@ -36,6 +46,7 @@ fn main() {
         .add_item(open)
         .add_native_item(SystemTrayMenuItem::Separator)
         .add_item(ernie_bot)
+        .add_item(chat_chat)
         .add_item(chat_gpt)
         .add_item(chat_gpt_official)
         .add_item(poe)
@@ -54,22 +65,30 @@ fn main() {
     let chat_gpt = CustomMenuItem::new("chat_gpt".to_string(), "ChatGPT(免费版)");
     let chat_gpt_official = CustomMenuItem::new("chat_gpt_official".to_string(), "ChatGPT(官方版)");
     let ernie_bot = CustomMenuItem::new("ernie_bot".to_string(), "文心一言");
+    let chat_chat = CustomMenuItem::new("chat_chat".to_string(), "ChatGPT(限额版)");
     let poe = CustomMenuItem::new("poe".to_string(), "POE");
     let github = CustomMenuItem::new("github".to_string(), "访问 Github");
     let gitee = CustomMenuItem::new("gitee".to_string(), "访问 Gitee");
     // let close = CustomMenuItem::new("close".to_string(), "Close");
-    let submenu = Submenu::new(
+    let mode_submenu = Submenu::new(
         "模式切换",
         Menu::new()
             .add_item(ernie_bot)
+            .add_item(chat_chat)
             .add_item(chat_gpt)
             .add_item(chat_gpt_official)
             .add_item(poe),
     );
+    let about_submenu = Submenu::new(
+        "更多".to_string(),
+        Menu::new().add_item(github).add_item(gitee),
+    );
+
     let menu = Menu::new()
-        .add_submenu(submenu)
+        .add_submenu(mode_submenu)
         .add_item(CustomMenuItem::new("refresh", "刷新"))
-        .add_item(CustomMenuItem::new("preference", "设置"));
+        .add_item(CustomMenuItem::new("preference", "设置"))
+        .add_submenu(about_submenu);
 
     // 初始化窗口
     tauri::Builder::default()
@@ -82,6 +101,7 @@ fn main() {
         .plugin(tauri_plugin_positioner::init())
         .setup(|app| {
             let main_window = app.get_window("main").unwrap();
+            main_window.eval(&plugin::load_eb_plugin()).unwrap();
 
             let mut shortcut = app.global_shortcut_manager();
             shortcut
@@ -97,9 +117,9 @@ fn main() {
 
             if preference_util::get_window_mode() == WindowMode::Window {
                 let main_window = app.get_window("main").unwrap();
-                // main_window.eval(inject_yiyan_script).unwrap();
+                main_window.eval(&plugin::load_eb_plugin()).unwrap();
+                main_window.set_size(LogicalSize::new(900, 700)).unwrap();
                 main_window.move_window(Position::Center).unwrap();
-                main_window.set_size(LogicalSize::new(800, 600)).unwrap();
                 main_window.set_decorations(true).unwrap();
                 main_window.set_always_on_top(false).unwrap();
                 main_window.set_skip_taskbar(false).unwrap();
@@ -140,14 +160,21 @@ fn main() {
                             "window.location.replace('https://yiyan.baidu.com/')"
                         ))
                         .unwrap();
-                    //main_window.eval("window.location.reload");
+                    event.window().eval(&plugin::load_eb_plugin()).unwrap();
                 }
-                "chat_gpt" => {
-                    // main_window
-                    //     .eval(&format!("window.location.replace('https://freegpt.one/')"));
+                "chat_chat" => {
+                    event.window().set_focus().unwrap();
                     event
                         .window()
-                        .eval("window.location.href = 'https://freegpt.one/'")
+                        .eval(&format!(
+                            "window.location.replace('https://chat.okis.dev/zh-CN?mode=chat')"
+                        ))
+                        .unwrap();
+                }
+                "chat_gpt" => {
+                    event
+                        .window()
+                        .eval("window.location.replace('https://freegpt.one/')")
                         .unwrap();
                     // event.window().get_window("main").unwrap().o
                     // let main_window = app.get_window("main").unwrap();
@@ -202,7 +229,7 @@ fn main() {
                     if mode == WindowMode::TaskBar {
                         // 任务栏模式
                         window.move_window(Position::TrayCenter).unwrap();
-                        window.set_size(LogicalSize::new(450, 600)).unwrap();
+                        window.set_size(LogicalSize::new(450, 700)).unwrap();
                         window.set_decorations(false).unwrap();
                         window.set_always_on_top(true).unwrap();
                         window.set_skip_taskbar(true).unwrap();
@@ -210,7 +237,7 @@ fn main() {
                     } else {
                         // 桌面模式
                         window.move_window(Position::Center).unwrap();
-                        window.set_size(LogicalSize::new(800, 600)).unwrap();
+                        window.set_size(LogicalSize::new(900, 700)).unwrap();
                         window.set_decorations(true).unwrap();
                         window.set_always_on_top(false).unwrap();
                         window.set_skip_taskbar(false).unwrap();
@@ -223,10 +250,10 @@ fn main() {
                         window.show().unwrap();
                         window.set_focus().unwrap();
 
-                        // window
-                        //     .eval(inject_yiyan_script)
-                        //     .map_err(|err| println!("{:?}", err))
-                        //     .ok();
+                        window
+                            .eval(&plugin::load_eb_plugin())
+                            .map_err(|err| println!("{:?}", err))
+                            .ok();
                     }
                     // app.get_window("main").unwrap().show().unwrap();
                     // app.get_window("main").unwrap().set_focus().unwrap();
@@ -266,12 +293,22 @@ fn main() {
                         let main_window = app.get_window("main").unwrap();
                         main_window.show().unwrap();
                         main_window.set_focus().unwrap();
+                        main_window.eval(&plugin::load_eb_plugin()).unwrap();
                         main_window
                             .eval(&format!(
                                 "window.location.replace('https://yiyan.baidu.com/')"
                             ))
                             .unwrap();
-                        //main_window.eval("window.location.reload");
+                    }
+                    "chat_chat" => {
+                        let main_window = app.get_window("main").unwrap();
+                        main_window.show().unwrap();
+                        main_window.set_focus().unwrap();
+                        main_window
+                            .eval(&format!(
+                                "window.location.replace('https://chat.okis.dev/zh-CN?mode=chat')"
+                            ))
+                            .unwrap();
                     }
                     "chat_gpt" => {
                         let main_window = app.get_window("main").unwrap();
@@ -312,12 +349,14 @@ fn main() {
                     }
                     "preference" => {
                         let preference_window = app.get_window("preference").unwrap();
+                        preference_window.move_window(Position::Center).unwrap();
                         preference_window.menu_handle().hide().unwrap();
                         preference_window.show().unwrap();
                         preference_window.set_focus().unwrap();
                     }
                     "open" => {
                         let main_window = app.get_window("main").unwrap();
+                        main_window.eval(&plugin::load_eb_plugin()).unwrap();
                         main_window.show().unwrap();
                         main_window.set_focus().unwrap();
                     }
