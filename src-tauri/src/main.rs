@@ -8,12 +8,17 @@ mod model;
 mod plugin;
 mod preference_util;
 
+use std::{thread::sleep, time::Duration};
+
 use model::preference_model::WindowMode;
 use tauri::{
     api, generate_handler, CustomMenuItem, GlobalShortcutManager, LogicalSize, Manager, Menu,
     Submenu, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
 };
 use tauri_plugin_positioner::{Position, WindowExt};
+
+// 切换页面后再次执行脚本的时间
+const SWITCH_PAGE_SLEEP_TIME: u64 = 500;
 
 fn main() {
     preference_util::init_default_preference();
@@ -42,8 +47,10 @@ fn main() {
     let github = CustomMenuItem::new("github".to_string(), "访问 Github");
     let gitee = CustomMenuItem::new("gitee".to_string(), "访问 Gitee");
     let preference = CustomMenuItem::new("preference".to_string(), "设置");
+    let refresh = CustomMenuItem::new("refresh", "刷新");
     let tray_menu = SystemTrayMenu::new()
         .add_item(open)
+        .add_item(refresh)
         .add_native_item(SystemTrayMenuItem::Separator)
         .add_item(ernie_bot)
         .add_item(chat_chat)
@@ -157,9 +164,10 @@ fn main() {
                     event
                         .window()
                         .eval(&format!(
-                            "window.location.replace('https://yiyan.baidu.com/')"
+                            "window.location.replace('https://yiyan.baidu.com/')",
                         ))
                         .unwrap();
+                    sleep(Duration::from_millis(SWITCH_PAGE_SLEEP_TIME));
                     event.window().eval(&plugin::load_eb_plugin()).unwrap();
                 }
                 "chat_chat" => {
@@ -210,6 +218,8 @@ fn main() {
                         .window()
                         .eval(&format!("window.location.replace(window.location.href)"))
                         .unwrap();
+                    sleep(Duration::from_millis(SWITCH_PAGE_SLEEP_TIME));
+                    event.window().eval(&plugin::load_eb_plugin()).unwrap();
                 }
                 _ => {}
             }
@@ -293,12 +303,13 @@ fn main() {
                         let main_window = app.get_window("main").unwrap();
                         main_window.show().unwrap();
                         main_window.set_focus().unwrap();
-                        main_window.eval(&plugin::load_eb_plugin()).unwrap();
                         main_window
                             .eval(&format!(
                                 "window.location.replace('https://yiyan.baidu.com/')"
                             ))
                             .unwrap();
+                        sleep(Duration::from_millis(SWITCH_PAGE_SLEEP_TIME));
+                        main_window.eval(&plugin::load_eb_plugin()).unwrap();
                     }
                     "chat_chat" => {
                         let main_window = app.get_window("main").unwrap();
@@ -343,6 +354,14 @@ fn main() {
                         main_window
                             .eval(&format!("window.location.replace('https://poe.com/')"))
                             .unwrap();
+                    }
+                    "refresh" => {
+                        let main_window = app.get_window("main").unwrap();
+                        main_window
+                            .eval(&format!("window.location.replace(window.location.href)"))
+                            .unwrap();
+                        sleep(Duration::from_millis(SWITCH_PAGE_SLEEP_TIME));
+                        main_window.eval(&plugin::load_eb_plugin()).unwrap();
                     }
                     "quit" => {
                         std::process::exit(0);
