@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:    
+  
 
 jobs:
   create-release:
@@ -19,9 +21,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+      - name: pnpm node
       - uses: pnpm/action-setup@v2
         with:
-          version: 6.9.1
+          version: 7
       - name: get version
         run: echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
       - name: create release
@@ -56,6 +59,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+      - name: pnpm node
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
       - name: install dependencies (ubuntu only)
