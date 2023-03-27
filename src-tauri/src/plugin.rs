@@ -1,7 +1,6 @@
-/// 读取文心一言插件
-pub fn load_eb_plugin() -> String {
+/// 读取内置脚本插件
+pub fn load_internal_plugin() -> String {
     let js = read("./plugin/internal.js");
-    // dbg!(&result);
     return js;
 }
 

@@ -107,7 +107,7 @@ fn main() {
         .plugin(tauri_plugin_positioner::init())
         .setup(|app| {
             let main_window = app.get_window("main").unwrap();
-            main_window.eval(&plugin::load_eb_plugin()).unwrap();
+            main_window.eval(&plugin::load_internal_plugin()).unwrap();
 
             let mut shortcut = app.global_shortcut_manager();
             shortcut
@@ -123,7 +123,7 @@ fn main() {
 
             if preference_util::get_window_mode() == WindowMode::Window {
                 let main_window = app.get_window("main").unwrap();
-                main_window.eval(&plugin::load_eb_plugin()).unwrap();
+                main_window.eval(&plugin::load_internal_plugin()).unwrap();
                 main_window
                     .set_size(LogicalSize::new(
                         constant::WINDOW_WIDTH,
@@ -172,7 +172,7 @@ fn main() {
                         ))
                         .unwrap();
                     sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
-                    event.window().eval(&plugin::load_eb_plugin()).unwrap();
+                    event.window().eval(&plugin::load_internal_plugin()).unwrap();
                 }
                 "chat_chat" => {
                     event.window().set_focus().unwrap();
@@ -223,7 +223,7 @@ fn main() {
                         .eval(&format!("window.location.replace(window.location.href)"))
                         .unwrap();
                     sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
-                    event.window().eval(&plugin::load_eb_plugin()).unwrap();
+                    event.window().eval(&plugin::load_internal_plugin()).unwrap();
                 }
                 _ => {}
             }
@@ -275,7 +275,7 @@ fn main() {
                         window.set_focus().unwrap();
 
                         window
-                            .eval(&plugin::load_eb_plugin())
+                            .eval(&plugin::load_internal_plugin())
                             .map_err(|err| println!("{:?}", err))
                             .ok();
                     }
@@ -323,7 +323,7 @@ fn main() {
                             ))
                             .unwrap();
                         sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
-                        main_window.eval(&plugin::load_eb_plugin()).unwrap();
+                        main_window.eval(&plugin::load_internal_plugin()).unwrap();
                     }
                     "chat_chat" => {
                         let main_window = app.get_window("main").unwrap();
@@ -375,7 +375,7 @@ fn main() {
                             .eval(&format!("window.location.replace(window.location.href)"))
                             .unwrap();
                         sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
-                        main_window.eval(&plugin::load_eb_plugin()).unwrap();
+                        main_window.eval(&plugin::load_internal_plugin()).unwrap();
                     }
                     "quit" => {
                         std::process::exit(0);
@@ -389,7 +389,7 @@ fn main() {
                     }
                     "open" => {
                         let main_window = app.get_window("main").unwrap();
-                        main_window.eval(&plugin::load_eb_plugin()).unwrap();
+                        main_window.eval(&plugin::load_internal_plugin()).unwrap();
                         main_window.show().unwrap();
                         main_window.set_focus().unwrap();
                     }
