@@ -1,16 +1,21 @@
 /// 读取文心一言插件
 pub fn load_eb_plugin() -> String {
-    let js = std::fs::read("./plugin/eb.js");
+    let js = read("./plugin/internal.js");
+    // dbg!(&result);
+    return js;
+}
+
+/// 读取用户自定义脚本
+// pub fn load_custom_plugin() -> String {
+//     return read("").into();
+// }
+
+/// 读取路径下的代码
+fn read(path: &str) -> String {
+    let js = std::fs::read(path);
     if js.is_err() {
         dbg!("error");
-        return "".to_string();
+        return "".into();
     }
-    let result = format!(
-        r#"if (window.location.href.includes("yiyan.baidu.com")) {{
-            {}
-        }}"#,
-        String::from_utf8(js.unwrap()).unwrap()
-    );
-    dbg!(&result);
-    return result;
+    return String::from_utf8(js.unwrap()).unwrap();
 }
