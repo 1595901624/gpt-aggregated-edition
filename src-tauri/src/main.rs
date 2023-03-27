@@ -43,6 +43,7 @@ fn main() {
     let chat_gpt_official = CustomMenuItem::new("chat_gpt_official".to_string(), "ChatGPT(官方版)");
     let ernie_bot = CustomMenuItem::new("ernie_bot".to_string(), "文心一言");
     let poe = CustomMenuItem::new("poe".to_string(), "POE");
+    let bard = CustomMenuItem::new("bard".to_string(), "Bard");
     let github = CustomMenuItem::new("github".to_string(), "访问 Github");
     let gitee = CustomMenuItem::new("gitee".to_string(), "访问 Gitee");
     let preference = CustomMenuItem::new("preference".to_string(), "设置");
@@ -56,6 +57,7 @@ fn main() {
         .add_item(chat_gpt)
         .add_item(chat_gpt_official)
         .add_item(poe)
+        .add_item(bard)
         .add_native_item(SystemTrayMenuItem::Separator)
         .add_item(github)
         .add_item(gitee)
@@ -73,17 +75,19 @@ fn main() {
     let ernie_bot = CustomMenuItem::new("ernie_bot".to_string(), "文心一言");
     let chat_chat = CustomMenuItem::new("chat_chat".to_string(), "ChatGPT(限额版)");
     let poe = CustomMenuItem::new("poe".to_string(), "POE");
+    let bard = CustomMenuItem::new("bard".to_string(), "Bard");
     let github = CustomMenuItem::new("github".to_string(), "访问 Github");
     let gitee = CustomMenuItem::new("gitee".to_string(), "访问 Gitee");
     // let close = CustomMenuItem::new("close".to_string(), "Close");
     let mode_submenu = Submenu::new(
-        "模式切换",
+        "平台切换",
         Menu::new()
             .add_item(ernie_bot)
             .add_item(chat_chat)
             .add_item(chat_gpt)
             .add_item(chat_gpt_official)
-            .add_item(poe),
+            .add_item(poe)
+            .add_item(bard),
     );
     let about_submenu = Submenu::new(
         "更多".to_string(),
@@ -172,7 +176,10 @@ fn main() {
                         ))
                         .unwrap();
                     sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
-                    event.window().eval(&plugin::load_internal_plugin()).unwrap();
+                    event
+                        .window()
+                        .eval(&plugin::load_internal_plugin())
+                        .unwrap();
                 }
                 "chat_chat" => {
                     event.window().set_focus().unwrap();
@@ -210,6 +217,14 @@ fn main() {
                         .eval(&format!("window.location.replace('https://poe.com/')"))
                         .unwrap();
                 }
+                "bard" => {
+                    event
+                        .window()
+                        .eval(&format!(
+                            "window.location.replace('https://bard.google.com/')"
+                        ))
+                        .unwrap();
+                }
                 "preference" => {
                     let preference_window = event.window().get_window("preference").unwrap();
                     preference_window.move_window(Position::Center).unwrap();
@@ -223,7 +238,10 @@ fn main() {
                         .eval(&format!("window.location.replace(window.location.href)"))
                         .unwrap();
                     sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
-                    event.window().eval(&plugin::load_internal_plugin()).unwrap();
+                    event
+                        .window()
+                        .eval(&plugin::load_internal_plugin())
+                        .unwrap();
                 }
                 _ => {}
             }
@@ -376,6 +394,14 @@ fn main() {
                             .unwrap();
                         sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
                         main_window.eval(&plugin::load_internal_plugin()).unwrap();
+                    }
+                    "bard" => {
+                        let main_window = app.get_window("main").unwrap();
+                        main_window
+                            .eval(&format!(
+                                "window.location.replace('https://bard.google.com/')"
+                            ))
+                            .unwrap();
                     }
                     "quit" => {
                         std::process::exit(0);

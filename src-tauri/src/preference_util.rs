@@ -18,6 +18,8 @@ pub fn init_default_preference() {
     // std::fs::File::create(path).unwrap();
     let preference = Preference {
         window_mode: WindowMode::Window,
+        enable_internal_script: Some(true),
+        enable_extendsion_script: Some(false),
     };
     let json = serde_json::to_string(&preference).unwrap();
     let _ = std::fs::write(get_app_preference_path(), json);
@@ -78,4 +80,14 @@ pub fn set_window_mode(mode: i32) -> bool {
     let json = serde_json::to_string(&p).unwrap();
     let _ = std::fs::write(get_app_preference_path(), json);
     return true;
+}
+
+/// 是否启用内置脚本
+pub fn is_enable_internal_script() {
+
+}
+
+/// 是否启用扩展脚本
+pub fn is_enable_extendsion_script() {
+    
 }

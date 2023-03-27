@@ -5,6 +5,12 @@ use serde::{Deserialize, Serialize};
 pub struct Preference {
     // 窗口模式 0为窗口模式，1为任务栏模式
     pub window_mode: WindowMode,
+
+    // 启用内置脚本
+    pub enable_internal_script: Option<bool>,
+
+    // 启用外置脚本
+    pub enable_extendsion_script: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
