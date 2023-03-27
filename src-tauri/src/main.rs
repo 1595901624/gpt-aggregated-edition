@@ -4,6 +4,8 @@
     windows_subsystem = "windows"
 )]
 
+mod command;
+mod constant;
 mod model;
 mod plugin;
 mod preference_util;
@@ -16,9 +18,6 @@ use tauri::{
     Submenu, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
 };
 use tauri_plugin_positioner::{Position, WindowExt};
-
-// 切换页面后再次执行脚本的时间
-const SWITCH_PAGE_SLEEP_TIME: u64 = 500;
 
 fn main() {
     preference_util::init_default_preference();
@@ -100,9 +99,9 @@ fn main() {
     // 初始化窗口
     tauri::Builder::default()
         .invoke_handler(generate_handler![
-            greet,
-            get_window_mode_handler,
-            set_window_mode_handler
+            command::greet,
+            command::get_window_mode_handler,
+            command::set_window_mode_handler
         ])
         .menu(menu)
         .plugin(tauri_plugin_positioner::init())
@@ -125,7 +124,12 @@ fn main() {
             if preference_util::get_window_mode() == WindowMode::Window {
                 let main_window = app.get_window("main").unwrap();
                 main_window.eval(&plugin::load_eb_plugin()).unwrap();
-                main_window.set_size(LogicalSize::new(900, 700)).unwrap();
+                main_window
+                    .set_size(LogicalSize::new(
+                        constant::WINDOW_WIDTH,
+                        constant::WINDOW_HEIGHT,
+                    ))
+                    .unwrap();
                 main_window.move_window(Position::Center).unwrap();
                 main_window.set_decorations(true).unwrap();
                 main_window.set_always_on_top(false).unwrap();
@@ -167,7 +171,7 @@ fn main() {
                             "window.location.replace('https://yiyan.baidu.com/')",
                         ))
                         .unwrap();
-                    sleep(Duration::from_millis(SWITCH_PAGE_SLEEP_TIME));
+                    sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
                     event.window().eval(&plugin::load_eb_plugin()).unwrap();
                 }
                 "chat_chat" => {
@@ -218,7 +222,7 @@ fn main() {
                         .window()
                         .eval(&format!("window.location.replace(window.location.href)"))
                         .unwrap();
-                    sleep(Duration::from_millis(SWITCH_PAGE_SLEEP_TIME));
+                    sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
                     event.window().eval(&plugin::load_eb_plugin()).unwrap();
                 }
                 _ => {}
@@ -238,16 +242,26 @@ fn main() {
                     let mode = preference_util::get_window_mode();
                     if mode == WindowMode::TaskBar {
                         // 任务栏模式
+                        window
+                            .set_size(LogicalSize::new(
+                                constant::TASK_WINDOW_WIDTH,
+                                constant::TASK_WINDOW_HEIGHT,
+                            ))
+                            .unwrap();
                         window.move_window(Position::TrayCenter).unwrap();
-                        window.set_size(LogicalSize::new(450, 700)).unwrap();
                         window.set_decorations(false).unwrap();
                         window.set_always_on_top(true).unwrap();
                         window.set_skip_taskbar(true).unwrap();
                         window.menu_handle().hide().unwrap();
                     } else {
                         // 桌面模式
+                        window
+                            .set_size(LogicalSize::new(
+                                constant::WINDOW_WIDTH,
+                                constant::WINDOW_HEIGHT,
+                            ))
+                            .unwrap();
                         window.move_window(Position::Center).unwrap();
-                        window.set_size(LogicalSize::new(900, 700)).unwrap();
                         window.set_decorations(true).unwrap();
                         window.set_always_on_top(false).unwrap();
                         window.set_skip_taskbar(false).unwrap();
@@ -308,7 +322,7 @@ fn main() {
                                 "window.location.replace('https://yiyan.baidu.com/')"
                             ))
                             .unwrap();
-                        sleep(Duration::from_millis(SWITCH_PAGE_SLEEP_TIME));
+                        sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
                         main_window.eval(&plugin::load_eb_plugin()).unwrap();
                     }
                     "chat_chat" => {
@@ -360,7 +374,7 @@ fn main() {
                         main_window
                             .eval(&format!("window.location.replace(window.location.href)"))
                             .unwrap();
-                        sleep(Duration::from_millis(SWITCH_PAGE_SLEEP_TIME));
+                        sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
                         main_window.eval(&plugin::load_eb_plugin()).unwrap();
                     }
                     "quit" => {
@@ -386,20 +400,4 @@ fn main() {
         })
         .run(context)
         .expect("error while running tauri application");
-}
-
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
-
-/// 获取
-#[tauri::command]
-fn get_window_mode_handler() -> i32 {
-    preference_util::get_window_mode() as i32
-}
-
-#[tauri::command]
-fn set_window_mode_handler(mode: i32) {
-    preference_util::set_window_mode(mode);
 }
