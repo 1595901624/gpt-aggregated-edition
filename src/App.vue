@@ -1,15 +1,18 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import WindowMode from "./components/WindowMode.vue";
+import GeneralPreference from "./components/GeneralPreference.vue";
 
 
 </script>
 
 <template>
-  <el-card class="card">
-    <WindowMode />
-  </el-card>
+  <div class="card">
+    <GeneralPreference />
+  </div>
+  <!-- <el-card>
+   
+  </el-card> -->
 </template>
 
 <style scoped>
@@ -22,7 +25,8 @@ import WindowMode from "./components/WindowMode.vue";
 }
 
 .card {
-  height: 90vh;
+  width: 100%;
+  height: 95vh;
   margin: 0;
   padding: 0;
   box-sizing: border-box;

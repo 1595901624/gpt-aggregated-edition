@@ -23,6 +23,28 @@
   text-align: center;
 }
 
+.column-layout {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: start;
+}
+
+.row-layout {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+}
+
+.common-margin-top {
+  margin-top: 16px;
+}
+
+.common-margin-top-8 {
+  margin-top: 8px;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -74,6 +96,7 @@ button {
 button:hover {
   border-color: #396cd8;
 }
+
 button:active {
   border-color: #396cd8;
   background-color: #e8e8e8;
@@ -103,7 +126,31 @@ button {
     color: #ffffff;
     background-color: #0f0f0f98;
   }
+
   button:active {
     background-color: #0f0f0f69;
   }
 }
+
+/* 通用字体大小 START */
+.font-size-18 {
+  font-size: 18px;
+}
+
+.font-size-16 {
+  font-size: 16px;
+}
+
+.font-size-14 {
+  font-size: 14px;
+}
+
+.font-size-12 {
+  font-size: 12px;
+}
+
+.font-size-10 {
+  font-size: 10px;
+}
+
+/* 通用字体大小 E N D */
