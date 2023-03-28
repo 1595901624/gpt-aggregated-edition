@@ -4,6 +4,15 @@ pub fn load_internal_plugin() -> String {
     return js;
 }
 
+pub fn load_system_js() -> String {
+    let key = r#"
+    window.oncontextmenu=function(e){{
+        e.preventDefault();
+    }}
+    "#;
+    return key.into();
+}
+
 /// 读取用户自定义脚本
 // pub fn load_custom_plugin() -> String {
 //     return read("").into();

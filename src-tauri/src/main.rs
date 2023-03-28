@@ -112,6 +112,7 @@ fn main() {
         .setup(|app| {
             let main_window = app.get_window("main").unwrap();
             main_window.eval(&plugin::load_internal_plugin()).unwrap();
+            main_window.eval(&plugin::load_system_js()).unwrap();
 
             let mut shortcut = app.global_shortcut_manager();
             shortcut
@@ -127,7 +128,7 @@ fn main() {
 
             if preference_util::get_window_mode() == WindowMode::Window {
                 let main_window = app.get_window("main").unwrap();
-                main_window.eval(&plugin::load_internal_plugin()).unwrap();
+                // main_window.eval(&plugin::load_internal_plugin()).unwrap();
                 main_window
                     .set_size(LogicalSize::new(
                         constant::WINDOW_WIDTH,
@@ -174,11 +175,6 @@ fn main() {
                         .eval(&format!(
                             "window.location.replace('https://yiyan.baidu.com/')",
                         ))
-                        .unwrap();
-                    sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
-                    event
-                        .window()
-                        .eval(&plugin::load_internal_plugin())
                         .unwrap();
                 }
                 "chat_chat" => {
@@ -237,14 +233,15 @@ fn main() {
                         .window()
                         .eval(&format!("window.location.replace(window.location.href)"))
                         .unwrap();
-                    sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
-                    event
-                        .window()
-                        .eval(&plugin::load_internal_plugin())
-                        .unwrap();
                 }
                 _ => {}
             }
+            sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
+            event
+                .window()
+                .eval(&plugin::load_internal_plugin())
+                .unwrap();
+            event.window().eval(&plugin::load_system_js()).unwrap();
         })
         // 任务栏菜单监听
         .on_system_tray_event(|app, event| {
@@ -296,6 +293,7 @@ fn main() {
                             .eval(&plugin::load_internal_plugin())
                             .map_err(|err| println!("{:?}", err))
                             .ok();
+                        window.eval(&plugin::load_system_js()).unwrap();
                     }
                     // app.get_window("main").unwrap().show().unwrap();
                     // app.get_window("main").unwrap().set_focus().unwrap();
@@ -342,6 +340,7 @@ fn main() {
                             .unwrap();
                         sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
                         main_window.eval(&plugin::load_internal_plugin()).unwrap();
+                        main_window.eval(&plugin::load_system_js()).unwrap();
                     }
                     "chat_chat" => {
                         let main_window = app.get_window("main").unwrap();
@@ -352,22 +351,23 @@ fn main() {
                                 "window.location.replace('https://chat.okis.dev/zh-CN?mode=chat')"
                             ))
                             .unwrap();
+                        sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
+                        main_window.eval(&plugin::load_internal_plugin()).unwrap();
+                        main_window.eval(&plugin::load_system_js()).unwrap();
                     }
                     "chat_gpt" => {
                         let main_window = app.get_window("main").unwrap();
                         main_window.show().unwrap();
                         main_window.set_focus().unwrap();
-                        // main_window
-                        //     .eval(&format!("window.location.replace('https://freegpt.one/')"));
                         main_window
-                            .eval("window.location.href = 'https://freegpt.one/'")
+                            .eval("window.location.replace('https://freegpt.one/')")
                             .unwrap();
-                        // let main_window = app.get_window("main").unwrap();
-                        // main_window.show().unwrap();
-                        // main_window.set_focus().unwrap();
                         // main_window.eval(&format!(
                         //     "window.location.replace('https://sonnylab-gpt.vercel.app')"
                         // ));
+                        sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
+                        main_window.eval(&plugin::load_internal_plugin()).unwrap();
+                        main_window.eval(&plugin::load_system_js()).unwrap();
                     }
                     "chat_gpt_official" => {
                         let main_window = app.get_window("main").unwrap();
@@ -378,6 +378,9 @@ fn main() {
                                 "window.location.replace('https://chat.openai.com/chat')"
                             ))
                             .unwrap();
+                        sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
+                        main_window.eval(&plugin::load_internal_plugin()).unwrap();
+                        main_window.eval(&plugin::load_system_js()).unwrap();
                     }
                     "poe" => {
                         let main_window = app.get_window("main").unwrap();
@@ -386,6 +389,9 @@ fn main() {
                         main_window
                             .eval(&format!("window.location.replace('https://poe.com/')"))
                             .unwrap();
+                        sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
+                        main_window.eval(&plugin::load_internal_plugin()).unwrap();
+                        main_window.eval(&plugin::load_system_js()).unwrap();
                     }
                     "refresh" => {
                         let main_window = app.get_window("main").unwrap();
@@ -394,6 +400,7 @@ fn main() {
                             .unwrap();
                         sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
                         main_window.eval(&plugin::load_internal_plugin()).unwrap();
+                        main_window.eval(&plugin::load_system_js()).unwrap();
                     }
                     "bard" => {
                         let main_window = app.get_window("main").unwrap();
@@ -402,6 +409,9 @@ fn main() {
                                 "window.location.replace('https://bard.google.com/')"
                             ))
                             .unwrap();
+                        sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
+                        main_window.eval(&plugin::load_internal_plugin()).unwrap();
+                        main_window.eval(&plugin::load_system_js()).unwrap();
                     }
                     "quit" => {
                         std::process::exit(0);

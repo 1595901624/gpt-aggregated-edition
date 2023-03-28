@@ -7,7 +7,7 @@ import GeneralPreference from "./components/GeneralPreference.vue";
 </script>
 
 <template>
-  <div class="card">
+  <div class="card" @contextmenu.prevent>
     <GeneralPreference />
   </div>
   <!-- <el-card>
