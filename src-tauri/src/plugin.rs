@@ -1,6 +1,11 @@
+use crate::preference_util;
+
 /// 读取内置脚本插件
 pub fn load_internal_plugin() -> String {
-    let js = read("./plugin/internal.js");
+    if !preference_util::is_enable_internal_script() {
+        return "".into();
+    }
+    let js = read("./plugin/unecrypt.js");
     return js;
 }
 

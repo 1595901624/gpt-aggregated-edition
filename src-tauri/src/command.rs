@@ -16,3 +16,13 @@ pub fn get_window_mode_handler() -> i32 {
 pub fn set_window_mode_handler(mode: i32) {
     preference_util::set_window_mode(mode);
 }
+
+#[tauri::command]
+pub fn is_enable_internal_script_handler() -> bool {
+    preference_util::is_enable_internal_script()
+}
+
+#[tauri::command]
+pub fn enable_internal_script_handler(enable: bool) {
+    preference_util::enable_internal_script(enable);
+}

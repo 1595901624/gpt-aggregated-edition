@@ -83,11 +83,28 @@ pub fn set_window_mode(mode: i32) -> bool {
 }
 
 /// 是否启用内置脚本
-pub fn is_enable_internal_script() {
-
+pub fn is_enable_internal_script() -> bool {
+    let perference = get_app_preference();
+    if perference.is_err() {
+        return false;
+    }
+    let perference = perference.unwrap();
+    return perference.enable_internal_script.unwrap_or_else(|| false);
 }
 
-/// 是否启用扩展脚本
-pub fn is_enable_extendsion_script() {
-    
+/// 启用或者关闭内置脚本
+pub fn enable_internal_script(enable: bool) -> bool {
+    let perference = get_app_preference();
+    if perference.is_err() {
+        dbg!("读取配置文件失败");
+        return false;
+    }
+    let mut p = perference.unwrap();
+    p.enable_internal_script = Some(enable);
+    let json = serde_json::to_string(&p).unwrap();
+    let _ = std::fs::write(get_app_preference_path(), json);
+    return true;
 }
+
+// 是否启用扩展脚本
+// pub fn is_enable_extendsion_script() {}
