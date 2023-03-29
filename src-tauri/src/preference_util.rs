@@ -20,6 +20,7 @@ pub fn init_default_preference() {
         window_mode: WindowMode::Window,
         enable_internal_script: Some(true),
         enable_extendsion_script: Some(false),
+        auto_hide_when_click_outside: Some(true),
     };
     let json = serde_json::to_string(&preference).unwrap();
     let _ = std::fs::write(get_app_preference_path(), json);

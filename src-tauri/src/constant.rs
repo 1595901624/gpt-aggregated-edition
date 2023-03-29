@@ -13,3 +13,7 @@ pub const TASK_WINDOW_HEIGHT: i32 = 1500;
 
 // 侧边栏宽度
 pub const SIDE_BAR_WIDTH: i32 = 800;
+
+// ***************************设置项 START***************************** //
+pub const PREFERENCE_AUTO_HIDE_WHEN_CLICK_OUTSIDE: i32 = 3;
+// ***************************设置项 E N D***************************** //

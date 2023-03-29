@@ -23,7 +23,8 @@ fn main() {
     preference_util::init_default_preference();
 
     // 创建右下角菜单
-    let open = CustomMenuItem::new("open".to_string(), "打开窗口").accelerator("Cmd+Shift+O");
+    let open = CustomMenuItem::new("open".to_string(), "打开窗口")
+        .accelerator("Cmd+Shift+O");
     let quit = CustomMenuItem::new("quit".to_string(), "退出").accelerator("Cmd+Q");
     let chat_gpt = CustomMenuItem::new("chat_gpt".to_string(), "ChatGPT(免费版)");
     let chat_chat = CustomMenuItem::new("chat_chat".to_string(), "ChatGPT(限额版)");
@@ -35,9 +36,11 @@ fn main() {
     let gitee = CustomMenuItem::new("gitee".to_string(), "访问 Gitee");
     let preference = CustomMenuItem::new("preference".to_string(), "设置");
     let refresh = CustomMenuItem::new("refresh", "刷新");
+    // let always_top = CustomMenuItem::new("always_top", "常驻置顶").selected();
     let tray_menu = SystemTrayMenu::new()
         .add_item(open)
         .add_item(refresh)
+        // .add_item(always_top)
         .add_native_item(SystemTrayMenuItem::Separator)
         .add_item(ernie_bot)
         .add_item(chat_chat)
@@ -94,7 +97,9 @@ fn main() {
             command::get_window_mode_handler,
             command::set_window_mode_handler,
             command::is_enable_internal_script_handler,
-            command::enable_internal_script_handler
+            command::enable_internal_script_handler,
+            command::set_preference_handler,
+            command::get_preference_handler
         ])
         .menu(menu)
         .plugin(tauri_plugin_positioner::init())
@@ -236,11 +241,7 @@ fn main() {
         .on_system_tray_event(|app, event| {
             tauri_plugin_positioner::on_tray_event(app, &event);
             match event {
-                SystemTrayEvent::LeftClick {
-                    position,
-                    size,
-                    ..
-                } => {
+                SystemTrayEvent::LeftClick { position, size, .. } => {
                     let window = app.get_window("main").unwrap();
 
                     let mode = preference_util::get_window_mode();
@@ -270,10 +271,7 @@ fn main() {
                         dbg!(&size);
 
                         window
-                            .set_size(PhysicalSize::new(
-                                constant::SIDE_BAR_WIDTH,
-                                side_bar_height,
-                            ))
+                            .set_size(PhysicalSize::new(constant::SIDE_BAR_WIDTH, side_bar_height))
                             .unwrap();
                         window
                             .set_position(PhysicalPosition::new(
