@@ -2,6 +2,7 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import GeneralPreference from "./components/GeneralPreference.vue";
+import NewUI from "./components/NewUI.vue";
 
 
 </script>
@@ -9,6 +10,7 @@ import GeneralPreference from "./components/GeneralPreference.vue";
 <template>
   <div class="card" @contextmenu.prevent>
     <GeneralPreference />
+    <!-- <NewUI /> -->
   </div>
   <!-- <el-card>
    

@@ -14,8 +14,8 @@ use std::{thread::sleep, time::Duration};
 
 use model::preference_model::WindowMode;
 use tauri::{
-    api, generate_handler, CustomMenuItem, GlobalShortcutManager, LogicalSize, Manager, Menu,
-    Submenu, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
+    api, generate_handler, CustomMenuItem, GlobalShortcutManager, Manager, Menu, PhysicalPosition,
+    PhysicalSize, Submenu, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
 };
 use tauri_plugin_positioner::{Position, WindowExt};
 
@@ -115,23 +115,23 @@ fn main() {
                 })
                 .unwrap_or_else(|err| println!("{:?}", err));
 
-            if preference_util::get_window_mode() == WindowMode::Window {
-                let main_window = app.get_window("main").unwrap();
-                main_window.eval(&plugin::load_internal_plugin()).unwrap();
-                main_window
-                    .set_size(LogicalSize::new(
-                        constant::WINDOW_WIDTH,
-                        constant::WINDOW_HEIGHT,
-                    ))
-                    .unwrap();
-                main_window.move_window(Position::Center).unwrap();
-                main_window.set_decorations(true).unwrap();
-                main_window.set_always_on_top(false).unwrap();
-                main_window.set_skip_taskbar(false).unwrap();
-                main_window.menu_handle().show().unwrap();
-                main_window.show().unwrap();
-                main_window.set_focus().unwrap();
-            }
+            // if preference_util::get_window_mode() == WindowMode::Window {
+            //     let main_window = app.get_window("main").unwrap();
+            //     main_window.eval(&plugin::load_internal_plugin()).unwrap();
+            //     main_window
+            //         .set_size(PhysicalSize::new(
+            //             constant::WINDOW_WIDTH,
+            //             constant::WINDOW_HEIGHT,
+            //         ))
+            //         .unwrap();
+            //     main_window.move_window(Position::Center).unwrap();
+            //     main_window.set_decorations(true).unwrap();
+            //     main_window.set_always_on_top(false).unwrap();
+            //     main_window.set_skip_taskbar(false).unwrap();
+            //     main_window.menu_handle().show().unwrap();
+            //     main_window.show().unwrap();
+            //     main_window.set_focus().unwrap();
+            // }
             Ok(())
         })
         // .menu(tauri::Menu::os_default(&context.package_info().name))
@@ -237,8 +237,8 @@ fn main() {
             tauri_plugin_positioner::on_tray_event(app, &event);
             match event {
                 SystemTrayEvent::LeftClick {
-                    position: _,
-                    size: _,
+                    position,
+                    size,
                     ..
                 } => {
                     let window = app.get_window("main").unwrap();
@@ -247,7 +247,7 @@ fn main() {
                     if mode == WindowMode::TaskBar {
                         // 任务栏模式
                         window
-                            .set_size(LogicalSize::new(
+                            .set_size(PhysicalSize::new(
                                 constant::TASK_WINDOW_WIDTH,
                                 constant::TASK_WINDOW_HEIGHT,
                             ))
@@ -257,10 +257,39 @@ fn main() {
                         window.set_always_on_top(true).unwrap();
                         window.set_skip_taskbar(true).unwrap();
                         window.menu_handle().hide().unwrap();
+                    } else if mode == WindowMode::SideBar {
+                        // 侧边栏模式
+                        let screen = window.current_monitor().unwrap().unwrap();
+                        let screen_height = screen.size().height as i32;
+                        let screen_width = screen.size().width as i32;
+
+                        let side_bar_height = screen_height - size.height as i32 * 2;
+                        // let side_bar_y = position.y as i32 - side_bar_height;
+
+                        dbg!(&position);
+                        dbg!(&size);
+
+                        window
+                            .set_size(PhysicalSize::new(
+                                constant::SIDE_BAR_WIDTH,
+                                side_bar_height,
+                            ))
+                            .unwrap();
+                        window
+                            .set_position(PhysicalPosition::new(
+                                screen_width - window.outer_size().unwrap().width as i32,
+                                position.y as i32 - window.outer_size().unwrap().height as i32,
+                            ))
+                            .unwrap();
+                        // window.move_window(Position::TrayRight).unwrap();
+                        window.set_decorations(false).unwrap();
+                        window.set_always_on_top(true).unwrap();
+                        window.set_skip_taskbar(true).unwrap();
+                        window.menu_handle().show().unwrap();
                     } else {
                         // 桌面模式
                         window
-                            .set_size(LogicalSize::new(
+                            .set_size(PhysicalSize::new(
                                 constant::WINDOW_WIDTH,
                                 constant::WINDOW_HEIGHT,
                             ))

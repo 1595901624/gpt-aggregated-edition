@@ -2,11 +2,14 @@
 pub const SWITCH_PAGE_SLEEP_TIME: u64 = 500;
 
 // 窗口模式的宽
-pub const WINDOW_WIDTH: i32 = 1000;
+pub const WINDOW_WIDTH: i32 = 2000;
 // 窗口模式的高
-pub const WINDOW_HEIGHT: i32 = 700;
+pub const WINDOW_HEIGHT: i32 = 1400;
 
 // 任务栏模式的宽
-pub const TASK_WINDOW_WIDTH: i32 = 400;
+pub const TASK_WINDOW_WIDTH: i32 = 800;
 // 任务栏模式的高
-pub const TASK_WINDOW_HEIGHT: i32 = 750;
+pub const TASK_WINDOW_HEIGHT: i32 = 1500;
+
+// 侧边栏宽度
+pub const SIDE_BAR_WIDTH: i32 = 800;

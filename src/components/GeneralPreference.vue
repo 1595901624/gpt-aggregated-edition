@@ -48,6 +48,7 @@ async function enableInternalScriptHandler() {
         <el-radio-group v-model="mode" style="margin-left: 10px;">
           <el-radio-button label="0">窗口模式</el-radio-button>
           <el-radio-button label="1">任务栏模式</el-radio-button>
+          <el-radio-button label="2">侧边栏模式</el-radio-button>
         </el-radio-group>
       </div>
     </el-card>

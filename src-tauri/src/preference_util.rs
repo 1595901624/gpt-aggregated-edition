@@ -74,6 +74,8 @@ pub fn set_window_mode(mode: i32) -> bool {
     let mut p = perference.unwrap();
     if mode == 1 {
         p.window_mode = WindowMode::TaskBar;
+    } else if mode == 2 {
+        p.window_mode = WindowMode::SideBar;
     } else {
         p.window_mode = WindowMode::Window;
     }
