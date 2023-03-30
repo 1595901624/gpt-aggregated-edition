@@ -13,14 +13,14 @@
 **首次平台切换会很慢，请耐心等待**
 
 #### 截图样例
+<div>
 <img src="demo/freegpt.png" width=30% alt="freegpt"/>
 <img src="demo/chatchat.png" width=30% alt="chatchat"/>
 <img src="demo/yiyan.png" width=30% alt="文心一言"/>
 <img src="demo/poe.png" width=30% alt="poe"/>
 <img src="demo/chatgpt.png" width=30% alt="chatgpt"/>
-
-
 <img src="demo/taskmode.png" height=30% width="30%" alt=""/>
+</div>
 
 
 #### 聚合的平台
