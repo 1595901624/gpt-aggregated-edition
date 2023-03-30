@@ -62,7 +62,7 @@
 
 [Github](https://github.com/1595901624/gpt-aggregated-edition/releases)
 
-注：早期阶段仅提供 Windows 版本的安装包。Linux 版本请自行编译。
+注：早期阶段仅提供 Windows 和 Mac 版本的安装包。Linux 版本请自行编译。
 
 #### 反馈及建议
 
