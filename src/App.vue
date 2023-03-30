@@ -1,9 +1,19 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
+import { getVersion } from "@tauri-apps/api/app";
+import { onMounted, ref } from "vue";
 import GeneralPreference from "./components/GeneralPreference.vue";
-import NewUI from "./components/NewUI.vue";
 
+const appVersion = ref("未知版本");
+
+onMounted(() => {
+  getData();
+})
+
+async function getData() {
+  appVersion.value = await getVersion()
+}
 
 </script>
 
@@ -11,13 +21,25 @@ import NewUI from "./components/NewUI.vue";
   <div class="card" @contextmenu.prevent>
     <GeneralPreference />
     <!-- <NewUI /> -->
+
+    <div class="footer">© Github@Cloris Version {{ appVersion }}  </div>
   </div>
   <!-- <el-card>
    
-  </el-card> -->
+      </el-card> -->
 </template>
 
 <style scoped>
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  font-size: small;
+  color: rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
 .logo.vite:hover {
   filter: drop-shadow(0 0 2em #747bff);
 }

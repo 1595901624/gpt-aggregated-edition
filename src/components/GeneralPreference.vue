@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { invoke } from "@tauri-apps/api/tauri";
+import { PREFERENCE_AUTO_HIDE_WHEN_CLICK_OUTSIDE } from "../constant";
 
 // 模式
 const mode = ref(0)
@@ -9,7 +10,7 @@ const mode = ref(0)
 const enableInternalScript = ref(false)
 
 // 任务栏模式点击窗口外侧自动隐藏
-const autoHideWhenClickOutside = ref(true)
+const autoHideWhenClickOutside = ref("true")
 
 onMounted(() => {
   getPreferenceData();
@@ -21,7 +22,7 @@ onMounted(() => {
 async function getPreferenceData() {
   mode.value = await invoke('get_window_mode_handler');
   enableInternalScript.value = await invoke('is_enable_internal_script_handler');
-  // console.log(mode.value);
+  autoHideWhenClickOutside.value = await invoke('get_preference_handler', { key: PREFERENCE_AUTO_HIDE_WHEN_CLICK_OUTSIDE, value: "true" });
 }
 
 /**
@@ -44,7 +45,7 @@ async function enableInternalScriptHandler() {
  * 点击窗口外侧自动隐藏（任务栏模式）
  */
 async function setAutoHideWhenClickOutside() {
-
+  await invoke('set_preference_handler', { key: PREFERENCE_AUTO_HIDE_WHEN_CLICK_OUTSIDE, value: autoHideWhenClickOutside.value });
 }
 
 </script>
@@ -82,6 +83,9 @@ async function setAutoHideWhenClickOutside() {
       </div>
       <span class="set-subtitle common-margin-top-8">该功能启用后，可能会导致程序不稳定，请谨慎开启！更改设置后，刷新或者切换页面后生效。</span>
     </div>
+
+    <!-- <div class="column-layout width-parent preference-card" style="margin-top: 4px;">
+    </div> -->
   </div>
 </template>
 

@@ -23,8 +23,7 @@ fn main() {
     preference_util::init_default_preference();
 
     // 创建右下角菜单
-    let open = CustomMenuItem::new("open".to_string(), "打开窗口")
-        .accelerator("Cmd+Shift+O");
+    let open = CustomMenuItem::new("open".to_string(), "打开窗口").accelerator("Cmd+Shift+O");
     let quit = CustomMenuItem::new("quit".to_string(), "退出").accelerator("Cmd+Q");
     let chat_gpt = CustomMenuItem::new("chat_gpt".to_string(), "ChatGPT(免费版)");
     let chat_chat = CustomMenuItem::new("chat_chat".to_string(), "ChatGPT(限额版)");
@@ -104,6 +103,9 @@ fn main() {
         .menu(menu)
         .plugin(tauri_plugin_positioner::init())
         .setup(|app| {
+
+            // let main_window =
+            //     tauri::WindowBuilder::new(app, "main",  tauri::WindowUrl::App("https://yiyan.baidu.com".into())).build().unwrap();
             let main_window = app.get_window("main").unwrap();
             main_window.eval(&plugin::load_system_js()).unwrap();
             main_window.eval(&plugin::load_internal_plugin()).unwrap();
@@ -120,23 +122,23 @@ fn main() {
                 })
                 .unwrap_or_else(|err| println!("{:?}", err));
 
-            // if preference_util::get_window_mode() == WindowMode::Window {
-            //     let main_window = app.get_window("main").unwrap();
-            //     main_window.eval(&plugin::load_internal_plugin()).unwrap();
-            //     main_window
-            //         .set_size(PhysicalSize::new(
-            //             constant::WINDOW_WIDTH,
-            //             constant::WINDOW_HEIGHT,
-            //         ))
-            //         .unwrap();
-            //     main_window.move_window(Position::Center).unwrap();
-            //     main_window.set_decorations(true).unwrap();
-            //     main_window.set_always_on_top(false).unwrap();
-            //     main_window.set_skip_taskbar(false).unwrap();
-            //     main_window.menu_handle().show().unwrap();
-            //     main_window.show().unwrap();
-            //     main_window.set_focus().unwrap();
-            // }
+            if preference_util::get_window_mode() == WindowMode::Window {
+                let main_window = app.get_window("main").unwrap();
+                main_window.eval(&plugin::load_internal_plugin()).unwrap();
+                main_window
+                    .set_size(PhysicalSize::new(
+                        constant::WINDOW_WIDTH,
+                        constant::WINDOW_HEIGHT,
+                    ))
+                    .unwrap();
+                main_window.move_window(Position::Center).unwrap();
+                main_window.set_decorations(true).unwrap();
+                main_window.set_always_on_top(false).unwrap();
+                main_window.set_skip_taskbar(false).unwrap();
+                main_window.menu_handle().show().unwrap();
+                main_window.show().unwrap();
+                main_window.set_focus().unwrap();
+            }
             Ok(())
         })
         // .menu(tauri::Menu::os_default(&context.package_info().name))
@@ -151,7 +153,8 @@ fn main() {
                 // 当点击外测的时候隐藏窗口
                 // 获取当前的窗口模式
                 let mode = preference_util::get_window_mode();
-                if mode == WindowMode::TaskBar {
+                let auto_hide = preference_util::auto_hide_when_click_outside();
+                if mode == WindowMode::TaskBar && auto_hide {
                     if !is_focused {
                         event.window().hide().unwrap();
                     }
@@ -228,6 +231,22 @@ fn main() {
                         .eval(&format!("window.location.replace(window.location.href)"))
                         .unwrap();
                 }
+                "github" => {
+                    api::shell::open(
+                        &event.window().shell_scope(),
+                        "https://github.com/1595901624/gpt-aggregated-edition".to_string(),
+                        None,
+                    )
+                    .unwrap();
+                }
+                "gitee" => {
+                    api::shell::open(
+                        &event.window().shell_scope(),
+                        "https://gitee.com/haoyu3/gpt-aggregated-edition.git".to_string(),
+                        None,
+                    )
+                    .unwrap();
+                }
                 _ => {}
             }
             sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
@@ -266,9 +285,6 @@ fn main() {
 
                         let side_bar_height = screen_height - size.height as i32 * 2;
                         // let side_bar_y = position.y as i32 - side_bar_height;
-
-                        dbg!(&position);
-                        dbg!(&size);
 
                         window
                             .set_size(PhysicalSize::new(constant::SIDE_BAR_WIDTH, side_bar_height))

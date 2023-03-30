@@ -5,7 +5,10 @@ use tauri::{
     Env,
 };
 
-use crate::model::preference_model::{Preference, WindowMode};
+use crate::{
+    constant,
+    model::preference_model::{Preference, WindowMode},
+};
 
 /// 初始化默认配置
 pub fn init_default_preference() {
@@ -107,6 +110,56 @@ pub fn enable_internal_script(enable: bool) -> bool {
     let json = serde_json::to_string(&p).unwrap();
     let _ = std::fs::write(get_app_preference_path(), json);
     return true;
+}
+
+/// 设置设置项
+pub fn set_preference(key: i32, value: &str) -> bool {
+    let perference = get_app_preference();
+    if perference.is_err() {
+        dbg!("读取配置文件失败");
+        return false;
+    }
+    let mut p = perference.unwrap();
+    match key {
+        constant::PREFERENCE_AUTO_HIDE_WHEN_CLICK_OUTSIDE => {
+            // 设置自动隐藏
+            p.auto_hide_when_click_outside = Some(value.parse::<bool>().unwrap_or_else(|_| false));
+        }
+        _ => {}
+    }
+    // 写入文件
+    let json = serde_json::to_string(&p).unwrap();
+    let _ = std::fs::write(get_app_preference_path(), json);
+    return true;
+}
+
+/// 获取设置项
+pub fn get_preference(key: i32, value: &str) -> String {
+    let perference = get_app_preference();
+    if perference.is_err() {
+        dbg!("读取配置文件失败");
+        return value.into();
+    }
+    let p = perference.unwrap();
+    match key {
+        constant::PREFERENCE_AUTO_HIDE_WHEN_CLICK_OUTSIDE => {
+            // 设置自动隐藏
+            // p.auto_hide_when_click_outside = Some(value.parse::<bool>().unwrap_or_else(|_|false));
+            let ret = p
+                .auto_hide_when_click_outside
+                .unwrap_or_else(|| value.parse::<bool>().unwrap_or_else(|_| true));
+            return ret.to_string();
+        }
+        _ => {}
+    }
+    return value.into();
+}
+
+/// 任务栏模式下点击外侧自动隐藏
+pub fn auto_hide_when_click_outside() -> bool {
+    return get_preference(constant::PREFERENCE_AUTO_HIDE_WHEN_CLICK_OUTSIDE, "true")
+        .parse::<bool>()
+        .unwrap_or_else(|_| true);
 }
 
 // 是否启用扩展脚本
