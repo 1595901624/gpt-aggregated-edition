@@ -1,12 +1,13 @@
-# Gpt聚合版——All In One
-
-![](demo/gpt_all_in_one.jpg)
-
-![](https://img.shields.io/badge/stable%20version-v0.3.0-blue.svg?style=flat) 
-![](https://img.shields.io/badge/preview%20version-v0.4.0%20PREVIEW%201-orange.svg?style=flat)  ![](https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg?style=flat) ![](https://img.shields.io/badge/language-简体中文-brightgreen.svg?style=flat)
-
-聚合ChatGPT官方版、ChatGPT免费版、文心一言、POE、chat chat支持窗口模式、任务栏模式。
-
+<div align="center">
+    <img src="demo/gpt_all_in_one.jpg" alt="chatgpt"/>
+    <h1>Gpt聚合版</h1>
+    <div><img src="https://img.shields.io/badge/stable%20version-v0.3.0-blue.svg?style=flat"></img>
+<img src="https://img.shields.io/badge/preview%20version-v0.4.0%20PREVIEW%201-orange.svg?style=flat"></img>
+<img src="https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg?style=flat"></img>
+<img src="https://img.shields.io/badge/language-简体中文-brightgreen.svg?style=flat"></img></div>
+    <h4>聚合ChatGPT官方版、ChatGPT免费版、文心一言、POE、chat chat等多个平台。</h4>
+</div>
+  
 目前软件仍处于早期开发阶段，功能尚不完善且极其不稳定，后续功能敬请期待。如果您有好的建议，可以通过提 issue 来告诉我。
 
 **首次平台切换会很慢，请耐心等待**
