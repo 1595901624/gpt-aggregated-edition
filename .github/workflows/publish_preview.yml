@@ -25,7 +25,7 @@ jobs:
       - name: get version
         run: echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
       - name: get build number
-        run: echo "BUILD_NUMBER=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+        run: echo "BUILD_NUMBER=$GITHUB_RUN_NUMBER"
       - name: create release
         id: create-release
         uses: actions/github-script@v6
