@@ -18,7 +18,9 @@
         "open": true
       },
       "fs": {
-        "scope": ["$AppConfig/*"],
+        "scope": [
+          "$AppConfig/*"
+        ],
         "all": true,
         "readFile": true,
         "writeFile": true,
@@ -70,21 +72,6 @@
     },
     "macOSPrivateApi": true,
     "windows": [
-      {
-        "label": "main",
-        "fullscreen": false,
-        "resizable": true,
-        "title": "OneGPT",
-        "width": 450,
-        "height": 600,
-        "visible": false,
-        "url": "https://yiyan.baidu.com",
-        "hiddenTitle": true,
-        "decorations": false,
-        "focus": true,
-        "skipTaskbar": true,
-        "alwaysOnTop": true
-      },
       {
         "label": "preference",
         "fullscreen": false,

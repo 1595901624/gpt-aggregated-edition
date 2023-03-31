@@ -1,21 +1,12 @@
 use crate::preference_util;
 
-/// 读取内置脚本插件
-pub fn load_internal_plugin() -> String {
+/// 读取内置脚本
+pub fn load_internal_script(path: &str) -> String {
     if !preference_util::is_enable_internal_script() {
         return "".into();
     }
-    let js = read("./plugin/unecrypt.js");
+    let js = read(path);
     return js;
-}
-
-pub fn load_system_js() -> String {
-    let key = r#"
-    window.oncontextmenu=function(e){{
-        e.preventDefault();
-    }}
-    "#;
-    return key.into();
 }
 
 /// 读取用户自定义脚本
