@@ -16,10 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Generate build number
-        id: buildnumber
-        uses: einaregilsson/build-number@v2
-        with:
-          token: ${{secrets.github_token}}
+      uses: einaregilsson/build-number@v2 
+      with:
+        token: ${{secrets.github_token}}        
+      - name: Print new build number
+        run: echo "Build number is $BUILD_NUMBER"
       - name: setup node
         uses: actions/setup-node@v3
         with:
@@ -37,8 +38,8 @@ jobs:
             const { data } = await github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag_name: `v${process.env.PACKAGE_VERSION} Preview Build ${{ steps.buildnumber.outputs.build_number }}`,
-              name: `v${process.env.PACKAGE_VERSION} Preview Build ${{ steps.buildnumber.outputs.build_number }}`,
+              tag_name: `v${process.env.PACKAGE_VERSION} Preview Build ${steps.buildnumber.outputs.build_number}`,
+              name: `v${process.env.PACKAGE_VERSION} Preview Build ${steps.buildnumber.outputs.build_number}`,
               body: '这是早期一个预览版本，请勿下载',
               draft: true,
               prerelease: true
