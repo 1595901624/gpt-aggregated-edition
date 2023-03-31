@@ -34,9 +34,9 @@ jobs:
             const { data } = await github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag_name: `v${process.env.PACKAGE_VERSION} Preview Build ${process.env.BUILD_NUMBER}`,
-              name: `v${process.env.PACKAGE_VERSION} Preview Build ${process.env.BUILD_NUMBER}`,
-              body: '这是早期一个预览版本，请勿下载',
+              tag_name: `v${process.env.PACKAGE_VERSION}.Beta.Build.${process.env.BUILD_NUMBER}`,
+              name: `v${process.env.PACKAGE_VERSION} Beta Build ${process.env.BUILD_NUMBER}`,
+              body: '这是一个早期的测试版本，请勿下载',
               draft: true,
               prerelease: true
             })
