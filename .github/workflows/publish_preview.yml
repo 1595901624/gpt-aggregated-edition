@@ -15,6 +15,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Generate build number
+        id: buildnumber
+        uses: einaregilsson/build-number@v2
+        with:
+          token: ${{secrets.github_token}}
       - name: setup node
         uses: actions/setup-node@v3
         with:
@@ -32,9 +37,9 @@ jobs:
             const { data } = await github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag_name: `v${process.env.PACKAGE_VERSION} Preview`,
-              name: `v${process.env.PACKAGE_VERSION} Preview`,
-              body: 'Take a look at the assets to download and install this app.',
+              tag_name: `v${process.env.PACKAGE_VERSION} Preview Build ${{ steps.buildnumber.outputs.build_number }}`,
+              name: `v${process.env.PACKAGE_VERSION} Preview Build ${{ steps.buildnumber.outputs.build_number }}`,
+              body: '这是早期一个预览版本，请勿下载',
               draft: true,
               prerelease: true
             })
@@ -52,11 +57,6 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v3
-      - name: Generate build number
-        id: buildnumber
-        uses: einaregilsson/build-number@v2
-        with:
-          token: ${{secrets.github_token}}
       - name: setup node
         uses: actions/setup-node@v3
         with:
