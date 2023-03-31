@@ -7,7 +7,7 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "GPT AIO",
+    "productName": "GPT聚合版",
     "version": "0.4.0"
   },
   "tauri": {
