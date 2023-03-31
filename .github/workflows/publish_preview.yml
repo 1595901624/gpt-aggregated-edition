@@ -1,9 +1,6 @@
 name: 'publish_preview'
 
 on: 
-  # push:
-  #   tags:
-  #     - 'v*'
   workflow_dispatch:    
     inputs:
   
@@ -55,6 +52,11 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v3
+      - name: Generate build number
+        id: buildnumber
+        uses: einaregilsson/build-number@v2
+        with:
+          token: ${{secrets.github_token}}
       - name: setup node
         uses: actions/setup-node@v3
         with:
