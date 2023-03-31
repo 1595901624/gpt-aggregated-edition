@@ -7,8 +7,8 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "GPT聚合版",
-    "version": "0.4.0"
+    "productName": "OneGPT",
+    "version": "0.5.0"
   },
   "tauri": {
     "allowlist": {
@@ -74,7 +74,7 @@
         "label": "main",
         "fullscreen": false,
         "resizable": true,
-        "title": "GPT聚合版",
+        "title": "OneGPT",
         "width": 450,
         "height": 600,
         "visible": false,
