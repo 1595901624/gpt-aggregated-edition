@@ -49,10 +49,10 @@
 
 - [x] 多平台切换
 - [x] 窗口模式和任务栏模式切换
-- [x] 跨平台（Windows、Mac、Linux）Linux 版本在早期版本暂不提供，敬请谅解
-- [ ] 聚合更多平台
-- [ ] 文心一言定制化功能
-- [ ] 脚本支持
+- [x] 跨平台（Windows、Mac、Linux）
+- [x] 聚合更多平台
+- [x] 文心一言定制化功能
+- [ ] 自定义脚本支持
 - [ ] 更多功能敬请期待...
 
 #### 下载
@@ -62,7 +62,7 @@
 
 [Github](https://github.com/1595901624/gpt-aggregated-edition/releases)
 
-注：早期阶段仅提供 Windows 和 Mac 版本的安装包。Linux 版本请自行编译。
+注：Windows、Mac、Linux平台先均已支持。Linux平台自 `0.4.0` 版本开始支持。
 
 #### 反馈及建议
 
