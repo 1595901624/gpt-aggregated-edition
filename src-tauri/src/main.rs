@@ -31,6 +31,7 @@ fn main() {
     let ernie_bot = CustomMenuItem::new("ernie_bot".to_string(), "文心一言");
     let poe = CustomMenuItem::new("poe".to_string(), "POE");
     let bard = CustomMenuItem::new("bard".to_string(), "Bard");
+    let bing = CustomMenuItem::new("bing".to_string(), "NewBing");
     let github = CustomMenuItem::new("github".to_string(), "访问 Github");
     let gitee = CustomMenuItem::new("gitee".to_string(), "访问 Gitee");
     let preference = CustomMenuItem::new("preference".to_string(), "设置");
@@ -45,6 +46,7 @@ fn main() {
         .add_item(chat_chat)
         .add_item(chat_gpt)
         .add_item(chat_gpt_official)
+        .add_item(bing)
         .add_item(poe)
         .add_item(bard)
         .add_native_item(SystemTrayMenuItem::Separator)
@@ -64,6 +66,7 @@ fn main() {
     let ernie_bot = CustomMenuItem::new("ernie_bot".to_string(), "文心一言");
     let chat_chat = CustomMenuItem::new("chat_chat".to_string(), "ChatGPT(限额版)");
     let poe = CustomMenuItem::new("poe".to_string(), "POE");
+    let bing = CustomMenuItem::new("bing".to_string(), "NewBing");
     let bard = CustomMenuItem::new("bard".to_string(), "Bard");
     let github = CustomMenuItem::new("github".to_string(), "访问 Github");
     let gitee = CustomMenuItem::new("gitee".to_string(), "访问 Gitee");
@@ -75,6 +78,7 @@ fn main() {
             .add_item(chat_chat)
             .add_item(chat_gpt)
             .add_item(chat_gpt_official)
+            .add_item(bing)
             .add_item(poe)
             .add_item(bard),
     );
@@ -208,6 +212,12 @@ fn main() {
                     event
                         .window()
                         .eval(&format!("window.location.replace('https://poe.com/')"))
+                        .unwrap();
+                }
+                "bing" => {
+                    event
+                        .window()
+                        .eval(&format!("window.location.replace('https://www.bing.com/new')"))
                         .unwrap();
                 }
                 "bard" => {
@@ -420,6 +430,15 @@ fn main() {
                         main_window.set_focus().unwrap();
                         main_window
                             .eval(&format!("window.location.replace('https://poe.com/')"))
+                            .unwrap();
+                        sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
+                        main_window.eval(&plugin::load_system_js()).unwrap();
+                        main_window.eval(&plugin::load_internal_plugin()).unwrap();
+                    }
+                    "bing" => {
+                        let main_window = app.get_window("main").unwrap();
+                        main_window
+                            .eval(&format!("window.location.replace('https://www.bing.com/new')"))
                             .unwrap();
                         sleep(Duration::from_millis(constant::SWITCH_PAGE_SLEEP_TIME));
                         main_window.eval(&plugin::load_system_js()).unwrap();
