@@ -1,8 +1,8 @@
 <div align="center">
     <img src="demo/gpt_all_in_one.jpg" alt="chatgpt"/>
     <h1>Gpt聚合版</h1>
-    <div><img src="https://img.shields.io/badge/stable%20version-v0.3.0-blue.svg?style=flat"></img>
-<img src="https://img.shields.io/badge/preview%20version-v0.4.0%20PREVIEW%201-orange.svg?style=flat"></img>
+    <div><img src="https://img.shields.io/badge/stable%20version-v0.4.0-blue.svg?style=flat"></img>
+<!-- <img src="https://img.shields.io/badge/preview%20version-v0.4.0%20PREVIEW%201-orange.svg?style=flat"></img> -->
 <img src="https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg?style=flat"></img>
 <img src="https://img.shields.io/badge/language-简体中文-brightgreen.svg?style=flat"></img></div>
     <h4>聚合ChatGPT官方版、ChatGPT免费版、文心一言、POE、chat chat等多个平台。</h4>
