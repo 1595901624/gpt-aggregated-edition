@@ -5,22 +5,14 @@
 )]
 
 mod command;
-mod constant;
 mod menu;
 mod model;
 mod plugin;
-mod preference_util;    
+mod preference_util;
 
-use model::preference_model::WindowMode;
-use tauri::{
-    api, generate_handler, GlobalShortcutManager, Manager, PhysicalPosition, PhysicalSize,
-    SystemTray, SystemTrayEvent
-};
+use model::{constant, preference_model::WindowMode};
+use tauri::{generate_handler, GlobalShortcutManager, Manager, PhysicalSize, SystemTray};
 use tauri_plugin_positioner::{Position, WindowExt};
-
-// fn event_test_fn(event: WindowMenuEvent) {
-//     dbg!("event_test_fn");
-// }
 
 fn main() {
     // 初始化设置项
@@ -30,13 +22,6 @@ fn main() {
     let tray = SystemTray::new().with_menu(menu::create_tary_menu());
 
     let context = tauri::generate_context!();
-
-    // let event_test = |event| {
-    //     dbg!("test");
-    // };
-
-    // let event_test = event_test_fn;
-    // let event_test = event_test_fn(event);
 
     // 初始化窗口
     tauri::Builder::default()
@@ -58,6 +43,8 @@ fn main() {
                 tauri::WindowUrl::App("https://yiyan.baidu.com".into()),
             )
             .title(constant::APP_NAME)
+            .enable_clipboard_access()
+            .visible(false)
             .initialization_script(&plugin::load_internal_script("./plugin/base.js"))
             .initialization_script(&plugin::load_internal_script("./plugin/erniebot.js"))
             .build()
@@ -117,209 +104,7 @@ fn main() {
         })
         .on_menu_event(menu::on_window_event_handler)
         // 任务栏菜单监听
-        .on_system_tray_event(|app, event| {
-            tauri_plugin_positioner::on_tray_event(app, &event);
-            match event {
-                SystemTrayEvent::LeftClick { position, size, .. } => {
-                    let window = app.get_window("main").unwrap();
-
-                    let mode = preference_util::get_window_mode();
-                    if mode == WindowMode::TaskBar {
-                        // 任务栏模式
-                        window
-                            .set_size(PhysicalSize::new(
-                                constant::TASK_WINDOW_WIDTH,
-                                constant::TASK_WINDOW_HEIGHT,
-                            ))
-                            .unwrap();
-                        window.move_window(Position::TrayCenter).unwrap();
-                        window.set_decorations(false).unwrap();
-                        window.set_always_on_top(true).unwrap();
-                        window.set_skip_taskbar(true).unwrap();
-                        window.menu_handle().hide().unwrap();
-                    } else if mode == WindowMode::SideBar {
-                        // 侧边栏模式
-                        let screen = window.current_monitor().unwrap().unwrap();
-                        let screen_height = screen.size().height as i32;
-                        let screen_width = screen.size().width as i32;
-
-                        let side_bar_height = screen_height - size.height as i32 * 2;
-                        // let side_bar_y = position.y as i32 - side_bar_height;
-
-                        window
-                            .set_size(PhysicalSize::new(constant::SIDE_BAR_WIDTH, side_bar_height))
-                            .unwrap();
-                        window
-                            .set_position(PhysicalPosition::new(
-                                screen_width - window.outer_size().unwrap().width as i32,
-                                position.y as i32 - window.outer_size().unwrap().height as i32,
-                            ))
-                            .unwrap();
-                        // window.move_window(Position::TrayRight).unwrap();
-                        window.set_decorations(false).unwrap();
-                        window.set_always_on_top(true).unwrap();
-                        window.set_skip_taskbar(true).unwrap();
-                        window.menu_handle().show().unwrap();
-                    } else {
-                        // 桌面模式
-                        window
-                            .set_size(PhysicalSize::new(
-                                constant::WINDOW_WIDTH,
-                                constant::WINDOW_HEIGHT,
-                            ))
-                            .unwrap();
-                        window.move_window(Position::Center).unwrap();
-                        window.set_decorations(true).unwrap();
-                        window.set_always_on_top(false).unwrap();
-                        window.set_skip_taskbar(false).unwrap();
-                        window.menu_handle().show().unwrap();
-                    }
-
-                    if window.is_visible().unwrap() {
-                        window.hide().unwrap();
-                    } else {
-                        window.show().unwrap();
-                        window.set_focus().unwrap();
-                    }
-                    // app.get_window("main").unwrap().show().unwrap();
-                    // app.get_window("main").unwrap().set_focus().unwrap();
-                }
-                SystemTrayEvent::RightClick {
-                    position: _,
-                    size: _,
-                    ..
-                } => {
-                    //println!("system tray received a right click");
-                }
-                SystemTrayEvent::DoubleClick {
-                    position: _,
-                    size: _,
-                    ..
-                } => {
-                    //println!("system tray received a double click");
-                }
-                SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
-                    "github" => {
-                        api::shell::open(
-                            &app.get_window("main").unwrap().shell_scope(),
-                            "https://github.com/1595901624/gpt-aggregated-edition".to_string(),
-                            None,
-                        )
-                        .unwrap();
-                    }
-                    "gitee" => {
-                        api::shell::open(
-                            &app.get_window("main").unwrap().shell_scope(),
-                            "https://gitee.com/haoyu3/gpt-aggregated-edition.git".to_string(),
-                            None,
-                        )
-                        .unwrap();
-                    }
-                    "ernie_bot" => {
-                        let main_window = app.get_window("main").unwrap();
-                        main_window.show().unwrap();
-                        main_window.set_focus().unwrap();
-                        main_window
-                            .eval(&format!(
-                                "window.location.replace('https://yiyan.baidu.com/')"
-                            ))
-                            .unwrap();
-                    }
-                    "chat_chat" => {
-                        let main_window = app.get_window("main").unwrap();
-                        main_window.show().unwrap();
-                        main_window.set_focus().unwrap();
-                        main_window
-                            .eval(&format!(
-                                "window.location.replace('https://chat.okis.dev/zh-CN?mode=chat')"
-                            ))
-                            .unwrap();
-                    }
-                    "chat_gpt" => {
-                        let main_window = app.get_window("main").unwrap();
-                        main_window.show().unwrap();
-                        main_window.set_focus().unwrap();
-                        main_window
-                            .eval("window.location.replace('https://freegpt.one/')")
-                            .unwrap();
-                        // main_window.eval(&format!(
-                        //     "window.location.replace('https://sonnylab-gpt.vercel.app')"
-                        // ));
-                    }
-                    "chat_gpt_free2" => {
-                        let main_window = app.get_window("main").unwrap();
-                        main_window.show().unwrap();
-                        main_window
-                            .eval("window.location.replace('https://chatbot.theb.ai/')")
-                            .unwrap();
-                    }
-                    "chat_gpt_free3" => {
-                        let main_window = app.get_window("main").unwrap();
-                        main_window.show().unwrap();
-                        main_window
-                            .eval("window.location.replace('https://chatgpt-35-turbo.com/')")
-                            .unwrap();
-                    }
-                    "chat_gpt_official" => {
-                        let main_window = app.get_window("main").unwrap();
-                        main_window.show().unwrap();
-                        main_window.set_focus().unwrap();
-                        main_window
-                            .eval(&format!(
-                                "window.location.replace('https://chat.openai.com/chat')"
-                            ))
-                            .unwrap();
-                    }
-                    "poe" => {
-                        let main_window = app.get_window("main").unwrap();
-                        main_window.show().unwrap();
-                        main_window.set_focus().unwrap();
-                        main_window
-                            .eval(&format!("window.location.replace('https://poe.com/')"))
-                            .unwrap();
-                    }
-                    "bing" => {
-                        let main_window = app.get_window("main").unwrap();
-                        main_window
-                            .eval(&format!(
-                                "window.location.replace('https://www.bing.com/new')"
-                            ))
-                            .unwrap();
-                    }
-                    "refresh" => {
-                        let main_window = app.get_window("main").unwrap();
-                        main_window
-                            .eval(&format!("window.location.replace(window.location.href)"))
-                            .unwrap();
-                    }
-                    "bard" => {
-                        let main_window = app.get_window("main").unwrap();
-                        main_window
-                            .eval(&format!(
-                                "window.location.replace('https://bard.google.com/')"
-                            ))
-                            .unwrap();
-                    }
-                    "quit" => {
-                        std::process::exit(0);
-                    }
-                    "preference" => {
-                        let preference_window = app.get_window("preference").unwrap();
-                        preference_window.move_window(Position::Center).unwrap();
-                        preference_window.menu_handle().hide().unwrap();
-                        preference_window.show().unwrap();
-                        preference_window.set_focus().unwrap();
-                    }
-                    "open" => {
-                        let main_window = app.get_window("main").unwrap();
-                        main_window.show().unwrap();
-                        main_window.set_focus().unwrap();
-                    }
-                    _ => {}
-                },
-                _ => {}
-            }
-        })
+        .on_system_tray_event(menu::on_tray_event)
         .run(context)
         .expect("error while running tauri application");
 }

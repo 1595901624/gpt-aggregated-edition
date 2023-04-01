@@ -1,8 +1,13 @@
 use tauri::{
-    api, CustomMenuItem, Manager, Menu, Submenu, SystemTrayMenu, SystemTrayMenuItem,
-    WindowMenuEvent,
+    api, AppHandle, CustomMenuItem, Manager, Menu, PhysicalPosition, PhysicalSize, Submenu,
+    SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem, Window, WindowMenuEvent,
 };
 use tauri_plugin_positioner::{Position, WindowExt};
+
+use crate::{
+    model::{constant, preference_model::WindowMode},
+    preference_util,
+};
 
 /// 创建右下角菜单
 pub fn create_tary_menu() -> SystemTrayMenu {
@@ -84,7 +89,7 @@ pub fn create_window_menu() -> Menu {
         .add_submenu(about_submenu)
 }
 
-/// 窗口事件
+/// 窗口菜单事件
 pub fn on_window_event_handler(event: WindowMenuEvent) {
     // 窗口菜单监听
     match event.menu_item_id() {
@@ -155,11 +160,12 @@ pub fn on_window_event_handler(event: WindowMenuEvent) {
                 .unwrap();
         }
         "preference" => {
-            let preference_window = event.window().get_window("preference").unwrap();
-            preference_window.move_window(Position::Center).unwrap();
-            preference_window.menu_handle().hide().unwrap();
-            preference_window.show().unwrap();
-            preference_window.set_focus().unwrap();
+            show_window_to_center(
+                &event
+                    .window()
+                    .get_window(constant::WINDOW_LABEL_PREFERENCE)
+                    .unwrap(),
+            );
         }
         "refresh" => {
             event
@@ -168,21 +174,241 @@ pub fn on_window_event_handler(event: WindowMenuEvent) {
                 .unwrap();
         }
         "github" => {
-            api::shell::open(
-                &event.window().shell_scope(),
-                "https://github.com/1595901624/gpt-aggregated-edition".to_string(),
-                None,
-            )
-            .unwrap();
+            redirect_github(
+                &event
+                    .window()
+                    .get_window(constant::WINDOW_LABEL_MAIN)
+                    .unwrap(),
+            );
         }
         "gitee" => {
-            api::shell::open(
-                &event.window().shell_scope(),
-                "https://gitee.com/haoyu3/gpt-aggregated-edition.git".to_string(),
-                None,
-            )
-            .unwrap();
+            redirect_gitee(
+                &event
+                    .window()
+                    .get_window(constant::WINDOW_LABEL_MAIN)
+                    .unwrap(),
+            );
         }
         _ => {}
     }
+}
+
+/// 任务栏事件
+pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
+    tauri_plugin_positioner::on_tray_event(app, &event);
+    match event {
+        SystemTrayEvent::LeftClick { position, size, .. } => {
+            let window = app.get_window("main").unwrap();
+
+            let mode = preference_util::get_window_mode();
+            if mode == WindowMode::TaskBar {
+                // 任务栏模式
+                window
+                    .set_size(PhysicalSize::new(
+                        constant::TASK_WINDOW_WIDTH,
+                        constant::TASK_WINDOW_HEIGHT,
+                    ))
+                    .unwrap();
+                window.move_window(Position::TrayCenter).unwrap();
+                window.set_decorations(false).unwrap();
+                window.set_always_on_top(true).unwrap();
+                window.set_skip_taskbar(true).unwrap();
+                window.menu_handle().hide().unwrap();
+            } else if mode == WindowMode::SideBar {
+                // 侧边栏模式
+                let screen = window.current_monitor().unwrap().unwrap();
+                let screen_height = screen.size().height as i32;
+                let screen_width = screen.size().width as i32;
+
+                let side_bar_height = screen_height - size.height as i32 * 2;
+                // let side_bar_y = position.y as i32 - side_bar_height;
+
+                window
+                    .set_size(PhysicalSize::new(constant::SIDE_BAR_WIDTH, side_bar_height))
+                    .unwrap();
+                window
+                    .set_position(PhysicalPosition::new(
+                        screen_width - window.outer_size().unwrap().width as i32,
+                        position.y as i32 - window.outer_size().unwrap().height as i32,
+                    ))
+                    .unwrap();
+                // window.move_window(Position::TrayRight).unwrap();
+                window.set_decorations(false).unwrap();
+                window.set_always_on_top(true).unwrap();
+                window.set_skip_taskbar(true).unwrap();
+                window.menu_handle().show().unwrap();
+            } else {
+                // 桌面模式
+                window
+                    .set_size(PhysicalSize::new(
+                        constant::WINDOW_WIDTH,
+                        constant::WINDOW_HEIGHT,
+                    ))
+                    .unwrap();
+                window.move_window(Position::Center).unwrap();
+                window.set_decorations(true).unwrap();
+                window.set_always_on_top(false).unwrap();
+                window.set_skip_taskbar(false).unwrap();
+                window.menu_handle().show().unwrap();
+            }
+
+            if window.is_visible().unwrap() {
+                window.hide().unwrap();
+            } else {
+                window.show().unwrap();
+                window.set_focus().unwrap();
+            }
+            // app.get_window("main").unwrap().show().unwrap();
+            // app.get_window("main").unwrap().set_focus().unwrap();
+        }
+        SystemTrayEvent::RightClick {
+            position: _,
+            size: _,
+            ..
+        } => {
+            //println!("system tray received a right click");
+        }
+        SystemTrayEvent::DoubleClick {
+            position: _,
+            size: _,
+            ..
+        } => {
+            //println!("system tray received a double click");
+        }
+        SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
+            "github" => {
+                redirect_github(&app.get_window(constant::WINDOW_LABEL_MAIN).unwrap());
+            }
+            "gitee" => {
+                redirect_gitee(&app.get_window(constant::WINDOW_LABEL_MAIN).unwrap());
+            }
+            "ernie_bot" => {
+                let main_window = app.get_window("main").unwrap();
+                main_window.show().unwrap();
+                main_window.set_focus().unwrap();
+                main_window
+                    .eval(&format!(
+                        "window.location.replace('https://yiyan.baidu.com/')"
+                    ))
+                    .unwrap();
+            }
+            "chat_chat" => {
+                let main_window = app.get_window("main").unwrap();
+                main_window.show().unwrap();
+                main_window.set_focus().unwrap();
+                main_window
+                    .eval(&format!(
+                        "window.location.replace('https://chat.okis.dev/zh-CN?mode=chat')"
+                    ))
+                    .unwrap();
+            }
+            "chat_gpt" => {
+                let main_window = app.get_window("main").unwrap();
+                main_window.show().unwrap();
+                main_window.set_focus().unwrap();
+                main_window
+                    .eval("window.location.replace('https://freegpt.one/')")
+                    .unwrap();
+                // main_window.eval(&format!(
+                //     "window.location.replace('https://sonnylab-gpt.vercel.app')"
+                // ));
+            }
+            "chat_gpt_free2" => {
+                let main_window = app.get_window("main").unwrap();
+                main_window.show().unwrap();
+                main_window
+                    .eval("window.location.replace('https://chatbot.theb.ai/')")
+                    .unwrap();
+            }
+            "chat_gpt_free3" => {
+                let main_window = app.get_window("main").unwrap();
+                main_window.show().unwrap();
+                main_window
+                    .eval("window.location.replace('https://chatgpt-35-turbo.com/')")
+                    .unwrap();
+            }
+            "chat_gpt_official" => {
+                let main_window = app.get_window("main").unwrap();
+                main_window.show().unwrap();
+                main_window.set_focus().unwrap();
+                main_window
+                    .eval(&format!(
+                        "window.location.replace('https://chat.openai.com/chat')"
+                    ))
+                    .unwrap();
+            }
+            "poe" => {
+                let main_window = app.get_window("main").unwrap();
+                main_window.show().unwrap();
+                main_window.set_focus().unwrap();
+                main_window
+                    .eval(&format!("window.location.replace('https://poe.com/')"))
+                    .unwrap();
+            }
+            "bing" => {
+                let main_window = app.get_window("main").unwrap();
+                main_window
+                    .eval(&format!(
+                        "window.location.replace('https://www.bing.com/new')"
+                    ))
+                    .unwrap();
+            }
+            "refresh" => {
+                let main_window = app.get_window("main").unwrap();
+                main_window
+                    .eval(&format!("window.location.replace(window.location.href)"))
+                    .unwrap();
+            }
+            "bard" => {
+                let main_window = app.get_window("main").unwrap();
+                main_window
+                    .eval(&format!(
+                        "window.location.replace('https://bard.google.com/')"
+                    ))
+                    .unwrap();
+            }
+            "quit" => {
+                std::process::exit(0);
+            }
+            "preference" => {
+                show_window_to_center(&app.get_window(constant::WINDOW_LABEL_PREFERENCE).unwrap());
+            }
+            "open" => {
+                let main_window = app.get_window("main").unwrap();
+                main_window.show().unwrap();
+                main_window.set_focus().unwrap();
+            }
+            _ => {}
+        },
+        _ => {}
+    }
+}
+
+/// 跳转到github
+fn redirect_github(window: &Window) {
+    api::shell::open(
+        &window.shell_scope(),
+        "https://github.com/1595901624/gpt-aggregated-edition".to_string(),
+        None,
+    )
+    .unwrap();
+}
+
+/// 跳转到gitee
+fn redirect_gitee(window: &Window) {
+    api::shell::open(
+        &window.shell_scope(),
+        "https://gitee.com/haoyu3/gpt-aggregated-edition.git".to_string(),
+        None,
+    )
+    .unwrap();
+}
+
+/// 通用的窗口显示
+/// 将窗口显示到屏幕中心
+fn show_window_to_center(window: &Window) {
+    window.move_window(Position::Center).unwrap();
+    window.menu_handle().hide().unwrap();
+    window.show().unwrap();
+    window.set_focus().unwrap();
 }
