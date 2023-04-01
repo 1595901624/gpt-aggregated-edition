@@ -36,7 +36,7 @@ jobs:
               repo: context.repo.repo,
               tag_name: `v${process.env.PACKAGE_VERSION}.Beta.Build.${process.env.BUILD_NUMBER}`,
               name: `v${process.env.PACKAGE_VERSION} Beta Build ${process.env.BUILD_NUMBER}`,
-              body: '这是一个早期的测试版本，请勿下载',
+              body: '这是一个早期的测试版本，在使用过程中可能会出现一些不稳定的情况，建议您下载稳定版本使用。',
               draft: true,
               prerelease: true
             })

@@ -1,16 +1,20 @@
 <div align="center">
     <img src="demo/gpt_all_in_one.jpg" alt="chatgpt"/>
-    <h1>Gpt聚合版</h1>
+    <h1>OneGPT - GPT聚合版</h1>
     <div><img src="https://img.shields.io/badge/stable%20version-v0.4.0-blue.svg?style=flat"></img>
-<!-- <img src="https://img.shields.io/badge/preview%20version-v0.4.0%20PREVIEW%201-orange.svg?style=flat"></img> -->
+<img src="https://img.shields.io/badge/preview%20version-v0.5.0%20PREVIEW-orange.svg?style=flat"></img>
 <img src="https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg?style=flat"></img>
 <img src="https://img.shields.io/badge/language-简体中文-brightgreen.svg?style=flat"></img></div>
     <h4>聚合ChatGPT官方版、ChatGPT免费版、文心一言、POE、chat chat等多个平台。</h4>
 </div>
   
-目前软件仍处于早期开发阶段，功能尚不完善且极其不稳定，后续功能敬请期待。如果您有好的建议，可以通过提 issue 来告诉我。
+目前软件仍处于早期开发阶段，功能尚不完善，后续功能敬请期待。如果您有好的建议，可以通过提 issue 来告诉我。
 
-**首次平台切换会很慢，请耐心等待**
+**请勿相信任何平台内的任何广告，平台内的广告均属于第三方广告，与我无关。**
+
+如果您 **不希望我将您的网站聚合到软件内** 或者 **您需要将您的网站聚合到软件内** 。可以通过邮件 <haoyu3@163.com> 联系我。
+
+**首次使用时切换平台会很慢，请耐心等待**
 
 #### 截图样例
 <div>
@@ -56,7 +60,9 @@
 - [ ] 更多功能敬请期待...
 
 #### 下载
-请前往 Release 页面下载最新版本。
+请前往 Release 页面下载最新版本。下载时建议选择带有 `Latest` 标签或者 `最新版` 标签的版本，带有 `Pre-release` 标签和 `预览版本` 标签的版本是测试版本。  
+
+**测试版本往往稳定性不是很好。另外，测试版本暂不提供 `Windows x86` 架构的安装包**。
 
 [Gitee](https://gitee.com/haoyu3/gpt-aggregated-edition/releases)  
 

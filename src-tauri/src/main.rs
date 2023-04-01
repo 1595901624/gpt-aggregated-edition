@@ -6,17 +6,21 @@
 
 mod command;
 mod constant;
+mod menu;
 mod model;
 mod plugin;
-mod preference_util;
-mod menu;
+mod preference_util;    
 
 use model::preference_model::WindowMode;
 use tauri::{
-    api, generate_handler, GlobalShortcutManager, Manager, PhysicalPosition,
-    PhysicalSize, SystemTray, SystemTrayEvent,
+    api, generate_handler, GlobalShortcutManager, Manager, PhysicalPosition, PhysicalSize,
+    SystemTray, SystemTrayEvent
 };
 use tauri_plugin_positioner::{Position, WindowExt};
+
+// fn event_test_fn(event: WindowMenuEvent) {
+//     dbg!("event_test_fn");
+// }
 
 fn main() {
     // 初始化设置项
@@ -26,6 +30,13 @@ fn main() {
     let tray = SystemTray::new().with_menu(menu::create_tary_menu());
 
     let context = tauri::generate_context!();
+
+    // let event_test = |event| {
+    //     dbg!("test");
+    // };
+
+    // let event_test = event_test_fn;
+    // let event_test = event_test_fn(event);
 
     // 初始化窗口
     tauri::Builder::default()
@@ -104,95 +115,7 @@ fn main() {
             }
             _ => {}
         })
-        // 窗口菜单监听
-        .on_menu_event(|event| {
-            match event.menu_item_id() {
-                "ernie_bot" => {
-                    event.window().set_focus().unwrap();
-                    event
-                        .window()
-                        .eval(&format!(
-                            "window.location.replace('https://yiyan.baidu.com/')",
-                        ))
-                        .unwrap();
-                }
-                "chat_chat" => {
-                    event.window().set_focus().unwrap();
-                    event
-                        .window()
-                        .eval(&format!(
-                            "window.location.replace('https://chat.okis.dev/zh-CN?mode=chat')"
-                        ))
-                        .unwrap();
-                }
-                "chat_gpt" => {
-                    event
-                        .window()
-                        .eval("window.location.replace('https://freegpt.one/')")
-                        .unwrap();
-                }
-                "chat_gpt_official" => {
-                    event
-                        .window()
-                        .eval(&format!(
-                            "window.location.replace('https://chat.openai.com/chat')"
-                        ))
-                        .unwrap();
-                }
-                "poe" => {
-                    event
-                        .window()
-                        .eval(&format!("window.location.replace('https://poe.com/')"))
-                        .unwrap();
-                }
-                "bing" => {
-                    event
-                        .window()
-                        .eval(&format!(
-                            "window.location.replace('https://www.bing.com/new')"
-                        ))
-                        .unwrap();
-                }
-                "bard" => {
-                    event
-                        .window()
-                        .eval(&format!(
-                            "window.location.replace('https://bard.google.com/')"
-                        ))
-                        .unwrap();
-                }
-                "preference" => {
-                    let preference_window = event.window().get_window("preference").unwrap();
-                    preference_window.move_window(Position::Center).unwrap();
-                    preference_window.menu_handle().hide().unwrap();
-                    preference_window.show().unwrap();
-                    preference_window.set_focus().unwrap();
-                }
-                "refresh" => {
-                    event
-                        .window()
-                        .eval(&format!("window.location.replace(window.location.href)"))
-                        .unwrap();
-                }
-                "github" => {
-                    api::shell::open(
-                        &event.window().shell_scope(),
-                        "https://github.com/1595901624/gpt-aggregated-edition".to_string(),
-                        None,
-                    )
-                    .unwrap();
-                }
-                "gitee" => {
-                    api::shell::open(
-                        &event.window().shell_scope(),
-                        "https://gitee.com/haoyu3/gpt-aggregated-edition.git".to_string(),
-                        None,
-                    )
-                    .unwrap();
-                }
-                _ => {}
-            }
-        })
+        .on_menu_event(menu::on_window_event_handler)
         // 任务栏菜单监听
         .on_system_tray_event(|app, event| {
             tauri_plugin_positioner::on_tray_event(app, &event);
@@ -322,6 +245,20 @@ fn main() {
                         // main_window.eval(&format!(
                         //     "window.location.replace('https://sonnylab-gpt.vercel.app')"
                         // ));
+                    }
+                    "chat_gpt_free2" => {
+                        let main_window = app.get_window("main").unwrap();
+                        main_window.show().unwrap();
+                        main_window
+                            .eval("window.location.replace('https://chatbot.theb.ai/')")
+                            .unwrap();
+                    }
+                    "chat_gpt_free3" => {
+                        let main_window = app.get_window("main").unwrap();
+                        main_window.show().unwrap();
+                        main_window
+                            .eval("window.location.replace('https://chatgpt-35-turbo.com/')")
+                            .unwrap();
                     }
                     "chat_gpt_official" => {
                         let main_window = app.get_window("main").unwrap();
