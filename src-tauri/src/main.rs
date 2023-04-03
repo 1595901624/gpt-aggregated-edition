@@ -46,7 +46,9 @@ fn main() {
             .enable_clipboard_access()
             .visible(false)
             .initialization_script(&plugin::load_internal_script("./plugin/base.js"))
+            // .initialization_script(&plugin::load_internal_script("./plugin/third/html2canvas.js"))
             .initialization_script(&plugin::load_internal_script("./plugin/erniebot.js"))
+            .initialization_script(&plugin::load_internal_script("./plugin/chatchat.js"))
             .build()
             .unwrap();
 

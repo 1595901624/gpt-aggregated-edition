@@ -4,7 +4,7 @@
 // 窗口模式的宽
 pub const WINDOW_WIDTH: i32 = 2000;
 // 窗口模式的高
-pub const WINDOW_HEIGHT: i32 = 1400;
+pub const WINDOW_HEIGHT: i32 = 1500;
 
 // 任务栏模式的宽
 pub const TASK_WINDOW_WIDTH: i32 = 800;
