@@ -37,10 +37,11 @@ fn main() {
         .menu(menu::create_window_menu())
         .plugin(tauri_plugin_positioner::init())
         .setup(|app| {
+            let url = preference_util::get_preference(constant::PREFERENCE_CURRENT_PAGE_URL, "");
             let main_window = tauri::WindowBuilder::new(
                 app,
                 "main",
-                tauri::WindowUrl::App("https://yiyan.baidu.com".into()),
+                tauri::WindowUrl::App(url.into()),
             )
             .title(constant::APP_NAME)
             .enable_clipboard_access()

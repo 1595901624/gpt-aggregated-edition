@@ -94,70 +94,31 @@ pub fn on_window_event_handler(event: WindowMenuEvent) {
     // 窗口菜单监听
     match event.menu_item_id() {
         "ernie_bot" => {
-            event.window().set_focus().unwrap();
-            event
-                .window()
-                .eval(&format!(
-                    "window.location.replace('https://yiyan.baidu.com/')",
-                ))
-                .unwrap();
+            redirect_url(&event.window(), "https://yiyan.baidu.com/");
         }
         "chat_chat" => {
-            event.window().set_focus().unwrap();
-            event
-                .window()
-                .eval(&format!(
-                    "window.location.replace('https://chat.okis.dev/zh-CN?mode=chat')"
-                ))
-                .unwrap();
+            redirect_url(&event.window(), "https://chat.okis.dev/zh-CN?mode=chat");
         }
         "chat_gpt" => {
-            event
-                .window()
-                .eval("window.location.replace('https://freegpt.one/')")
-                .unwrap();
+            redirect_url(&event.window(), "https://freegpt.one/");
         }
         "chat_gpt_free2" => {
-            event
-                .window()
-                .eval("window.location.replace('https://chatbot.theb.ai/')")
-                .unwrap();
+            redirect_url(&event.window(), "https://chatbot.theb.ai/");
         }
         "chat_gpt_free3" => {
-            event
-                .window()
-                .eval("window.location.replace('https://chatgpt-35-turbo.com/')")
-                .unwrap();
+            redirect_url(&event.window(), "https://chatgpt-35-turbo.com/");
         }
         "chat_gpt_official" => {
-            event
-                .window()
-                .eval(&format!(
-                    "window.location.replace('https://chat.openai.com/chat')"
-                ))
-                .unwrap();
+            redirect_url(&event.window(), "https://chat.openai.com/chat");
         }
         "poe" => {
-            event
-                .window()
-                .eval(&format!("window.location.replace('https://poe.com/')"))
-                .unwrap();
+            redirect_url(&event.window(), "https://poe.com/");
         }
         "bing" => {
-            event
-                .window()
-                .eval(&format!(
-                    "window.location.replace('https://www.bing.com/new')"
-                ))
-                .unwrap();
+            redirect_url(&event.window(), "https://www.bing.com/new");
         }
         "bard" => {
-            event
-                .window()
-                .eval(&format!(
-                    "window.location.replace('https://bard.google.com/')"
-                ))
-                .unwrap();
+            redirect_url(&event.window(), "https://bard.google.com/");
         }
         "preference" => {
             show_window_to_center(
@@ -283,75 +244,40 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 redirect_gitee(&app.get_window(constant::WINDOW_LABEL_MAIN).unwrap());
             }
             "ernie_bot" => {
-                let main_window = app.get_window("main").unwrap();
-                main_window.show().unwrap();
-                main_window.set_focus().unwrap();
-                main_window
-                    .eval(&format!(
-                        "window.location.replace('https://yiyan.baidu.com/')"
-                    ))
-                    .unwrap();
+                redirect_url(&app.get_window("main").unwrap(), "https://yiyan.baidu.com/");
             }
             "chat_chat" => {
-                let main_window = app.get_window("main").unwrap();
-                main_window.show().unwrap();
-                main_window.set_focus().unwrap();
-                main_window
-                    .eval(&format!(
-                        "window.location.replace('https://chat.okis.dev/zh-CN?mode=chat')"
-                    ))
-                    .unwrap();
+                redirect_url(
+                    &app.get_window("main").unwrap(),
+                    "https://chat.okis.dev/zh-CN?mode=chat",
+                );
             }
             "chat_gpt" => {
-                let main_window = app.get_window("main").unwrap();
-                main_window.show().unwrap();
-                main_window.set_focus().unwrap();
-                main_window
-                    .eval("window.location.replace('https://freegpt.one/')")
-                    .unwrap();
+                redirect_url(&app.get_window("main").unwrap(), "https://freegpt.one/");
                 // main_window.eval(&format!(
                 //     "window.location.replace('https://sonnylab-gpt.vercel.app')"
                 // ));
             }
             "chat_gpt_free2" => {
-                let main_window = app.get_window("main").unwrap();
-                main_window.show().unwrap();
-                main_window
-                    .eval("window.location.replace('https://chatbot.theb.ai/')")
-                    .unwrap();
+                redirect_url(&app.get_window("main").unwrap(), "https://chatbot.theb.ai/");
             }
             "chat_gpt_free3" => {
-                let main_window = app.get_window("main").unwrap();
-                main_window.show().unwrap();
-                main_window
-                    .eval("window.location.replace('https://chatgpt-35-turbo.com/')")
-                    .unwrap();
+                redirect_url(
+                    &app.get_window("main").unwrap(),
+                    "https://chatgpt-35-turbo.com/",
+                );
             }
             "chat_gpt_official" => {
-                let main_window = app.get_window("main").unwrap();
-                main_window.show().unwrap();
-                main_window.set_focus().unwrap();
-                main_window
-                    .eval(&format!(
-                        "window.location.replace('https://chat.openai.com/chat')"
-                    ))
-                    .unwrap();
+                redirect_url(
+                    &app.get_window("main").unwrap(),
+                    "https://chat.openai.com/chat",
+                );
             }
             "poe" => {
-                let main_window = app.get_window("main").unwrap();
-                main_window.show().unwrap();
-                main_window.set_focus().unwrap();
-                main_window
-                    .eval(&format!("window.location.replace('https://poe.com/')"))
-                    .unwrap();
+                redirect_url(&app.get_window("main").unwrap(), "https://poe.com/");
             }
             "bing" => {
-                let main_window = app.get_window("main").unwrap();
-                main_window
-                    .eval(&format!(
-                        "window.location.replace('https://www.bing.com/new')"
-                    ))
-                    .unwrap();
+                redirect_url(&app.get_window("main").unwrap(), "https://www.bing.com/new");
             }
             "refresh" => {
                 let main_window = app.get_window("main").unwrap();
@@ -360,12 +286,7 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                     .unwrap();
             }
             "bard" => {
-                let main_window = app.get_window("main").unwrap();
-                main_window
-                    .eval(&format!(
-                        "window.location.replace('https://bard.google.com/')"
-                    ))
-                    .unwrap();
+                redirect_url(&app.get_window("main").unwrap(), "https://bard.google.com/");
             }
             "quit" => {
                 std::process::exit(0);
@@ -402,6 +323,22 @@ fn redirect_gitee(window: &Window) {
         None,
     )
     .unwrap();
+}
+
+/// 跳转到某个页面
+fn redirect_url(window: &Window, url: &str) {
+    let cur = preference_util::get_preference(constant::PREFERENCE_CURRENT_PAGE_URL, "");
+    if cur.to_string() == url {
+        return;
+    }
+    window
+        .eval(&format!("window.location.replace('{}')", url))
+        .unwrap();
+    if !window.is_visible().unwrap() {
+        window.show().unwrap();
+        window.set_focus().unwrap();
+    }
+    preference_util::set_preference(constant::PREFERENCE_CURRENT_PAGE_URL, url);
 }
 
 /// 通用的窗口显示

@@ -24,6 +24,7 @@ pub fn init_default_preference() {
         enable_internal_script: Some(true),
         enable_extendsion_script: Some(false),
         auto_hide_when_click_outside: Some(true),
+        ..Default::default()
     };
     let json = serde_json::to_string(&preference).unwrap();
     let _ = std::fs::write(get_app_preference_path(), json);
@@ -125,6 +126,9 @@ pub fn set_preference(key: i32, value: &str) -> bool {
             // 设置自动隐藏
             p.auto_hide_when_click_outside = Some(value.parse::<bool>().unwrap_or_else(|_| false));
         }
+        constant::PREFERENCE_CURRENT_PAGE_URL => {
+            p.current_page_url = Some(value.to_string());
+        }
         _ => {}
     }
     // 写入文件
@@ -149,6 +153,10 @@ pub fn get_preference(key: i32, value: &str) -> String {
                 .auto_hide_when_click_outside
                 .unwrap_or_else(|| value.parse::<bool>().unwrap_or_else(|_| true));
             return ret.to_string();
+        }
+        constant::PREFERENCE_CURRENT_PAGE_URL => {
+            let ret = p.current_page_url.unwrap_or_else(|| String::from("https://yiyan.baidu.com/"));
+            return ret;
         }
         _ => {}
     }
