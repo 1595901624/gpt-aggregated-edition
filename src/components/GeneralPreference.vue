@@ -81,11 +81,11 @@ async function setAutoHideWhenClickOutside() {
           <el-radio-button label="false">关闭</el-radio-button>
         </el-radio-group>
       </div>
-      <span class="set-subtitle common-margin-top-8">该功能启用后，可能会导致程序不稳定，请谨慎开启！更改设置后，刷新或者切换页面后生效。</span>
+      <span class="set-subtitle common-margin-top-8">该功能启用后，可能会导致程序不稳定，请谨慎开启！更改设置后，重启后生效。如果遇到卡顿或者其它问题，请关闭此选项。</span>
     </div>
 
     <!-- <div class="column-layout width-parent preference-card" style="margin-top: 4px;">
-    </div> -->
+      </div> -->
   </div>
 </template>
 

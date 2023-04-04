@@ -38,21 +38,24 @@ fn main() {
         .plugin(tauri_plugin_positioner::init())
         .setup(|app| {
             let url = preference_util::get_preference(constant::PREFERENCE_CURRENT_PAGE_URL, "");
-            let main_window = tauri::WindowBuilder::new(
-                app,
-                "main",
-                tauri::WindowUrl::App(url.into()),
-            )
-            .title(constant::APP_NAME)
-            .enable_clipboard_access()
-            .visible(false)
-            .initialization_script(&plugin::load_internal_script("./plugin/base.js"))
-            // .initialization_script(&plugin::load_internal_script("./plugin/third/html2canvas.js"))
-            .initialization_script(&plugin::load_internal_script("./plugin/erniebot.js"))
-            .initialization_script(&plugin::load_internal_script("./plugin/chatchat.js"))
-            .build()
-            .unwrap();
+            let main_window_builder =
+                tauri::WindowBuilder::new(app, "main", tauri::WindowUrl::App(url.into()))
+                    .title(constant::APP_NAME)
+                    .enable_clipboard_access()
+                    .visible(false);
 
+            if preference_util::is_enable_internal_script() {
+                let _ = main_window_builder
+                    .initialization_script(&plugin::load_internal_script("./plugin/base.js"))
+                    // .initialization_script(&plugin::load_internal_script("./plugin/third/html2canvas.js"))
+                    .initialization_script(&plugin::load_internal_script("./plugin/erniebot.js"))
+                    .initialization_script(&plugin::load_internal_script("./plugin/chatchat.js"))
+                    .build();
+            } else {
+                let _ = main_window_builder.build();
+            }
+            
+            let main_window = app.get_window("main").unwrap();
             let mut shortcut = app.global_shortcut_manager();
             shortcut
                 .register("Cmd+Shift+O", move || {

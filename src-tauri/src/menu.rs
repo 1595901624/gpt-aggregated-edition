@@ -327,10 +327,10 @@ fn redirect_gitee(window: &Window) {
 
 /// 跳转到某个页面
 fn redirect_url(window: &Window, url: &str) {
-    let cur = preference_util::get_preference(constant::PREFERENCE_CURRENT_PAGE_URL, "");
-    if cur.to_string() == url {
-        return;
-    }
+    // let cur = preference_util::get_preference(constant::PREFERENCE_CURRENT_PAGE_URL, "");
+    // if cur.to_string() == url {
+    //     return;
+    // }
     window
         .eval(&format!("window.location.replace('{}')", url))
         .unwrap();
