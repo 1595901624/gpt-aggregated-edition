@@ -10,8 +10,10 @@ mod model;
 mod plugin;
 mod preference_util;
 
+use log::info;
 use model::{constant, preference_model::WindowMode};
 use tauri::{generate_handler, GlobalShortcutManager, Manager, PhysicalSize, SystemTray};
+use tauri_plugin_log::LogTarget;
 use tauri_plugin_positioner::{Position, WindowExt};
 
 fn main() {
@@ -25,6 +27,11 @@ fn main() {
 
     // 初始化窗口
     tauri::Builder::default()
+        .plugin(
+            tauri_plugin_log::Builder::default()
+                .targets([LogTarget::LogDir, LogTarget::Stdout, LogTarget::Webview])
+                .build(),
+        )
         .invoke_handler(generate_handler![
             command::greet,
             command::get_window_mode_handler,
@@ -37,6 +44,7 @@ fn main() {
         .menu(menu::create_window_menu())
         .plugin(tauri_plugin_positioner::init())
         .setup(|app| {
+            info!("[tauri setup]");
             let url = preference_util::get_preference(constant::PREFERENCE_CURRENT_PAGE_URL, "");
             let main_window_builder =
                 tauri::WindowBuilder::new(app, "main", tauri::WindowUrl::App(url.into()))
@@ -44,18 +52,18 @@ fn main() {
                     .enable_clipboard_access()
                     .visible(false);
 
+            let main_window;
             if preference_util::is_enable_internal_script() {
-                let _ = main_window_builder
-                    .initialization_script(&plugin::load_internal_script("./plugin/base.js"))
-                    // .initialization_script(&plugin::load_internal_script("./plugin/third/html2canvas.js"))
-                    .initialization_script(&plugin::load_internal_script("./plugin/erniebot.js"))
-                    .initialization_script(&plugin::load_internal_script("./plugin/chatchat.js"))
-                    .build();
+                main_window = main_window_builder
+                    .initialization_script(include_str!("../plugin/base.js"))
+                    // .initialization_script(include_str!("./plugin/third/html2canvas.js"))
+                    .initialization_script(include_str!("../plugin/erniebot.js"))
+                    .initialization_script(include_str!("../plugin/chatchat.js"))
+                    .build()
+                    .unwrap();
             } else {
-                let _ = main_window_builder.build();
+                main_window = main_window_builder.build().unwrap();
             }
-            
-            let main_window = app.get_window("main").unwrap();
             let mut shortcut = app.global_shortcut_manager();
             shortcut
                 .register("Cmd+Shift+O", move || {

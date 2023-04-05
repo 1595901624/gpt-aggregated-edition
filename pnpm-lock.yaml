@@ -7,6 +7,7 @@ specifiers:
   '@types/node': ^18.7.10
   '@vitejs/plugin-vue': ^4.0.0
   element-plus: ^2.3.1
+  tauri-plugin-log-api: github:tauri-apps/tauri-plugin-log
   typescript: ^4.6.4
   vite: ^4.0.0
   vue: ^3.2.45
@@ -16,6 +17,7 @@ dependencies:
   '@element-plus/icons-vue': 2.1.0_vue@3.2.47
   '@tauri-apps/api': 1.2.0
   element-plus: 2.3.1_vue@3.2.47
+  tauri-plugin-log-api: github.com/tauri-apps/tauri-plugin-log/05a9bfd9edb9b5f4ab95412bb607691708b65a25
   vue: 3.2.47
 
 devDependencies:
@@ -847,3 +849,11 @@ packages:
       '@vue/runtime-dom': 3.2.47
       '@vue/server-renderer': 3.2.47_vue@3.2.47
       '@vue/shared': 3.2.47
+
+  github.com/tauri-apps/tauri-plugin-log/05a9bfd9edb9b5f4ab95412bb607691708b65a25:
+    resolution: {tarball: https://codeload.github.com/tauri-apps/tauri-plugin-log/tar.gz/05a9bfd9edb9b5f4ab95412bb607691708b65a25}
+    name: tauri-plugin-log-api
+    version: 0.0.0
+    dependencies:
+      '@tauri-apps/api': 1.2.0
+    dev: false

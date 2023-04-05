@@ -1,5 +1,5 @@
 {
-  "name": "gpt_all",
+  "name": "one_gpt",
   "private": true,
   "version": "0.5.0",
   "type": "module",
@@ -13,6 +13,7 @@
     "@element-plus/icons-vue": "^2.1.0",
     "@tauri-apps/api": "^1.2.0",
     "element-plus": "^2.3.1",
+    "tauri-plugin-log-api": "github:tauri-apps/tauri-plugin-log",
     "vue": "^3.2.45"
   },
   "devDependencies": {
