@@ -4,9 +4,24 @@
  * 
  **********************************************************************************/
 // 禁止右键
-window.oncontextmenu = function (e) {
-    e.preventDefault();
-}
+// window.oncontextmenu = function (e) {
+    // e.preventDefault();
+    // console.log(e);
+    // 获取上下文菜单的 menu 元素  
+    // const menu = document.getElementById('context-menu');
+    // console.log(menu)
+    // // 创建新的菜单项  
+    // const item = document.createElement('div');
+    // item.classList.add('item');
+
+    // // 为菜单项设置点击事件  
+    // item.addEventListener('click', function () {
+    //     // 处理点击事件  
+    // });
+
+    // // 将菜单项添加到上下文菜单中  
+    // menu.appendChild(item);
+// }
 
 // 公告条幅
 // window.onload = function (e) {

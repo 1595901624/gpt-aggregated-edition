@@ -1,8 +1,8 @@
 <div align="center">
     <img src="demo/gpt_all_in_one.jpg" alt="chatgpt"/>
     <h1>OneGPT - GPT聚合版</h1>
-    <div><img src="https://img.shields.io/badge/stable%20version-v0.4.0-blue.svg?style=flat"></img>
-<img src="https://img.shields.io/badge/preview%20version-v0.5.0%20PREVIEW-orange.svg?style=flat"></img>
+    <div><img src="https://img.shields.io/badge/stable%20version-v0.5.0-blue.svg?style=flat"></img>
+<img src="https://img.shields.io/badge/preview%20version-v0.6.0%20Beta-orange.svg?style=flat"></img>
 <img src="https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg?style=flat"></img>
 <img src="https://img.shields.io/badge/language-简体中文-brightgreen.svg?style=flat"></img></div>
     <h4>聚合ChatGPT官方版、ChatGPT免费版、文心一言、POE、chat chat等多个平台。</h4>
@@ -75,6 +75,13 @@
 * 通过《Rust学习日记》公众号内小窗反馈
 * Github 提 issue
 * Gitee 提 issue
+
+
+#### 捐赠
+
+| Paypal | 微信 | 支付宝 |
+| --- | --- | --- |
+| [**`Paypal`**](https://www.paypal.com/paypalme/haoyu94) | <img src="demo/wechat.jpg" height="240" /> | <img src="demo/alipay.jpg" height="240" /> |
 
 #### 二次开发
 ```shell
