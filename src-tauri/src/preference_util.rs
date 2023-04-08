@@ -43,6 +43,19 @@ pub fn get_app_preference_path() -> PathBuf {
     .unwrap();
 }
 
+/// app config 根路径
+pub fn get_app_config_root_path() -> PathBuf {
+    let context = tauri::generate_context!();
+    return resolve_path(
+        context.config(),
+        context.package_info(),
+        &Env::default(),
+        "",
+        Some(BaseDirectory::AppConfig),
+    )
+    .unwrap();
+}
+
 /// 从文件读取配置
 pub fn get_app_preference() -> Result<Preference, String> {
     let path = get_app_preference_path();

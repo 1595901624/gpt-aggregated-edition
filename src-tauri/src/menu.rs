@@ -1,11 +1,15 @@
 use tauri::{
     api, AppHandle, CustomMenuItem, Manager, Menu, PhysicalPosition, PhysicalSize, Submenu,
-    SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem, Window, WindowMenuEvent,
+    SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem, SystemTraySubmenu, Window,
+    WindowMenuEvent,
 };
 use tauri_plugin_positioner::{Position, WindowExt};
 
 use crate::{
-    model::{constant, preference_model::WindowMode},
+    model::{
+        constant::{self, PREFERENCE_CURRENT_PAGE_URL},
+        preference_model::WindowMode,
+    },
     preference_util,
 };
 
@@ -27,20 +31,31 @@ pub fn create_tary_menu() -> SystemTrayMenu {
     let preference = CustomMenuItem::new("preference".to_string(), "设置");
     let refresh = CustomMenuItem::new("refresh", "刷新");
     // let always_top = CustomMenuItem::new("always_top", "常驻置顶").selected();
+
+    let mode_submenu = SystemTraySubmenu::new(
+        "AI对话平台",
+        SystemTrayMenu::new()
+            .add_item(ernie_bot)
+            .add_item(chat_chat)
+            .add_item(chat_gpt)
+            .add_item(chat_gpt_free2)
+            .add_item(chat_gpt_free3)
+            .add_item(chat_gpt_official)
+            .add_item(bing)
+            .add_item(poe)
+            .add_item(bard),
+    );
+    // AI图像平台
+    let wenxinyige = CustomMenuItem::new("wenxinyige".to_string(), "文心一格");
+    let image_submenu =
+        SystemTraySubmenu::new("AI图像平台", SystemTrayMenu::new().add_item(wenxinyige));
     SystemTrayMenu::new()
         .add_item(open)
         .add_item(refresh)
-        // .add_item(always_top)
         .add_native_item(SystemTrayMenuItem::Separator)
-        .add_item(ernie_bot)
-        .add_item(chat_chat)
-        .add_item(chat_gpt)
-        .add_item(chat_gpt_free2)
-        .add_item(chat_gpt_free3)
-        .add_item(chat_gpt_official)
-        .add_item(bing)
-        .add_item(poe)
-        .add_item(bard)
+        .add_submenu(mode_submenu)
+        .add_submenu(image_submenu)
+        // .add_item(always_top)
         .add_native_item(SystemTrayMenuItem::Separator)
         .add_item(github)
         .add_item(gitee)
@@ -64,8 +79,9 @@ pub fn create_window_menu() -> Menu {
     let github = CustomMenuItem::new("github".to_string(), "访问 Github");
     let gitee = CustomMenuItem::new("gitee".to_string(), "访问 Gitee");
     // let close = CustomMenuItem::new("close".to_string(), "Close");
+    // AI对话平台
     let mode_submenu = Submenu::new(
-        "平台切换",
+        "AI对话平台",
         Menu::new()
             .add_item(ernie_bot)
             .add_item(chat_chat)
@@ -77,6 +93,10 @@ pub fn create_window_menu() -> Menu {
             .add_item(poe)
             .add_item(bard),
     );
+
+    // AI图像平台
+    let wenxinyige = CustomMenuItem::new("wenxinyige".to_string(), "文心一格");
+    let image_submenu = Submenu::new("AI图像平台", Menu::new().add_item(wenxinyige));
     let about_submenu = Submenu::new(
         "更多".to_string(),
         Menu::new().add_item(github).add_item(gitee),
@@ -84,6 +104,7 @@ pub fn create_window_menu() -> Menu {
 
     Menu::new()
         .add_submenu(mode_submenu)
+        .add_submenu(image_submenu)
         .add_item(CustomMenuItem::new("refresh", "刷新"))
         .add_item(CustomMenuItem::new("preference", "设置"))
         .add_submenu(about_submenu)
@@ -129,9 +150,10 @@ pub fn on_window_event_handler(event: WindowMenuEvent) {
             );
         }
         "refresh" => {
+            let url = preference_util::get_preference(PREFERENCE_CURRENT_PAGE_URL, "");
             event
                 .window()
-                .eval(&format!("window.location.replace(window.location.href)"))
+                .eval(&format!("window.location.replace('{}')", url))
                 .unwrap();
         }
         "github" => {
@@ -149,6 +171,10 @@ pub fn on_window_event_handler(event: WindowMenuEvent) {
                     .get_window(constant::WINDOW_LABEL_MAIN)
                     .unwrap(),
             );
+        }
+
+        "wenxinyige" => {
+            redirect_url(&event.window(), "https://yige.baidu.com/");
         }
         _ => {}
     }
@@ -280,9 +306,10 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 redirect_url(&app.get_window("main").unwrap(), "https://www.bing.com/new");
             }
             "refresh" => {
-                let main_window = app.get_window("main").unwrap();
-                main_window
-                    .eval(&format!("window.location.replace(window.location.href)"))
+                let url = preference_util::get_preference(PREFERENCE_CURRENT_PAGE_URL, "");
+                app.get_window("main")
+                    .unwrap()
+                    .eval(&format!("window.location.replace('{}')", url))
                     .unwrap();
             }
             "bard" => {
@@ -298,6 +325,9 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 let main_window = app.get_window("main").unwrap();
                 main_window.show().unwrap();
                 main_window.set_focus().unwrap();
+            }
+            "wenxinyige" => {
+                redirect_url(&app.get_window("main").unwrap(), "https://yige.baidu.com/");
             }
             _ => {}
         },

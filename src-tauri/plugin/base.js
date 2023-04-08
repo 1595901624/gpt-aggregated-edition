@@ -5,22 +5,22 @@
  **********************************************************************************/
 // 禁止右键
 // window.oncontextmenu = function (e) {
-    // e.preventDefault();
-    // console.log(e);
-    // 获取上下文菜单的 menu 元素  
-    // const menu = document.getElementById('context-menu');
-    // console.log(menu)
-    // // 创建新的菜单项  
-    // const item = document.createElement('div');
-    // item.classList.add('item');
+// e.preventDefault();
+// console.log(e);
+// 获取上下文菜单的 menu 元素  
+// const menu = document.getElementById('context-menu');
+// console.log(menu)
+// // 创建新的菜单项  
+// const item = document.createElement('div');
+// item.classList.add('item');
 
-    // // 为菜单项设置点击事件  
-    // item.addEventListener('click', function () {
-    //     // 处理点击事件  
-    // });
+// // 为菜单项设置点击事件  
+// item.addEventListener('click', function () {
+//     // 处理点击事件  
+// });
 
-    // // 将菜单项添加到上下文菜单中  
-    // menu.appendChild(item);
+// // 将菜单项添加到上下文菜单中  
+// menu.appendChild(item);
 // }
 
 // 公告条幅
@@ -46,6 +46,63 @@
 //     alert(url)
 //     // _replace(url);
 // }
+
+// IPC 以下代码来自：https://github.dev/lencx/ChatGPT
+const uid = () => window.crypto.getRandomValues(new Uint32Array(1))[0];
+function transformCallback(callback = () => { }, once = false) {
+    const identifier = uid();
+    const prop = `_${identifier}`;
+    Object.defineProperty(window, prop, {
+        value: (result) => {
+            if (once) {
+                Reflect.deleteProperty(window, prop);
+            }
+            return callback(result)
+        },
+        writable: false,
+        configurable: true,
+    })
+    return identifier;
+}
+async function invoke(cmd, args) {
+    return new Promise((resolve, reject) => {
+        if (!window.__TAURI_POST_MESSAGE__) reject('__TAURI_POST_MESSAGE__ does not exist!');
+        const callback = transformCallback((e) => {
+            resolve(e);
+            Reflect.deleteProperty(window, `_${error}`);
+        }, true)
+        const error = transformCallback((e) => {
+            reject(e);
+            Reflect.deleteProperty(window, `_${callback}`);
+        }, true)
+        window.__TAURI_POST_MESSAGE__({
+            cmd,
+            callback,
+            error,
+            ...args
+        });
+    });
+}
+
+async function message(message) {
+    invoke('messageDialog', {
+        __tauriModule: 'Dialog',
+        message: {
+            cmd: 'messageDialog',
+            message: message.toString(),
+            title: null,
+            type: null,
+            buttonLabel: null
+        }
+    });
+}
+
+window.uid = uid;
+window.invoke = invoke;
+window.message = message;
+window.transformCallback = transformCallback;
+
+
 
 
 

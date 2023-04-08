@@ -54,6 +54,41 @@ if (window.location.href.indexOf("yiyan.baidu") != -1) {
     //         }
     //     }
     // }
+
+    // 导出为docx
+}
+
+function createMarkdown() {
+    try {
+        var node = document.querySelectorAll(".dialogueCardListContent > div > div")
+        if (node.length == 0) {
+            // return;
+        }
+        var result = [];
+        // let number = 1
+        for (let index = node.length - 1; index > 1; index -= 2) {
+            let questionNode = node[index];
+            let answerNode = node[index - 1];
+            let question = questionNode.innerText;
+            let answer = answerNode.innerText;
+            
+            let para = {};
+            let imageNodes = answerNode.querySelectorAll("img");
+            if (imageNodes.length >= 2) {
+                // add image
+                para.answerImage = imageNodes[1].getAttribute("src");
+            }
+
+            // Question
+            para.question = question;
+            // Answer
+            para.answer = answer.replace(/\n\n重新生成/g, "");
+            result.push(para);
+        }
+        
+    } catch (e) {
+
+    }
 }
 
 
