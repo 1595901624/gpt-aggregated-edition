@@ -23,6 +23,7 @@ pub fn create_tary_menu() -> SystemTrayMenu {
     let chat_chat = CustomMenuItem::new("chat_chat".to_string(), "ChatGPT(限额版)");
     let chat_gpt_official = CustomMenuItem::new("chat_gpt_official".to_string(), "ChatGPT(官方版)");
     let ernie_bot = CustomMenuItem::new("ernie_bot".to_string(), "文心一言");
+    let tongyi = CustomMenuItem::new("tongyi".to_string(), "通义千问");
     let poe = CustomMenuItem::new("poe".to_string(), "POE");
     let bard = CustomMenuItem::new("bard".to_string(), "Bard");
     let bing = CustomMenuItem::new("bing".to_string(), "NewBing");
@@ -36,6 +37,7 @@ pub fn create_tary_menu() -> SystemTrayMenu {
         "AI对话平台",
         SystemTrayMenu::new()
             .add_item(ernie_bot)
+            .add_item(tongyi)
             .add_item(chat_chat)
             .add_item(chat_gpt)
             .add_item(chat_gpt_free2)
@@ -72,6 +74,7 @@ pub fn create_window_menu() -> Menu {
     let chat_gpt_free3 = CustomMenuItem::new("chat_gpt_free3".to_string(), "ChatGPT(免费线路3)");
     let chat_gpt_official = CustomMenuItem::new("chat_gpt_official".to_string(), "ChatGPT(官方版)");
     let ernie_bot = CustomMenuItem::new("ernie_bot".to_string(), "文心一言");
+    let tongyi = CustomMenuItem::new("tongyi".to_string(), "通义千问");
     let chat_chat = CustomMenuItem::new("chat_chat".to_string(), "ChatGPT(限额版)");
     let poe = CustomMenuItem::new("poe".to_string(), "POE");
     let bing = CustomMenuItem::new("bing".to_string(), "NewBing");
@@ -84,6 +87,7 @@ pub fn create_window_menu() -> Menu {
         "AI对话平台",
         Menu::new()
             .add_item(ernie_bot)
+            .add_item(tongyi)
             .add_item(chat_chat)
             .add_item(chat_gpt)
             .add_item(chat_gpt_free2)
@@ -116,6 +120,9 @@ pub fn on_window_event_handler(event: WindowMenuEvent) {
     match event.menu_item_id() {
         "ernie_bot" => {
             redirect_url(&event.window(), "https://yiyan.baidu.com/");
+        }
+        "tongyi" => {
+            redirect_url(&event.window(), "https://tongyi.aliyun.com/");
         }
         "chat_chat" => {
             redirect_url(&event.window(), "https://chat.okis.dev/zh-CN?mode=chat");
@@ -271,6 +278,9 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
             }
             "ernie_bot" => {
                 redirect_url(&app.get_window("main").unwrap(), "https://yiyan.baidu.com/");
+            }
+            "tongyi" => {
+                redirect_url(&app.get_window("main").unwrap(), "https://tongyi.aliyun.com/");
             }
             "chat_chat" => {
                 redirect_url(
