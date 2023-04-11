@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 use docx_rust::{
     document::{BookmarkEnd, BookmarkStart, BreakType, Paragraph, Run, TextSpace},
     formatting::{CharacterProperty, JustificationVal, ParagraphProperty},
@@ -54,6 +55,7 @@ pub fn create_docx_handler(value: &str) -> String {
     //     .charset("00")
     //     .family("swiss")
     //     .pitch("variable");
+    dbg!(value);
 
     // 创建标题样式
     docx.styles.push(

@@ -33,6 +33,9 @@
       }
     },
     "bundle": {
+      "resources": [
+        "extensions/menu.json"
+      ],
       "active": true,
       "icon": [
         "icons/32x32.png",

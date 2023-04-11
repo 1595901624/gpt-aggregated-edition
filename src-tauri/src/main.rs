@@ -10,17 +10,17 @@ mod model;
 mod plugin;
 mod preference_util;
 
-use docx_rust::{
-    document::{
-        BookmarkEnd, BookmarkStart, BreakType, Paragraph, ParagraphContent, Run, TextSpace,
-    },
-    font_table::Font,
-    formatting::{CharacterProperty, JustificationVal, ParagraphProperty},
-    styles::{Style, StyleType},
-    Docx,
-};
+// use docx_rust::{
+//     document::{
+//         BookmarkEnd, BookmarkStart, BreakType, Paragraph, ParagraphContent, Run, TextSpace,
+//     },
+//     font_table::Font,
+//     formatting::{CharacterProperty, JustificationVal, ParagraphProperty},
+//     styles::{Style, StyleType},
+//     Docx,
+// };
 use log::info;
-use model::{constant, chat_content::ChatContent, preference_model::WindowMode};
+use model::{constant, preference_model::WindowMode};
 use tauri::{generate_handler, GlobalShortcutManager, Manager, PhysicalSize, SystemTray};
 use tauri_plugin_log::LogTarget;
 use tauri_plugin_positioner::{Position, WindowExt};
@@ -51,9 +51,10 @@ fn main() {
             command::enable_internal_script_handler,
             command::create_markdown_handler,
             command::set_preference_handler,
-            command::get_preference_handler
+            command::get_preference_handler,
+            command::create_docx_handler,
+            command::create_markdown_handler
         ])
-        .menu(menu::create_window_menu())
         .plugin(tauri_plugin_positioner::init())
         .setup(|app| {
             info!("[tauri setup]");
@@ -63,7 +64,6 @@ fn main() {
                     .title(constant::APP_NAME)
                     .enable_clipboard_access()
                     .visible(false);
-
             let main_window;
             if preference_util::is_enable_internal_script() {
                 main_window = main_window_builder
@@ -71,6 +71,7 @@ fn main() {
                     // .initialization_script(include_str!("./plugin/third/html2canvas.js"))
                     .initialization_script(include_str!("../plugin/erniebot.js"))
                     .initialization_script(include_str!("../plugin/chatchat.js"))
+                    .menu(menu::create_window_menu(&app))
                     .build()
                     .unwrap();
             } else {
@@ -212,48 +213,48 @@ fn main() {
 //     docx.write_file(path).unwrap();
 // }
 
-fn test2() {
-    let content_json = r#"[{"answerImage":"http://eb118-file.cdn.bcebos.com/upload/6A594000B509CBDB6DF2EBA7DF87A53C?","question":"画一个鸭梨#创意图#","answer":"好的，根据你的需求，我为你创作了一幅画作。\n我的作画技能还在不断进化中，暂时还不支持对画作的修改和解释。\n如果需要继续让我为你作画，请完整描述你的需求，如：“帮我画一枝晶莹剔透的牡丹花”。"}]"#;
-    let title = format!("### {}\n\n", "测试");
-    let mut content = String::new();
+// fn test2() {
+//     let content_json = r#"[{"answerImage":"http://eb118-file.cdn.bcebos.com/upload/6A594000B509CBDB6DF2EBA7DF87A53C?","question":"画一个鸭梨#创意图#","answer":"好的，根据你的需求，我为你创作了一幅画作。\n我的作画技能还在不断进化中，暂时还不支持对画作的修改和解释。\n如果需要继续让我为你作画，请完整描述你的需求，如：“帮我画一枝晶莹剔透的牡丹花”。"}]"#;
+//     let title = format!("### {}\n\n", "测试");
+//     let mut content = String::new();
 
-    // 内容
-    if let Ok(markdown_content_list) = serde_json::from_str::<Vec<ChatContent>>(content_json) {
-        for i in 0..markdown_content_list.len() {
-            let item = &markdown_content_list[i];
-            (&mut content).push_str("#### 对话 ");
-            (&mut content).push_str((i + 1).to_string().as_str());
-            (&mut content).push_str(":\n##### 提问: ");
-            (&mut content).push_str(&item.question);
-            (&mut content).push_str("\n");
+//     // 内容
+//     if let Ok(markdown_content_list) = serde_json::from_str::<Vec<ChatContent>>(content_json) {
+//         for i in 0..markdown_content_list.len() {
+//             let item = &markdown_content_list[i];
+//             (&mut content).push_str("#### 对话 ");
+//             (&mut content).push_str((i + 1).to_string().as_str());
+//             (&mut content).push_str(":\n##### 提问: ");
+//             (&mut content).push_str(&item.question);
+//             (&mut content).push_str("\n");
 
-            (&mut content).push_str("##### 回答: ");
-            if let Some(img) = &item.answer_image {
-                // ![](http://aaa);
-                (&mut content).push_str("![](");
-                (&mut content).push_str(img);
-                (&mut content).push_str(")");
-                (&mut content).push_str("\n\n");
-            }
-            (&mut content).push_str(&item.answer);
-            (&mut content).push_str("\n");
-        }
+//             (&mut content).push_str("##### 回答: ");
+//             if let Some(img) = &item.answer_image {
+//                 // ![](http://aaa);
+//                 (&mut content).push_str("![](");
+//                 (&mut content).push_str(img);
+//                 (&mut content).push_str(")");
+//                 (&mut content).push_str("\n\n");
+//             }
+//             (&mut content).push_str(&item.answer);
+//             (&mut content).push_str("\n");
+//         }
 
-        // markdown_content_list.iter().for_each(|item| {
-        //     (&mut content).push_str("#### Question:");
-        //     (&mut content).push_str(&item.question);
-        //     (&mut content).push_str("\n\n");
-        //     if let Some(img) = &item.answer_image {
-        //         // ![](http://aaa);
-        //         (&mut content).push_str("![](");
-        //         (&mut content).push_str(img);
-        //         (&mut content).push_str(")");
-        //         (&mut content).push_str("\n\n");
-        //     }
-        //     (&mut content).push_str(&item.answer);
-        //     (&mut content).push_str("\n");
-        // });
-    }
-    println!("{}{}", title, content);
-    // return title + content.as_str();
-}
+//         // markdown_content_list.iter().for_each(|item| {
+//         //     (&mut content).push_str("#### Question:");
+//         //     (&mut content).push_str(&item.question);
+//         //     (&mut content).push_str("\n\n");
+//         //     if let Some(img) = &item.answer_image {
+//         //         // ![](http://aaa);
+//         //         (&mut content).push_str("![](");
+//         //         (&mut content).push_str(img);
+//         //         (&mut content).push_str(")");
+//         //         (&mut content).push_str("\n\n");
+//         //     }
+//         //     (&mut content).push_str(&item.answer);
+//         //     (&mut content).push_str("\n");
+//         // });
+//     }
+//     println!("{}{}", title, content);
+//     // return title + content.as_str();
+// }

@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::path::{PathBuf};
 
 use tauri::{
     api::path::{resolve_path, BaseDirectory},
@@ -42,6 +42,24 @@ pub fn get_app_preference_path() -> PathBuf {
     )
     .unwrap();
 }
+
+// /// 获取扩展的菜单信息
+// pub fn get_extendsion_menu() {
+//     if let Ok(current_exec) = std::env::current_exe() {
+//         let file = current_exec.join("test.txt");
+//         if !file.exists() {
+
+//         }
+//         match std::fs::write(file, "1111111111111111") {
+//             Ok(_) => {
+//                 dbg!("success");
+//             },
+//             Err(e) => {
+//                 dbg!(e);
+//             },
+//         }
+//     }
+// }
 
 /// app config 根路径
 pub fn get_app_config_root_path() -> PathBuf {
@@ -168,7 +186,9 @@ pub fn get_preference(key: i32, value: &str) -> String {
             return ret.to_string();
         }
         constant::PREFERENCE_CURRENT_PAGE_URL => {
-            let ret = p.current_page_url.unwrap_or_else(|| String::from("https://yiyan.baidu.com/"));
+            let ret = p
+                .current_page_url
+                .unwrap_or_else(|| String::from("https://yiyan.baidu.com/"));
             return ret;
         }
         _ => {}

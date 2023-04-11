@@ -1,5 +1,5 @@
 use tauri::{
-    api, AppHandle, CustomMenuItem, Manager, Menu, PhysicalPosition, PhysicalSize, Submenu,
+    api, App, AppHandle, CustomMenuItem, Manager, Menu, PhysicalPosition, PhysicalSize, Submenu,
     SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem, SystemTraySubmenu, Window,
     WindowMenuEvent,
 };
@@ -66,8 +66,16 @@ pub fn create_tary_menu() -> SystemTrayMenu {
         .add_item(quit)
 }
 
+/// 读取自定义菜单
+fn get_custom_menu(app: &App) -> Option<Submenu> {
+    if let Some(res) = app.path_resolver().resolve_resource("extensions/menu.json") {
+        dbg!(res);
+    }
+    return None;
+}
+
 /// 创建窗口菜单
-pub fn create_window_menu() -> Menu {
+pub fn create_window_menu(app: &App) -> Menu {
     // 创建普通菜单
     let chat_gpt = CustomMenuItem::new("chat_gpt".to_string(), "ChatGPT(免费线路1)");
     let chat_gpt_free2 = CustomMenuItem::new("chat_gpt_free2".to_string(), "ChatGPT(免费线路2)");
@@ -106,12 +114,17 @@ pub fn create_window_menu() -> Menu {
         Menu::new().add_item(github).add_item(gitee),
     );
 
-    Menu::new()
+    let menu = Menu::new()
         .add_submenu(mode_submenu)
         .add_submenu(image_submenu)
         .add_item(CustomMenuItem::new("refresh", "刷新"))
         .add_item(CustomMenuItem::new("preference", "设置"))
-        .add_submenu(about_submenu)
+        .add_submenu(about_submenu);
+
+    if let Some(submenu) = get_custom_menu(app) {
+        return menu.add_submenu(submenu);
+    }
+    return menu;
 }
 
 /// 窗口菜单事件
@@ -280,7 +293,10 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 redirect_url(&app.get_window("main").unwrap(), "https://yiyan.baidu.com/");
             }
             "tongyi" => {
-                redirect_url(&app.get_window("main").unwrap(), "https://tongyi.aliyun.com/");
+                redirect_url(
+                    &app.get_window("main").unwrap(),
+                    "https://tongyi.aliyun.com/",
+                );
             }
             "chat_chat" => {
                 redirect_url(
