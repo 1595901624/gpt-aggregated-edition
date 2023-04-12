@@ -1,3 +1,6 @@
-{
-    
-}
+[
+    {
+        "menu_name": "测试",
+        "menu_url": "https://www.baidu.com"
+    }
+]

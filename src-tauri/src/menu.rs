@@ -8,6 +8,7 @@ use tauri_plugin_positioner::{Position, WindowExt};
 use crate::{
     model::{
         constant::{self, PREFERENCE_CURRENT_PAGE_URL},
+        extension_menu::ExtensionMenu,
         preference_model::WindowMode,
     },
     preference_util,
@@ -69,7 +70,14 @@ pub fn create_tary_menu() -> SystemTrayMenu {
 /// 读取自定义菜单
 fn get_custom_menu(app: &App) -> Option<Submenu> {
     if let Some(res) = app.path_resolver().resolve_resource("extensions/menu.json") {
-        dbg!(res);
+        // dbg!(res);
+        if let Ok(byte) = std::fs::read(res) {
+            if let Ok(list) = serde_json::from_slice::<Vec<ExtensionMenu>>(&byte) {
+                list.iter().for_each(|item| {
+                    
+                });
+            }
+        }
     }
     return None;
 }
