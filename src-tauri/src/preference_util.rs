@@ -1,13 +1,15 @@
-use std::path::{PathBuf};
+use std::path::PathBuf;
 
 use tauri::{
-    api::path::{resolve_path, BaseDirectory},
-    Env, App,
+    api::path::{resolve_path, BaseDirectory}, Env,
 };
 
 use crate::{
     constant,
-    model::{preference_model::{Preference, WindowMode}, extension_menu::ExtensionMenu},
+    model::{
+        extension_menu::ExtensionMenu,
+        preference_model::{Preference, WindowMode},
+    },
 };
 
 /// 初始化默认配置
@@ -206,10 +208,32 @@ pub fn auto_hide_when_click_outside() -> bool {
 // 是否启用扩展脚本
 // pub fn is_enable_extendsion_script() {}
 
-/// 读取自定义菜单
-pub fn get_custom_menu_list(app: &App) -> Option<Vec<ExtensionMenu>> {
-    if let Some(res) = app.path_resolver().resolve_resource("extensions/menu.json") {
+/// 读取自定义菜单目录(内置目录)
+pub fn get_custom_menu_path() -> Option<PathBuf> {
+    let context = tauri::generate_context!();
+    if let Ok(res) = resolve_path(
+        context.config(),
+        context.package_info(),
+        &Env::default(),
+        "extensions/menu.json",
+        Some(BaseDirectory::AppConfig),
+    ) {
+        return Some(res);
+    }
+    return None;
+}
+
+/// 读取自定义菜单(内置目录)
+pub fn get_custom_menu_list() -> Option<Vec<ExtensionMenu>> {
+    // if let Some(res) = app.path_resolver().resolve_resource("extensions/menu.json") {
+    if let Some(res) = get_custom_menu_path() {
         // dbg!(res);
+        if !res.exists() {
+            // 不存在
+            let _ = std::fs::create_dir_all((&res).parent().unwrap());
+            let _ = std::fs::write(&res, "");
+        }
+
         if let Ok(byte) = std::fs::read(res) {
             if let Ok(list) = serde_json::from_slice::<Vec<ExtensionMenu>>(&byte) {
                 return Some(list);

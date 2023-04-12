@@ -4,6 +4,8 @@
 import { getVersion } from "@tauri-apps/api/app";
 import { onMounted, ref } from "vue";
 import GeneralPreference from "./components/GeneralPreference.vue";
+import CustomMenu from "./components/tab/CustomMenu.vue";
+import MultiTabPage from "./components/tab/MultiTabPage.vue";
 
 const appVersion = ref("未知版本");
 
@@ -18,9 +20,11 @@ async function getData() {
 </script>
 
 <template>
-  <div class="card" @contextmenu.prevent>
-    <GeneralPreference />
+  <div class="card" @contextmenu.prevent> 
+    <!-- <GeneralPreference /> -->
+    <!-- <CustomMenu /> -->
     <!-- <NewUI /> -->
+    <MultiTabPage />
 
     <div class="footer">© Github@Cloris Version {{ appVersion }}  </div>
   </div>

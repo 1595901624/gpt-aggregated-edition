@@ -1,6 +1,6 @@
 use log::info;
 use tauri::{
-    api, App, AppHandle, CustomMenuItem, Manager, Menu, PhysicalPosition, PhysicalSize, Submenu,
+    api, AppHandle, CustomMenuItem, Manager, Menu, PhysicalPosition, PhysicalSize, Submenu,
     SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem, SystemTraySubmenu, Window,
     WindowMenuEvent,
 };
@@ -66,8 +66,8 @@ pub fn create_tary_menu() -> SystemTrayMenu {
         .add_item(quit)
 }
 
-fn create_custom_menu(app: &App) -> Option<Submenu> {
-    if let Some(list) = preference_util::get_custom_menu_list(app) {
+fn create_custom_menu() -> Option<Submenu> {
+    if let Some(list) = preference_util::get_custom_menu_list() {
         info!("{:?}", &list);
         let mut menu = Menu::new();
 
@@ -86,7 +86,7 @@ fn create_custom_menu(app: &App) -> Option<Submenu> {
 }
 
 /// 创建窗口菜单
-pub fn create_window_menu(app: &App) -> Menu {
+pub fn create_window_menu() -> Menu {
     // 创建普通菜单
     let chat_gpt = CustomMenuItem::new("chat_gpt".to_string(), "ChatGPT(免费线路1)");
     let chat_gpt_free2 = CustomMenuItem::new("chat_gpt_free2".to_string(), "ChatGPT(免费线路2)");
@@ -132,7 +132,7 @@ pub fn create_window_menu(app: &App) -> Menu {
         .add_item(CustomMenuItem::new("preference", "设置"))
         .add_submenu(about_submenu);
 
-    if let Some(submenu) = create_custom_menu(app) {
+    if let Some(submenu) = create_custom_menu() {
         return menu.add_submenu(submenu);
     }
     return menu;

@@ -71,7 +71,7 @@ fn main() {
                     // .initialization_script(include_str!("./plugin/third/html2canvas.js"))
                     .initialization_script(include_str!("../plugin/erniebot.js"))
                     .initialization_script(include_str!("../plugin/chatchat.js"))
-                    .menu(menu::create_window_menu(&app))
+                    .menu(menu::create_window_menu())
                     .build()
                     .unwrap();
             } else {
