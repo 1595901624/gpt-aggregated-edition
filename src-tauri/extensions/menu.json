@@ -1,6 +1,7 @@
 [
     {
-        "menu_name": "测试",
-        "menu_url": "https://www.baidu.com"
+        "id": 1,
+        "name": "测试",
+        "url": "https://www.baidu.com"
     }
 ]

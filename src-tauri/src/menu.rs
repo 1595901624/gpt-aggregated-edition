@@ -1,3 +1,4 @@
+use log::info;
 use tauri::{
     api, App, AppHandle, CustomMenuItem, Manager, Menu, PhysicalPosition, PhysicalSize, Submenu,
     SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem, SystemTraySubmenu, Window,
@@ -7,9 +8,7 @@ use tauri_plugin_positioner::{Position, WindowExt};
 
 use crate::{
     model::{
-        constant::{self, PREFERENCE_CURRENT_PAGE_URL},
-        extension_menu::ExtensionMenu,
-        preference_model::WindowMode,
+        constant::{self, PREFERENCE_CURRENT_PAGE_URL}, preference_model::WindowMode,
     },
     preference_util,
 };
@@ -67,17 +66,21 @@ pub fn create_tary_menu() -> SystemTrayMenu {
         .add_item(quit)
 }
 
-/// 读取自定义菜单
-fn get_custom_menu(app: &App) -> Option<Submenu> {
-    if let Some(res) = app.path_resolver().resolve_resource("extensions/menu.json") {
-        // dbg!(res);
-        if let Ok(byte) = std::fs::read(res) {
-            if let Ok(list) = serde_json::from_slice::<Vec<ExtensionMenu>>(&byte) {
-                list.iter().for_each(|item| {
-                    
-                });
+fn create_custom_menu(app: &App) -> Option<Submenu> {
+    if let Some(list) = preference_util::get_custom_menu_list(app) {
+        info!("{:?}", &list);
+        let mut menu = Menu::new();
+
+        list.iter().for_each(|item| {
+            if item.get_name().is_some() && item.get_string_id().is_some() {
+                menu = menu.clone().add_item(CustomMenuItem::new(
+                    item.get_string_id().unwrap(),
+                    item.get_name().unwrap(),
+                ));
             }
-        }
+        });
+        info!("{:?}", &menu);
+        return Some(Submenu::new("自定义", menu));
     }
     return None;
 }
@@ -129,7 +132,7 @@ pub fn create_window_menu(app: &App) -> Menu {
         .add_item(CustomMenuItem::new("preference", "设置"))
         .add_submenu(about_submenu);
 
-    if let Some(submenu) = get_custom_menu(app) {
+    if let Some(submenu) = create_custom_menu(app) {
         return menu.add_submenu(submenu);
     }
     return menu;
