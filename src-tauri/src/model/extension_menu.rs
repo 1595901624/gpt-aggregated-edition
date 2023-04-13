@@ -17,26 +17,48 @@ impl ExtensionMenu {
     //     return format!("hy_{}", handler.finish());
     // }
 
-    pub fn get_id(&self) -> Option<i32> {
-        self.id
+    pub fn new(id: i32, name: String, url: String, priority: i32) -> Self {
+        Self {
+            id: Some(id),
+            name: Some(name),
+            url: Some(url),
+            priority: Some(priority),
+        }
+    }
+
+    pub fn get_id(&self) -> i32 {
+        self.id.unwrap_or_default()
     }
 
     pub fn get_string_id(&self) -> Option<String> {
-        if let Some(id) = self.get_id() {
-            return Some(format!("hy_cus_{}", id));
-        }
-        return None;
+        return Some(format!("hy_cus_{}", self.get_id()));
+    }
+
+    pub fn set_id(&mut self, id: i32) {
+        self.id = Some(id);
     }
 
     pub fn get_name(&self) -> Option<String> {
         return self.name.clone();
     }
 
+    pub fn set_name(&mut self, name: String) {
+        self.name = Some(name);
+    }
+
     pub fn get_url(&self) -> Option<String> {
         return self.url.clone();
     }
 
+    pub fn set_url(&mut self, url: String) {
+        self.url = Some(url);
+    }
+
     pub fn get_priority(&self) -> Option<i32> {
         self.priority
+    }
+
+    pub fn set_priority(&mut self, priority: i32) {
+        self.priority = Some(priority);
     }
 }

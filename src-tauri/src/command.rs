@@ -6,7 +6,10 @@ use docx_rust::{
     Docx,
 };
 
-use crate::{model::chat_content::ChatContent, preference_util};
+use crate::{
+    model::{chat_content::ChatContent, extension_menu::ExtensionMenu},
+    preference_util,
+};
 
 #[tauri::command]
 pub fn greet(name: &str) -> String {
@@ -45,6 +48,42 @@ pub fn set_preference_handler(key: i32, value: &str) -> bool {
 #[tauri::command]
 pub fn get_preference_handler(key: i32, value: &str) -> String {
     return preference_util::get_preference(key, value);
+}
+
+/// 添加一项自定义的菜单
+#[tauri::command]
+pub fn add_expension_item_handler(name: &str, url: &str, priority: i32) {
+    if let Some(mut menu_list) = preference_util::get_custom_menu_list() {
+        // let id;
+        let id = if menu_list.is_empty() {
+            0
+        } else {
+            // 按照id排序
+            menu_list.sort_by_key(|item| item.get_id());
+            menu_list.last().unwrap().get_id() + 1
+        };
+
+        let menu = ExtensionMenu::new(id, name.to_string(), url.to_string(), priority);
+        menu_list.push(menu);
+        let json = serde_json::to_string(&menu_list).unwrap();
+        if let Some(path) = preference_util::get_custom_menu_path() {
+            let _ = std::fs::write(path, json);
+        }
+    }
+}
+
+/// 编辑一项自定义的菜单
+#[tauri::command]
+pub fn edit_expension_item_handler(id: i32, name: &str, url: &str, priority: i32) {
+    if let Some(mut menu_list) = preference_util::get_custom_menu_list() {
+        menu_list.iter_mut().for_each(|item| {
+            if item.get_id() == id {
+                item.set_name(name.to_string());
+                item.set_url(url.to_string());
+                item.set_priority(priority);
+            }
+        });
+    }
 }
 
 /// 创建docx文档
