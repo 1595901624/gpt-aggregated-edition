@@ -4,6 +4,8 @@ pub struct ExtensionMenu {
     id: Option<i32>,
     name: Option<String>,
     url: Option<String>,
+    // 优先级
+    priority: Option<i32>,
 }
 
 impl ExtensionMenu {
@@ -32,5 +34,9 @@ impl ExtensionMenu {
 
     pub fn get_url(&self) -> Option<String> {
         return self.url.clone();
+    }
+
+    pub fn get_priority(&self) -> Option<i32> {
+        self.priority
     }
 }

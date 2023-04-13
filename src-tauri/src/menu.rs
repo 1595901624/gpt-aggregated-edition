@@ -8,7 +8,7 @@ use tauri_plugin_positioner::{Position, WindowExt};
 
 use crate::{
     model::{
-        constant::{self, PREFERENCE_CURRENT_PAGE_URL}, preference_model::WindowMode,
+        constant::{self, PREFERENCE_CURRENT_PAGE_URL}, preference_model::WindowMode, extension_menu,
     },
     preference_util,
 };
@@ -140,6 +140,13 @@ pub fn create_window_menu() -> Menu {
 
 /// 窗口菜单事件
 pub fn on_window_event_handler(event: WindowMenuEvent) {
+    if let Some(extension_menu_list) = preference_util::get_custom_menu_list() {
+        extension_menu_list.iter().for_each(|item| {
+            if item.get_string_id().is_some() && (&event).menu_item_id() == item.get_string_id().unwrap() && item.get_url().is_some() {
+                redirect_url(&event.window(), item.get_url().unwrap().as_str());
+            }
+        });
+    }
     // 窗口菜单监听
     match event.menu_item_id() {
         "ernie_bot" => {

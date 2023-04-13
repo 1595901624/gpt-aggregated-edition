@@ -20,21 +20,22 @@ async function getData() {
 </script>
 
 <template>
-  <div class="card" @contextmenu.prevent> 
+  <div class="card" @contextmenu.prevent>
     <!-- <GeneralPreference /> -->
     <!-- <CustomMenu /> -->
     <!-- <NewUI /> -->
     <MultiTabPage />
 
-    <div class="footer">© Github@Cloris Version {{ appVersion }}  </div>
+    <div class="footer">© Github@Cloris Version {{ appVersion }} </div>
   </div>
   <!-- <el-card>
    
-      </el-card> -->
+          </el-card> -->
 </template>
 
 <style scoped>
 .footer {
+  height: 25px;
   position: fixed;
   left: 0;
   bottom: 0;
@@ -42,6 +43,7 @@ async function getData() {
   font-size: small;
   color: rgba(0, 0, 0, 0.3);
   text-align: center;
+  z-index: 999;
 }
 
 .logo.vite:hover {
@@ -53,9 +55,11 @@ async function getData() {
 }
 
 .card {
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  height: 95vh;
-  margin: 0;
+  height: 100%;
   padding: 0;
   box-sizing: border-box;
 }

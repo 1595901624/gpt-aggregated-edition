@@ -5,7 +5,13 @@ import { invoke } from "@tauri-apps/api/tauri";
 const tableData = ref<CustomMenu[]>([
     { id: 1, name: 'Google', url: 'https://www.google.com' },
     { id: 2, name: 'Baidu', url: 'https://www.baidu.com' },
-    { id: 3, name: 'Yahoo', url: 'https://www.yahoo.com' }
+    { id: 3, name: 'Yahoo', url: 'https://www.yahoo.com' },
+    { id: 1, name: 'Google', url: 'https://www.google.com' },
+    { id: 2, name: 'Baidu', url: 'https://www.baidu.com' },
+    { id: 3, name: 'Yahoo', url: 'https://www.yahoo.com' },
+    { id: 1, name: 'Google', url: 'https://www.google.com' },
+    { id: 2, name: 'Baidu', url: 'https://www.baidu.com' },
+    { id: 3, name: 'Yahoo', url: 'https://www.yahoo.com' },
 ])
 function edit(row: CustomMenu) {
     // 编辑操作逻辑
@@ -66,5 +72,6 @@ function onSort() {
     border-radius: 50%;
     font-size: 20px;
     line-height: 50px;
+    z-index: 999
 }
 </style>
