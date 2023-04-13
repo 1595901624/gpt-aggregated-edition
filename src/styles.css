@@ -75,7 +75,15 @@ h1 {
   text-align: center;
 }
 
-input,
+input {
+  font-weight: 500;
+  font-family: inherit;
+  color: #000000;
+  background-color: #ffffff;
+  transition: border-color 0.25s;
+  /* box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2); */
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -86,7 +94,6 @@ button {
   color: #0f0f0f;
   background-color: #ffffff;
   transition: border-color 0.25s;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
 }
 
 button {

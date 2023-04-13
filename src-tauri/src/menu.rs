@@ -8,7 +8,9 @@ use tauri_plugin_positioner::{Position, WindowExt};
 
 use crate::{
     model::{
-        constant::{self, PREFERENCE_CURRENT_PAGE_URL}, preference_model::WindowMode, extension_menu,
+        constant::{self, PREFERENCE_CURRENT_PAGE_URL},
+        extension_menu,
+        preference_model::WindowMode,
     },
     preference_util,
 };
@@ -67,10 +69,11 @@ pub fn create_tary_menu() -> SystemTrayMenu {
 }
 
 fn create_custom_menu() -> Option<Submenu> {
-    if let Some(list) = preference_util::get_custom_menu_list() {
+    if let Some(mut list) = preference_util::get_custom_menu_list() {
         info!("{:?}", &list);
         let mut menu = Menu::new();
 
+        list.sort_by_key(|item| {item.get_priority().unwrap_or_else(|| 0)});
         list.iter().for_each(|item| {
             if item.get_name().is_some() && item.get_string_id().is_some() {
                 menu = menu.clone().add_item(CustomMenuItem::new(
@@ -142,7 +145,10 @@ pub fn create_window_menu() -> Menu {
 pub fn on_window_event_handler(event: WindowMenuEvent) {
     if let Some(extension_menu_list) = preference_util::get_custom_menu_list() {
         extension_menu_list.iter().for_each(|item| {
-            if item.get_string_id().is_some() && (&event).menu_item_id() == item.get_string_id().unwrap() && item.get_url().is_some() {
+            if item.get_string_id().is_some()
+                && (&event).menu_item_id() == item.get_string_id().unwrap()
+                && item.get_url().is_some()
+            {
                 redirect_url(&event.window(), item.get_url().unwrap().as_str());
             }
         });
