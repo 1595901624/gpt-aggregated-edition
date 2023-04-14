@@ -3,6 +3,7 @@ import { onMounted, reactive, ref } from "vue";
 import { invoke } from "@tauri-apps/api/tauri";
 import { fa } from "element-plus/es/locale";
 import { a } from "@tauri-apps/api/app-373d24a3";
+import { ElMessage } from "element-plus";
 
 const tableData = ref<ExtensionMenu[]>([])
 
@@ -10,10 +11,14 @@ const tableData = ref<ExtensionMenu[]>([])
 const editStatus = ref(false)
 const editFormTitle = ref("")
 const dialogVisible = ref(false)
-const editFormData = ref({
-    name: '',
-    url: ''
-})
+const editFormData = ref<ExtensionMenu>()
+editFormData.value = {
+    id: 0,
+    name: "",
+    url: "",
+    priority: 0
+};
+
 const editFormRules = {
     name: [
         { required: true, message: '请输入名称', trigger: 'blur' }
@@ -43,8 +48,10 @@ function edit(row: ExtensionMenu) {
     editFormTitle.value = "编辑";
     dialogVisible.value = true;
     editFormData.value = {
+        id: row.id,
+        url: row.url,
         name: row.name,
-        url: row.url
+        priority: row.priority
     };
 }
 
@@ -53,8 +60,10 @@ function add() {
     editFormTitle.value = "新增";
     dialogVisible.value = true;
     editFormData.value = {
+        id: 0,
+        url: "",
         name: "",
-        url: ""
+        priority: 0
     };
 }
 
@@ -68,13 +77,31 @@ function cancel() {
 
 async function confirm() {
     // console.log(editFormData);
-    if (editFormData.value.name.trim() == ''
-        || editFormData.value.url.trim() == '') {
+    if (editFormData.value!.name.trim() == ''
+        || editFormData.value!.url.trim() == '') {
         return;
     }
     // console.log(editFormData);
     if (editStatus) {
-        
+        let priority = 0;
+        if (editFormData.value!.priority == null || editFormData.value!.priority == undefined) {
+            priority = 0;
+        } else {
+            priority = editFormData.value!.priority;
+        }
+        let result = await invoke('edit_extension_menu_item_handler', {
+            id: editFormData.value!.id,
+            name: editFormData.value!.name,
+            url: editFormData.value!.url,
+            priority: priority
+        }) as boolean;
+        if (result) {
+            ElMessage.success("更新平台成功！");
+            dialogVisible.value = false;
+            initData();
+        } else {
+            ElMessage.error("未知错误, 更新平台失败!!");
+        }
     } else {
 
     }
@@ -100,26 +127,26 @@ async function confirm() {
                 </el-icon></el-button>
         </div>
         <!-- <el-dialog title="编辑" v-model="dialogVisible" width="30%" draggable="true">
-                                                                                    <el-form ref="form" :model="editFormData" :rules="editFormRules" label-width="80px">
-                                                                                        <el-form-item label="名称" prop="name">
-                                                                                            <el-input v-model="editFormData.name"></el-input>
-                                                                                        </el-form-item>
-                                                                                        <el-form-item label="链接" prop="link">
-                                                                                            <el-input v-model="editFormData.link"></el-input>
-                                                                                        </el-form-item>
-                                                                                    </el-form>
-                                                                                    <div slot="footer" class="dialog-footer">
-                                                                                        <el-button @click="dialogVisible = false">取 消</el-button>
-                                                                                        <el-button type="primary" @click="submitForm('form')">确 定</el-button>
-                                                                                    </div>
-                                                                                </el-dialog> -->
+                                                                                                                                                            <el-form ref="form" :model="editFormData" :rules="editFormRules" label-width="80px">
+                                                                                                                                                                <el-form-item label="名称" prop="name">
+                                                                                                                                                                    <el-input v-model="editFormData.name"></el-input>
+                                                                                                                                                                </el-form-item>
+                                                                                                                                                                <el-form-item label="链接" prop="link">
+                                                                                                                                                                    <el-input v-model="editFormData.link"></el-input>
+                                                                                                                                                                </el-form-item>
+                                                                                                                                                            </el-form>
+                                                                                                                                                            <div slot="footer" class="dialog-footer">
+                                                                                                                                                                <el-button @click="dialogVisible = false">取 消</el-button>
+                                                                                                                                                                <el-button type="primary" @click="submitForm('form')">确 定</el-button>
+                                                                                                                                                            </div>
+                                                                                                                                                        </el-dialog> -->
         <el-dialog v-model="dialogVisible" v-model:title="editFormTitle" draggable="true">
             <el-form :model="editFormData" :rules="editFormRules" ref="form">
                 <el-form-item label="名称" prop="name">
-                    <el-input maxlength="15" show-word-limit style="box-shadow: 0;" v-model="editFormData.name"></el-input>
+                    <el-input maxlength="15" show-word-limit style="box-shadow: 0;" v-model="editFormData!.name"></el-input>
                 </el-form-item>
                 <el-form-item label="链接" prop="url">
-                    <el-input v-model="editFormData.url"></el-input>
+                    <el-input v-model="editFormData!.url"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
