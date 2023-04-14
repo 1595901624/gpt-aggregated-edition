@@ -1,3 +1,6 @@
+#![allow(dead_code)]
+#![allow(unused_variables)]
+
 /// 用户扩展的菜单
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct ExtensionMenu {

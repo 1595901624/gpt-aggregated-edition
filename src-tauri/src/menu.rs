@@ -9,7 +9,6 @@ use tauri_plugin_positioner::{Position, WindowExt};
 use crate::{
     model::{
         constant::{self, PREFERENCE_CURRENT_PAGE_URL},
-        extension_menu,
         preference_model::WindowMode,
     },
     preference_util,

@@ -54,8 +54,9 @@ fn main() {
             command::get_preference_handler,
             command::create_docx_handler,
             command::create_markdown_handler,
-            command::add_expension_item_handler,
-            command::edit_expension_item_handler
+            command::add_extension_item_handler,
+            command::edit_extension_item_handler,
+            command::delete_extension_item_handler
         ])
         .plugin(tauri_plugin_positioner::init())
         .setup(|app| {
