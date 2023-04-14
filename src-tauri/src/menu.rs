@@ -19,7 +19,8 @@ pub fn create_tary_menu() -> SystemTrayMenu {
     let open = CustomMenuItem::new("open".to_string(), "打开窗口").accelerator("Cmd+Shift+O");
     let quit = CustomMenuItem::new("quit".to_string(), "退出").accelerator("Cmd+Q");
     let chat_gpt = CustomMenuItem::new("chat_gpt".to_string(), "ChatGPT(免费线路1)");
-    let chat_gpt_free2 = CustomMenuItem::new("chat_gpt_free2".to_string(), "ChatGPT(免费线路2)-推荐");
+    let chat_gpt_free2 =
+        CustomMenuItem::new("chat_gpt_free2".to_string(), "ChatGPT(免费线路2)-推荐");
     let chat_gpt_free3 = CustomMenuItem::new("chat_gpt_free3".to_string(), "ChatGPT(免费线路3)");
     let chat_chat = CustomMenuItem::new("chat_chat".to_string(), "ChatGPT(限额版)");
     let chat_gpt_official = CustomMenuItem::new("chat_gpt_official".to_string(), "ChatGPT(官方版)");
@@ -52,21 +53,49 @@ pub fn create_tary_menu() -> SystemTrayMenu {
     let wenxinyige = CustomMenuItem::new("wenxinyige".to_string(), "文心一格");
     let image_submenu =
         SystemTraySubmenu::new("AI图像平台", SystemTrayMenu::new().add_item(wenxinyige));
-    SystemTrayMenu::new()
+    let mut submenu = SystemTrayMenu::new()
         .add_item(open)
         .add_item(refresh)
         .add_native_item(SystemTrayMenuItem::Separator)
         .add_submenu(mode_submenu)
-        .add_submenu(image_submenu)
-        // .add_item(always_top)
+        .add_submenu(image_submenu);
+
+    if let Some(menu) = create_custom_tray_menu() {
+        submenu = submenu.add_submenu(menu);
+    }
+
+    submenu = submenu
         .add_native_item(SystemTrayMenuItem::Separator)
         .add_item(github)
         .add_item(gitee)
         .add_item(preference)
         .add_native_item(SystemTrayMenuItem::Separator)
-        .add_item(quit)
+        .add_item(quit);
+    return submenu;
 }
 
+/// 创建自定义右下角菜单
+fn create_custom_tray_menu() -> Option<SystemTraySubmenu> {
+    if let Some(mut list) = preference_util::get_custom_menu_list() {
+        info!("{:?}", &list);
+        let mut menu = SystemTrayMenu::new();
+
+        list.sort_by_key(|item| item.get_priority().unwrap_or_else(|| 0));
+        list.iter().for_each(|item| {
+            if item.get_name().is_some() && item.get_string_id().is_some() {
+                menu = menu.clone().add_item(CustomMenuItem::new(
+                    item.get_string_id().unwrap(),
+                    item.get_name().unwrap(),
+                ));
+            }
+        });
+        // info!("{:?}", &menu);
+        return Some(SystemTraySubmenu::new("自定义平台", menu));
+    }
+    return None;
+}
+
+/// 创建自定义窗口菜单
 fn create_custom_menu() -> Option<Submenu> {
     if let Some(mut list) = preference_util::get_custom_menu_list() {
         info!("{:?}", &list);
@@ -91,7 +120,8 @@ fn create_custom_menu() -> Option<Submenu> {
 pub fn create_window_menu() -> Menu {
     // 创建普通菜单
     let chat_gpt = CustomMenuItem::new("chat_gpt".to_string(), "ChatGPT(免费线路1)");
-    let chat_gpt_free2 = CustomMenuItem::new("chat_gpt_free2".to_string(), "ChatGPT(免费线路2)-推荐");
+    let chat_gpt_free2 =
+        CustomMenuItem::new("chat_gpt_free2".to_string(), "ChatGPT(免费线路2)-推荐");
     let chat_gpt_free3 = CustomMenuItem::new("chat_gpt_free3".to_string(), "ChatGPT(免费线路3)");
     let chat_gpt_official = CustomMenuItem::new("chat_gpt_official".to_string(), "ChatGPT(官方版)");
     let ernie_bot = CustomMenuItem::new("ernie_bot".to_string(), "文心一言");
@@ -134,7 +164,8 @@ pub fn create_window_menu() -> Menu {
     if let Some(submenu) = create_custom_menu() {
         menu = menu.add_submenu(submenu);
     }
-    menu = menu.add_item(CustomMenuItem::new("refresh", "刷新"))
+    menu = menu
+        .add_item(CustomMenuItem::new("refresh", "刷新"))
         .add_item(CustomMenuItem::new("preference", "设置"))
         .add_submenu(about_submenu);
 
@@ -306,81 +337,98 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
         } => {
             //println!("system tray received a double click");
         }
-        SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
-            "github" => {
-                redirect_github(&app.get_window(constant::WINDOW_LABEL_MAIN).unwrap());
+        SystemTrayEvent::MenuItemClick { id, .. } => {
+            if let Some(extension_menu_list) = preference_util::get_custom_menu_list() {
+                extension_menu_list.iter().for_each(|item| {
+                    if item.get_string_id().is_some()
+                        && id.as_str() == item.get_string_id().unwrap()
+                        && item.get_url().is_some()
+                    {
+                        redirect_url(
+                            &app.get_window(constant::WINDOW_LABEL_MAIN).unwrap(),
+                            item.get_url().unwrap().as_str(),
+                        );
+                    }
+                });
             }
-            "gitee" => {
-                redirect_gitee(&app.get_window(constant::WINDOW_LABEL_MAIN).unwrap());
+            match id.as_str() {
+                "github" => {
+                    redirect_github(&app.get_window(constant::WINDOW_LABEL_MAIN).unwrap());
+                }
+                "gitee" => {
+                    redirect_gitee(&app.get_window(constant::WINDOW_LABEL_MAIN).unwrap());
+                }
+                "ernie_bot" => {
+                    redirect_url(&app.get_window("main").unwrap(), "https://yiyan.baidu.com/");
+                }
+                "tongyi" => {
+                    redirect_url(
+                        &app.get_window("main").unwrap(),
+                        "https://tongyi.aliyun.com/",
+                    );
+                }
+                "chat_chat" => {
+                    redirect_url(
+                        &app.get_window("main").unwrap(),
+                        "https://chat.okis.dev/zh-CN?mode=chat",
+                    );
+                }
+                "chat_gpt" => {
+                    redirect_url(&app.get_window("main").unwrap(), "https://freegpt.one/");
+                    // main_window.eval(&format!(
+                    //     "window.location.replace('https://sonnylab-gpt.vercel.app')"
+                    // ));
+                }
+                "chat_gpt_free2" => {
+                    redirect_url(&app.get_window("main").unwrap(), "https://chatbot.theb.ai/");
+                }
+                "chat_gpt_free3" => {
+                    redirect_url(
+                        &app.get_window("main").unwrap(),
+                        "https://chatgpt-35-turbo.com/",
+                    );
+                }
+                "chat_gpt_official" => {
+                    redirect_url(
+                        &app.get_window("main").unwrap(),
+                        "https://chat.openai.com/chat",
+                    );
+                }
+                "poe" => {
+                    redirect_url(&app.get_window("main").unwrap(), "https://poe.com/");
+                }
+                "bing" => {
+                    redirect_url(&app.get_window("main").unwrap(), "https://www.bing.com/new");
+                }
+                "refresh" => {
+                    let url = preference_util::get_preference(PREFERENCE_CURRENT_PAGE_URL, "");
+                    app.get_window("main")
+                        .unwrap()
+                        .eval(&format!("window.location.replace('{}')", url))
+                        .unwrap();
+                }
+                "bard" => {
+                    redirect_url(&app.get_window("main").unwrap(), "https://bard.google.com/");
+                }
+                "quit" => {
+                    std::process::exit(0);
+                }
+                "preference" => {
+                    show_window_to_center(
+                        &app.get_window(constant::WINDOW_LABEL_PREFERENCE).unwrap(),
+                    );
+                }
+                "open" => {
+                    let main_window = app.get_window("main").unwrap();
+                    main_window.show().unwrap();
+                    main_window.set_focus().unwrap();
+                }
+                "wenxinyige" => {
+                    redirect_url(&app.get_window("main").unwrap(), "https://yige.baidu.com/");
+                }
+                _ => {}
             }
-            "ernie_bot" => {
-                redirect_url(&app.get_window("main").unwrap(), "https://yiyan.baidu.com/");
-            }
-            "tongyi" => {
-                redirect_url(
-                    &app.get_window("main").unwrap(),
-                    "https://tongyi.aliyun.com/",
-                );
-            }
-            "chat_chat" => {
-                redirect_url(
-                    &app.get_window("main").unwrap(),
-                    "https://chat.okis.dev/zh-CN?mode=chat",
-                );
-            }
-            "chat_gpt" => {
-                redirect_url(&app.get_window("main").unwrap(), "https://freegpt.one/");
-                // main_window.eval(&format!(
-                //     "window.location.replace('https://sonnylab-gpt.vercel.app')"
-                // ));
-            }
-            "chat_gpt_free2" => {
-                redirect_url(&app.get_window("main").unwrap(), "https://chatbot.theb.ai/");
-            }
-            "chat_gpt_free3" => {
-                redirect_url(
-                    &app.get_window("main").unwrap(),
-                    "https://chatgpt-35-turbo.com/",
-                );
-            }
-            "chat_gpt_official" => {
-                redirect_url(
-                    &app.get_window("main").unwrap(),
-                    "https://chat.openai.com/chat",
-                );
-            }
-            "poe" => {
-                redirect_url(&app.get_window("main").unwrap(), "https://poe.com/");
-            }
-            "bing" => {
-                redirect_url(&app.get_window("main").unwrap(), "https://www.bing.com/new");
-            }
-            "refresh" => {
-                let url = preference_util::get_preference(PREFERENCE_CURRENT_PAGE_URL, "");
-                app.get_window("main")
-                    .unwrap()
-                    .eval(&format!("window.location.replace('{}')", url))
-                    .unwrap();
-            }
-            "bard" => {
-                redirect_url(&app.get_window("main").unwrap(), "https://bard.google.com/");
-            }
-            "quit" => {
-                std::process::exit(0);
-            }
-            "preference" => {
-                show_window_to_center(&app.get_window(constant::WINDOW_LABEL_PREFERENCE).unwrap());
-            }
-            "open" => {
-                let main_window = app.get_window("main").unwrap();
-                main_window.show().unwrap();
-                main_window.set_focus().unwrap();
-            }
-            "wenxinyige" => {
-                redirect_url(&app.get_window("main").unwrap(), "https://yige.baidu.com/");
-            }
-            _ => {}
-        },
+        }
         _ => {}
     }
 }
