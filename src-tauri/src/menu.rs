@@ -19,7 +19,7 @@ pub fn create_tary_menu() -> SystemTrayMenu {
     let open = CustomMenuItem::new("open".to_string(), "打开窗口").accelerator("Cmd+Shift+O");
     let quit = CustomMenuItem::new("quit".to_string(), "退出").accelerator("Cmd+Q");
     let chat_gpt = CustomMenuItem::new("chat_gpt".to_string(), "ChatGPT(免费线路1)");
-    let chat_gpt_free2 = CustomMenuItem::new("chat_gpt_free2".to_string(), "ChatGPT(免费线路2)");
+    let chat_gpt_free2 = CustomMenuItem::new("chat_gpt_free2".to_string(), "ChatGPT(免费线路2)-推荐");
     let chat_gpt_free3 = CustomMenuItem::new("chat_gpt_free3".to_string(), "ChatGPT(免费线路3)");
     let chat_chat = CustomMenuItem::new("chat_chat".to_string(), "ChatGPT(限额版)");
     let chat_gpt_official = CustomMenuItem::new("chat_gpt_official".to_string(), "ChatGPT(官方版)");
@@ -72,7 +72,7 @@ fn create_custom_menu() -> Option<Submenu> {
         info!("{:?}", &list);
         let mut menu = Menu::new();
 
-        list.sort_by_key(|item| {item.get_priority().unwrap_or_else(|| 0)});
+        list.sort_by_key(|item| item.get_priority().unwrap_or_else(|| 0));
         list.iter().for_each(|item| {
             if item.get_name().is_some() && item.get_string_id().is_some() {
                 menu = menu.clone().add_item(CustomMenuItem::new(
@@ -81,8 +81,8 @@ fn create_custom_menu() -> Option<Submenu> {
                 ));
             }
         });
-        info!("{:?}", &menu);
-        return Some(Submenu::new("自定义", menu));
+        // info!("{:?}", &menu);
+        return Some(Submenu::new("自定义平台", menu));
     }
     return None;
 }
@@ -91,7 +91,7 @@ fn create_custom_menu() -> Option<Submenu> {
 pub fn create_window_menu() -> Menu {
     // 创建普通菜单
     let chat_gpt = CustomMenuItem::new("chat_gpt".to_string(), "ChatGPT(免费线路1)");
-    let chat_gpt_free2 = CustomMenuItem::new("chat_gpt_free2".to_string(), "ChatGPT(免费线路2)");
+    let chat_gpt_free2 = CustomMenuItem::new("chat_gpt_free2".to_string(), "ChatGPT(免费线路2)-推荐");
     let chat_gpt_free3 = CustomMenuItem::new("chat_gpt_free3".to_string(), "ChatGPT(免费线路3)");
     let chat_gpt_official = CustomMenuItem::new("chat_gpt_official".to_string(), "ChatGPT(官方版)");
     let ernie_bot = CustomMenuItem::new("ernie_bot".to_string(), "文心一言");
@@ -123,20 +123,21 @@ pub fn create_window_menu() -> Menu {
     let wenxinyige = CustomMenuItem::new("wenxinyige".to_string(), "文心一格");
     let image_submenu = Submenu::new("AI图像平台", Menu::new().add_item(wenxinyige));
     let about_submenu = Submenu::new(
-        "更多".to_string(),
+        "帮助".to_string(),
         Menu::new().add_item(github).add_item(gitee),
     );
 
-    let menu = Menu::new()
+    let mut menu = Menu::new()
         .add_submenu(mode_submenu)
-        .add_submenu(image_submenu)
-        .add_item(CustomMenuItem::new("refresh", "刷新"))
+        .add_submenu(image_submenu);
+
+    if let Some(submenu) = create_custom_menu() {
+        menu = menu.add_submenu(submenu);
+    }
+    menu = menu.add_item(CustomMenuItem::new("refresh", "刷新"))
         .add_item(CustomMenuItem::new("preference", "设置"))
         .add_submenu(about_submenu);
 
-    if let Some(submenu) = create_custom_menu() {
-        return menu.add_submenu(submenu);
-    }
     return menu;
 }
 

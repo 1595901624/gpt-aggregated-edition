@@ -9,6 +9,7 @@ mod menu;
 mod model;
 mod plugin;
 mod preference_util;
+mod event;
 
 // use docx_rust::{
 //     document::{
@@ -62,6 +63,8 @@ fn main() {
         .plugin(tauri_plugin_positioner::init())
         .setup(|app| {
             info!("[tauri setup]");
+            event::on_global_event(&app);
+
             let url = preference_util::get_preference(constant::PREFERENCE_CURRENT_PAGE_URL, "");
             let main_window_builder =
                 tauri::WindowBuilder::new(app, "main", tauri::WindowUrl::App(url.into()))
@@ -81,6 +84,7 @@ fn main() {
             } else {
                 main_window = main_window_builder.build().unwrap();
             }
+
             let mut shortcut = app.global_shortcut_manager();
             shortcut
                 .register("Cmd+Shift+O", move || {

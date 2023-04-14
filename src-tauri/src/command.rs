@@ -77,6 +77,7 @@ pub fn add_extension_menu_item_handler(name: &str, url: &str, priority: i32) -> 
         let json = serde_json::to_string(&menu_list).unwrap();
         if let Some(path) = preference_util::get_custom_menu_path() {
             if let Ok(_) = std::fs::write(path, json) {
+
                 return true;
             }
         }
