@@ -52,7 +52,16 @@ pub fn get_preference_handler(key: i32, value: &str) -> String {
 
 /// 添加一项自定义的菜单
 #[tauri::command]
-pub fn add_extension_item_handler(name: &str, url: &str, priority: i32) -> bool {
+pub fn query_extension_menus_handler() -> Vec<ExtensionMenu> {
+    if let Some(menu_list) = preference_util::get_custom_menu_list() {
+        return menu_list;
+    }
+    return Vec::with_capacity(0);
+}
+
+/// 添加一项自定义的菜单
+#[tauri::command]
+pub fn add_extension_menu_item_handler(name: &str, url: &str, priority: i32) -> bool {
     if let Some(mut menu_list) = preference_util::get_custom_menu_list() {
         // let id;
         let id = if menu_list.is_empty() {
@@ -77,7 +86,7 @@ pub fn add_extension_item_handler(name: &str, url: &str, priority: i32) -> bool 
 
 /// 编辑一项自定义的菜单
 #[tauri::command]
-pub fn edit_extension_item_handler(id: i32, name: &str, url: &str, priority: i32) -> bool {
+pub fn edit_extension_menu_item_handler(id: i32, name: &str, url: &str, priority: i32) -> bool {
     if let Some(mut menu_list) = preference_util::get_custom_menu_list() {
         menu_list.iter_mut().for_each(|item| {
             if item.get_id() == id {
@@ -98,7 +107,7 @@ pub fn edit_extension_item_handler(id: i32, name: &str, url: &str, priority: i32
 }
 
 #[tauri::command]
-pub fn delete_extension_item_handler(id: i32) -> bool {
+pub fn delete_extension_menu_item_handler(id: i32) -> bool {
     if let Some(mut menu_list) = preference_util::get_custom_menu_list() {
         menu_list.retain(|item| item.get_id() != id);
         let json = serde_json::to_string(&menu_list).unwrap();

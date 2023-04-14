@@ -1,20 +1,13 @@
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { invoke } from "@tauri-apps/api/tauri";
 import { fa } from "element-plus/es/locale";
+import { a } from "@tauri-apps/api/app-373d24a3";
 
-const tableData = ref<CustomMenu[]>([
-    { id: 1, name: 'Google', url: 'https://www.google.com' },
-    { id: 2, name: 'Baidu', url: 'https://www.baidu.com' },
-    { id: 3, name: 'Yahoo', url: 'https://www.yahoo.com' },
-    { id: 1, name: 'Google', url: 'https://www.google.com' },
-    { id: 2, name: 'Baidu', url: 'https://www.baidu.com' },
-    { id: 3, name: 'Yahoo', url: 'https://www.yahoo.com' },
-    { id: 1, name: 'Google', url: 'https://www.google.com' },
-    { id: 2, name: 'Baidu', url: 'https://www.baidu.com' },
-    { id: 3, name: 'Yahoo', url: 'https://www.yahoo.com' },
-])
+const tableData = ref<ExtensionMenu[]>([])
 
+// 是否是编辑状态
+const editStatus = ref(false)
 const editFormTitle = ref("")
 const dialogVisible = ref(false)
 const editFormData = ref({
@@ -30,8 +23,24 @@ const editFormRules = {
     ]
 }
 
-function edit(row: CustomMenu) {
-    editFormTitle.value = "编辑"
+onMounted(() => {
+    initData();
+})
+
+async function initData() {
+    // 拉取设置列表
+    let menuList = await invoke('query_extension_menus_handler') as ExtensionMenu[]
+    tableData.value = menuList;
+}
+
+function remove(row: ExtensionMenu) {
+    // 删除操作逻辑
+    console.log('点击了删除按钮，当前行数据为：', row)
+}
+
+function edit(row: ExtensionMenu) {
+    editStatus.value = true;
+    editFormTitle.value = "编辑";
     dialogVisible.value = true;
     editFormData.value = {
         name: row.name,
@@ -39,13 +48,9 @@ function edit(row: CustomMenu) {
     };
 }
 
-function remove(row: CustomMenu) {
-    // 删除操作逻辑
-    console.log('点击了删除按钮，当前行数据为：', row)
-}
-
 function add() {
-    editFormTitle.value = "新增"
+    editStatus.value = false;
+    editFormTitle.value = "新增";
     dialogVisible.value = true;
     editFormData.value = {
         name: "",
@@ -61,16 +66,18 @@ function cancel() {
     dialogVisible.value = false;
 }
 
-function submitForm(formName: any) {
-    // this.$refs[formName].validate(valid => {
-    //     if (valid) {
-    //         // 在这里写提交表单的逻辑
-    //         this.dialogVisible = false;
-    //     } else {
-    //         console.log('error submit!!');
-    //         return false;
-    //     }
-    // });
+async function confirm() {
+    // console.log(editFormData);
+    if (editFormData.value.name.trim() == ''
+        || editFormData.value.url.trim() == '') {
+        return;
+    }
+    // console.log(editFormData);
+    if (editStatus) {
+        
+    } else {
+
+    }
 }
 </script>
 
@@ -93,19 +100,19 @@ function submitForm(formName: any) {
                 </el-icon></el-button>
         </div>
         <!-- <el-dialog title="编辑" v-model="dialogVisible" width="30%" draggable="true">
-                                                                <el-form ref="form" :model="editFormData" :rules="editFormRules" label-width="80px">
-                                                                    <el-form-item label="名称" prop="name">
-                                                                        <el-input v-model="editFormData.name"></el-input>
-                                                                    </el-form-item>
-                                                                    <el-form-item label="链接" prop="link">
-                                                                        <el-input v-model="editFormData.link"></el-input>
-                                                                    </el-form-item>
-                                                                </el-form>
-                                                                <div slot="footer" class="dialog-footer">
-                                                                    <el-button @click="dialogVisible = false">取 消</el-button>
-                                                                    <el-button type="primary" @click="submitForm('form')">确 定</el-button>
-                                                                </div>
-                                                            </el-dialog> -->
+                                                                                    <el-form ref="form" :model="editFormData" :rules="editFormRules" label-width="80px">
+                                                                                        <el-form-item label="名称" prop="name">
+                                                                                            <el-input v-model="editFormData.name"></el-input>
+                                                                                        </el-form-item>
+                                                                                        <el-form-item label="链接" prop="link">
+                                                                                            <el-input v-model="editFormData.link"></el-input>
+                                                                                        </el-form-item>
+                                                                                    </el-form>
+                                                                                    <div slot="footer" class="dialog-footer">
+                                                                                        <el-button @click="dialogVisible = false">取 消</el-button>
+                                                                                        <el-button type="primary" @click="submitForm('form')">确 定</el-button>
+                                                                                    </div>
+                                                                                </el-dialog> -->
         <el-dialog v-model="dialogVisible" v-model:title="editFormTitle" draggable="true">
             <el-form :model="editFormData" :rules="editFormRules" ref="form">
                 <el-form-item label="名称" prop="name">
@@ -117,7 +124,7 @@ function submitForm(formName: any) {
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click.native="cancel">取消</el-button>
-                <el-button type="primary" @click.native="">确定</el-button>
+                <el-button type="primary" @click.native="confirm">确定</el-button>
             </div>
         </el-dialog>
     </div>
