@@ -159,10 +159,11 @@ async function confirm() {
         <el-dialog v-model="dialogVisible" v-model:title="editFormTitle" draggable="true">
             <el-form :model="editFormData" :rules="editFormRules" ref="form">
                 <el-form-item label="名称" prop="name">
-                    <el-input maxlength="15" show-word-limit style="box-shadow: 0;" v-model="editFormData!.name"></el-input>
+                    <el-input maxlength="15" show-word-limit style="box-shadow: 0;" v-model="editFormData!.name"
+                        placeholder="请输入名称"></el-input>
                 </el-form-item>
                 <el-form-item label="链接" prop="url">
-                    <el-input v-model="editFormData!.url" placeholder="https://xxx.com"></el-input>
+                    <el-input v-model="editFormData!.url" placeholder="请输入链接,如: https://xxx.com"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">

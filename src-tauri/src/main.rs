@@ -10,6 +10,7 @@ mod model;
 mod plugin;
 mod preference_util;
 mod event;
+mod util;
 
 // use docx_rust::{
 //     document::{

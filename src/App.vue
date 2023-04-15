@@ -26,7 +26,7 @@ async function getData() {
     <!-- <NewUI /> -->
     <MultiTabPage />
 
-    <div class="footer">© Github@Cloris Version {{ appVersion }} </div>
+    <footer class="footer">© Github@Cloris Version {{ appVersion }} </footer>
   </div>
   <!-- <el-card>
    
