@@ -140,7 +140,7 @@ async function confirm() {
 <template>
     <div>
         <span class="set-subtitle common-margin-top-8">注：新增或者删除自定义平台需在重启应用后生效。</span>
-        <el-table :data="tableData" v-sortable:columns.move="onSort">
+        <el-table :data="tableData" v-sortable:columns.move="onSort" style="height: 470px;">
             <!-- <el-table-column prop="id" label="ID" width="40px"></el-table-column> -->
             <el-table-column prop="name" label="名称" width="110px"></el-table-column>
             <el-table-column prop="url" label="链接地址"></el-table-column>

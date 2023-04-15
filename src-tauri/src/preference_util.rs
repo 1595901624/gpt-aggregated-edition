@@ -1,7 +1,8 @@
 use std::path::PathBuf;
 
 use tauri::{
-    api::path::{resolve_path, BaseDirectory}, Env,
+    api::path::{resolve_path, BaseDirectory},
+    Env,
 };
 
 use crate::{
@@ -162,6 +163,9 @@ pub fn set_preference(key: i32, value: &str) -> bool {
         constant::PREFERENCE_CURRENT_PAGE_URL => {
             p.current_page_url = Some(value.to_string());
         }
+        constant::PREFERENCE_EXIT_APP => {
+            p.exit_app = Some(value.parse::<bool>().unwrap_or_default());
+        }
         _ => {}
     }
     // 写入文件
@@ -192,6 +196,10 @@ pub fn get_preference(key: i32, value: &str) -> String {
                 .current_page_url
                 .unwrap_or_else(|| String::from("https://yiyan.baidu.com/"));
             return ret;
+        }
+        constant::PREFERENCE_EXIT_APP => {
+            let ret = p.exit_app.unwrap_or_default();
+            return ret.to_string();
         }
         _ => {}
     }

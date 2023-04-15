@@ -17,6 +17,9 @@ pub struct Preference {
 
     // 当前的访问页面的地址
     pub current_page_url: Option<String>,
+
+    // 点击关闭退出应用
+    pub exit_app: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]

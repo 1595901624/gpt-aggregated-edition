@@ -54,6 +54,7 @@ fn main() {
             command::create_markdown_handler,
             command::set_preference_handler,
             command::get_preference_handler,
+            command::get_app_preference_handler,
             command::create_docx_handler,
             command::create_markdown_handler,
             command::query_extension_menus_handler,

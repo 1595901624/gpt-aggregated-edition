@@ -7,10 +7,13 @@ import { PREFERENCE_AUTO_HIDE_WHEN_CLICK_OUTSIDE } from "../../constant";
 const mode = ref(0)
 
 // 是否启用内置脚本
-const enableInternalScript = ref(false)
+const enableInternalScript = ref<boolean>(false)
 
 // 任务栏模式点击窗口外侧自动隐藏
-const autoHideWhenClickOutside = ref("true")
+const autoHideWhenClickOutside = ref("true");
+
+// 当点击关闭时退出应用
+const exitWhenClickClose = ref<boolean>(false);
 
 onMounted(() => {
   getPreferenceData();
@@ -23,6 +26,7 @@ async function getPreferenceData() {
   mode.value = await invoke('get_window_mode_handler');
   enableInternalScript.value = await invoke('is_enable_internal_script_handler');
   autoHideWhenClickOutside.value = await invoke('get_preference_handler', { key: PREFERENCE_AUTO_HIDE_WHEN_CLICK_OUTSIDE, value: "true" });
+  // exitWhenClickClose.value = await invoke('get_preference_handler', )
 }
 
 /**
@@ -63,7 +67,17 @@ async function setAutoHideWhenClickOutside() {
         </el-radio-group>
       </div>
 
-      <div class="row-layout common-margin-top-8" v-if="mode == 1" @change="setAutoHideWhenClickOutside">
+      <!-- 窗口模式子设置项 -->
+      <div class="row-layout common-margin-top" v-if="mode == 0" @change="setAutoHideWhenClickOutside">
+        <span class="set-title">点击关闭退出应用 </span>
+        <el-radio-group v-model="exitWhenClickClose" style="margin-left: 10px;">
+          <el-radio-button label="true">是</el-radio-button>
+          <el-radio-button label="false">否</el-radio-button>
+        </el-radio-group>
+      </div>
+
+      <!-- 任务栏模式子设置项 -->
+      <div class="row-layout common-margin-top" v-if="mode == 1" @change="setAutoHideWhenClickOutside">
         <span class="set-title">点击窗口外侧自动隐藏窗口 </span>
         <el-radio-group v-model="autoHideWhenClickOutside" style="margin-left: 10px;">
           <el-radio-button label="true">开启</el-radio-button>

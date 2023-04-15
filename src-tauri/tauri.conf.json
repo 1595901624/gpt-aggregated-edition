@@ -78,7 +78,7 @@
       {
         "label": "preference",
         "fullscreen": false,
-        "resizable": true,
+        "resizable": false,
         "title": "设置",
         "visible": false,
         "width": 800,

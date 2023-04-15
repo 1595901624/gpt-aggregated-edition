@@ -27,4 +27,5 @@ pub const WINDOW_LABEL_PREFERENCE: &str = "preference";
 // ***************************设置项 START***************************** //
 pub const PREFERENCE_AUTO_HIDE_WHEN_CLICK_OUTSIDE: i32 = 3;
 pub const PREFERENCE_CURRENT_PAGE_URL: i32 = 4;
+pub const PREFERENCE_EXIT_APP: i32 = 5;
 // ***************************设置项 E N D***************************** //

@@ -7,7 +7,7 @@ use docx_rust::{
 };
 
 use crate::{
-    model::{chat_content::ChatContent, extension_menu::ExtensionMenu},
+    model::{chat_content::ChatContent, extension_menu::ExtensionMenu, preference_model::Preference},
     preference_util,
 };
 
@@ -247,4 +247,12 @@ pub fn create_markdown_handler(title: &str, content_json: &str) -> String {
         // });
     }
     format!("{}{}", title, content)
+}
+
+#[tauri::command]
+pub fn get_app_preference_handler() -> Option<Preference> {
+    if let Ok(p) = preference_util::get_app_preference() {
+        return Some(p);
+    }
+    return None;
 }
