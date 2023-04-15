@@ -2,17 +2,17 @@
 // pub const SWITCH_PAGE_SLEEP_TIME: u64 = 500;
 
 // 窗口模式的宽
-pub const WINDOW_WIDTH: i32 = 2000;
+pub const WINDOW_WIDTH: i32 = 1000;
 // 窗口模式的高
-pub const WINDOW_HEIGHT: i32 = 1500;
+pub const WINDOW_HEIGHT: i32 = 750;
 
 // 任务栏模式的宽
-pub const TASK_WINDOW_WIDTH: i32 = 800;
+pub const TASK_WINDOW_WIDTH: i32 = 400;
 // 任务栏模式的高
-pub const TASK_WINDOW_HEIGHT: i32 = 1500;
+pub const TASK_WINDOW_HEIGHT: i32 = 750;
 
 // 侧边栏宽度
-pub const SIDE_BAR_WIDTH: i32 = 800;
+pub const SIDE_BAR_WIDTH: i32 = 400;
 
 // App名称
 pub const APP_NAME: &str = "OneGPT";

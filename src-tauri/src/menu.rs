@@ -1,8 +1,8 @@
 use log::info;
 use tauri::{
-    api, AppHandle, CustomMenuItem, Manager, Menu, PhysicalPosition, PhysicalSize, Submenu,
+    api, AppHandle, CustomMenuItem, Manager, Menu, PhysicalPosition, LogicalSize, Submenu,
     SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem, SystemTraySubmenu, Window,
-    WindowMenuEvent,
+    WindowMenuEvent, PhysicalSize,
 };
 use tauri_plugin_positioner::{Position, WindowExt};
 
@@ -266,7 +266,7 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
             if mode == WindowMode::TaskBar {
                 // 任务栏模式
                 window
-                    .set_size(PhysicalSize::new(
+                    .set_size(LogicalSize::new(
                         constant::TASK_WINDOW_WIDTH,
                         constant::TASK_WINDOW_HEIGHT,
                     ))
@@ -284,9 +284,11 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
 
                 let side_bar_height = screen_height - size.height as i32 * 2;
                 // let side_bar_y = position.y as i32 - side_bar_height;
-
+                
+                let physical_width = constant::SIDE_BAR_WIDTH as f64 * window.scale_factor().unwrap();
+                
                 window
-                    .set_size(PhysicalSize::new(constant::SIDE_BAR_WIDTH, side_bar_height))
+                    .set_size(PhysicalSize::new(physical_width as i32, side_bar_height))
                     .unwrap();
                 window
                     .set_position(PhysicalPosition::new(
@@ -302,7 +304,7 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
             } else {
                 // 桌面模式
                 window
-                    .set_size(PhysicalSize::new(
+                    .set_size(LogicalSize::new(
                         constant::WINDOW_WIDTH,
                         constant::WINDOW_HEIGHT,
                     ))

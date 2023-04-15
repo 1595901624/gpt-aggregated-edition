@@ -23,7 +23,7 @@ mod util;
 // };
 use log::info;
 use model::{constant, preference_model::WindowMode};
-use tauri::{generate_handler, GlobalShortcutManager, Manager, PhysicalSize, SystemTray};
+use tauri::{generate_handler, GlobalShortcutManager, Manager, SystemTray, LogicalSize};
 use tauri_plugin_log::LogTarget;
 use tauri_plugin_positioner::{Position, WindowExt};
 
@@ -37,7 +37,7 @@ fn main() {
     let context = tauri::generate_context!();
 
     // test2();
-
+    
     // 初始化窗口
     tauri::Builder::default()
         .plugin(
@@ -102,7 +102,7 @@ fn main() {
             if preference_util::get_window_mode() == WindowMode::Window {
                 let main_window = app.get_window("main").unwrap();
                 main_window
-                    .set_size(PhysicalSize::new(
+                    .set_size(LogicalSize::new(
                         constant::WINDOW_WIDTH,
                         constant::WINDOW_HEIGHT,
                     ))
