@@ -1,4 +1,4 @@
-interface ExtensionMenu {
+export interface ExtensionMenu {
     id: number
     name: string
     url: string
