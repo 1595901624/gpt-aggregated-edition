@@ -29,23 +29,47 @@
 
 #### 聚合的平台
 
-##### ChatGPT官方版
+##### ChatGPT
+
+* ChatGPT官方版  
 需要注册账号、需要登录官方账号(不建议非美国地区访问)
 
-##### ChatGPT免费版
+* ChatGPT免费版  
 无需注册账号、无需登录账号、稳定极速(部分国家和地区无法正常访问)
 
-##### ChatChat
-无需注册账号、无需登录账号、稳定极速、每日限额，可正常访问。
+* ChatGPT限额版——ChatChat(推荐使用)
+这是一个ChatGPT镜像。无需注册账号、无需登录账号、稳定极速、每日限额，国内可正常访问。
+
+* ChatGPT免费线路1——FreeGPT 
+这是一个ChatGPT镜像。无需注册账号、无需登录账号、稳定极速(部分国家和地区无法正常访问)
+
+* ChatGPT免费线路2——BAI Chat(推荐使用)
+这是一个ChatGPT镜像。无需注册账号、无需登录账号、稳定极速(部分国家和地区无法正常访问)
+
+* ChatGPT免费线路3——ChatGPT-35-Turbo.com
+这是一个ChatGPT镜像。无需注册账号、无需登录账号、稳定极速(部分国家和地区无法正常访问)
 
 ##### POE
 需要注册账户、需要登录账号、集合Sage（免费）、ChatGPT4（付费）、ChatGPT（付费）、Clude（免费）、Clude+（付费）、DragonFly（免费）(部分国家和地区无法正常访问)
 
+* Claude：更擅长创意写作任务，但更容易拒绝回答问题。
+* Sage 和 ChatGPT：更擅长英语以外的语言，更擅长与编程相关的任务。
+* Dragonfly 响应较短，并且在输入中给出示例时更容易让 Dragonfly 遵循说明。
+
 ##### 文心一言
 需要有体验资格且必须登录百度账号
 
+##### 通义千问
+需要有体验资格且必须登录阿里账号
+
 ##### Bard
 需有体验资格且必须登录 Google 账号(部分国家和地区无法正常访问)
+
+##### New Bing
+需要有体验资格且必须登录 bing 账号(部分国家和地区无法正常访问)
+
+##### 文心一格
+必须登录百度账号
 
 #### 功能介绍
 
@@ -56,7 +80,7 @@
 - [x] 跨平台（Windows、Mac、Linux）
 - [x] 聚合更多平台
 - [x] 文心一言定制化功能
-- [x] 支持自定义平台（来自 [GPTFusion] (https://github.com/lpdswing/chatgpt)的灵感）
+- [x] 支持自定义平台（来自[ GPTFusion ](https://github.com/lpdswing/chatgpt)的灵感）
 - [ ] 自定义脚本支持
 - [ ] 更多功能敬请期待...
 
@@ -80,6 +104,10 @@
 #### 感谢
 感谢 [lpdswing](https://github.com/lpdswing) 提出的自定义平台的灵感。
 
+#### 下载安装
+`Windows`: 请下载 `OneGPT_xx.msi` 文件
+`Linux`: 请下载 `one-gpt_xx.AppImage（推荐）` 或者 `one-gpt_xx.deb`文件
+`MacOs`: 请下载 `OneGPT_xx.dmg` 文件
 
 #### 捐赠
 
