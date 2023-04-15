@@ -1,4 +1,4 @@
-interface Preference {
+export interface Preference {
     
 }
 
