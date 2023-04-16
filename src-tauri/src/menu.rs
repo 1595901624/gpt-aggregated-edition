@@ -77,7 +77,7 @@ pub fn create_tary_menu() -> SystemTrayMenu {
 /// 创建自定义右下角菜单
 fn create_custom_tray_menu() -> Option<SystemTraySubmenu> {
     if let Some(mut list) = preference_util::get_custom_menu_list() {
-        info!("{:?}", &list);
+        // info!("{:?}", &list);
         let mut menu = SystemTrayMenu::new();
 
         list.sort_by_key(|item| item.get_priority().unwrap_or_else(|| 0));

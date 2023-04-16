@@ -5,11 +5,11 @@
 )]
 
 mod command;
+mod event;
 mod menu;
 mod model;
 mod plugin;
 mod preference_util;
-mod event;
 mod util;
 
 // use docx_rust::{
@@ -22,8 +22,11 @@ mod util;
 //     Docx,
 // };
 use log::info;
-use model::{constant, preference_model::WindowMode};
-use tauri::{generate_handler, GlobalShortcutManager, Manager, SystemTray, LogicalSize};
+use model::{
+    constant::{self, WINDOW_LABEL_MAIN},
+    preference_model::WindowMode,
+};
+use tauri::{generate_handler, GlobalShortcutManager, LogicalSize, Manager, SystemTray};
 use tauri_plugin_log::LogTarget;
 use tauri_plugin_positioner::{Position, WindowExt};
 
@@ -37,7 +40,7 @@ fn main() {
     let context = tauri::generate_context!();
 
     // test2();
-    
+
     // 初始化窗口
     tauri::Builder::default()
         .plugin(
@@ -55,6 +58,7 @@ fn main() {
             command::set_preference_handler,
             command::get_preference_handler,
             command::get_app_preference_handler,
+            command::set_app_preference_handler,
             command::create_docx_handler,
             command::create_markdown_handler,
             command::query_extension_menus_handler,
@@ -67,9 +71,13 @@ fn main() {
             info!("[tauri setup]");
             event::on_global_event(&app);
 
-            let url = preference_util::get_preference(constant::PREFERENCE_CURRENT_PAGE_URL, "");
+            let url = preference_util::get_preference(
+                constant::PREFERENCE_CURRENT_PAGE_URL,
+                "https://yiyan.baidu.com",
+            );
+            info!("[init url] => {}", &url);
             let main_window_builder =
-                tauri::WindowBuilder::new(app, "main", tauri::WindowUrl::App(url.into()))
+                tauri::WindowBuilder::new(app, WINDOW_LABEL_MAIN, tauri::WindowUrl::App(url.into()))
                     .title(constant::APP_NAME)
                     .enable_clipboard_access()
                     .visible(false);
@@ -84,7 +92,10 @@ fn main() {
                     .build()
                     .unwrap();
             } else {
-                main_window = main_window_builder.build().unwrap();
+                main_window = main_window_builder
+                    .menu(menu::create_window_menu())
+                    .build()
+                    .unwrap();
             }
 
             let mut shortcut = app.global_shortcut_manager();
@@ -100,7 +111,7 @@ fn main() {
                 .unwrap_or_else(|err| println!("{:?}", err));
 
             if preference_util::get_window_mode() == WindowMode::Window {
-                let main_window = app.get_window("main").unwrap();
+                let main_window = app.get_window(WINDOW_LABEL_MAIN).unwrap();
                 main_window
                     .set_size(LogicalSize::new(
                         constant::WINDOW_WIDTH,
@@ -121,8 +132,20 @@ fn main() {
         // 窗口监听
         .on_window_event(|event| match event.event() {
             tauri::WindowEvent::CloseRequested { api, .. } => {
-                event.window().hide().unwrap();
-                api.prevent_close();
+                // info!("{}", event.window().label());
+                // 非Main窗口都隐藏
+                if event.window().label() != WINDOW_LABEL_MAIN {
+                    event.window().hide().unwrap();
+                    api.prevent_close();
+                    return;
+                }
+
+                if !preference_util::is_exit_app() {
+                    event.window().hide().unwrap();
+                    api.prevent_close();
+                } else {
+                    std::process::exit(0);
+                }
             }
             tauri::WindowEvent::Focused(is_focused) => {
                 // 当点击外侧的时候隐藏窗口

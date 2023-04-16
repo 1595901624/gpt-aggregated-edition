@@ -7,7 +7,9 @@ use docx_rust::{
 };
 
 use crate::{
-    model::{chat_content::ChatContent, extension_menu::ExtensionMenu, preference_model::Preference},
+    model::{
+        chat_content::ChatContent, extension_menu::ExtensionMenu, preference_model::Preference,
+    },
     preference_util,
 };
 
@@ -77,7 +79,6 @@ pub fn add_extension_menu_item_handler(name: &str, url: &str, priority: i32) -> 
         let json = serde_json::to_string(&menu_list).unwrap();
         if let Some(path) = preference_util::get_custom_menu_path() {
             if let Ok(_) = std::fs::write(path, json) {
-
                 return true;
             }
         }
@@ -255,4 +256,9 @@ pub fn get_app_preference_handler() -> Option<Preference> {
         return Some(p);
     }
     return None;
+}
+
+#[tauri::command]
+pub fn set_app_preference_handler(p: &str) -> bool {
+    preference_util::set_app_preference(p)
 }

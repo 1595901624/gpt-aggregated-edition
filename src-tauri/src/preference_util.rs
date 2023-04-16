@@ -1,5 +1,6 @@
 use std::path::PathBuf;
 
+use log::warn;
 use tauri::{
     api::path::{resolve_path, BaseDirectory},
     Env,
@@ -27,6 +28,8 @@ pub fn init_default_preference() {
         enable_internal_script: Some(true),
         enable_extendsion_script: Some(false),
         auto_hide_when_click_outside: Some(true),
+        current_page_url: Some("https://yiyan.baidu.com/".to_string()),
+        exit_app: Some(false),
         ..Default::default()
     };
     let json = serde_json::to_string(&preference).unwrap();
@@ -92,6 +95,14 @@ pub fn get_app_preference() -> Result<Preference, String> {
     return Ok(result.unwrap());
 }
 
+pub fn set_app_preference(json: &str) -> bool {
+    // let json = serde_json::to_string(p).unwrap();
+    if let Ok(_) = std::fs::write(get_app_preference_path(), json) {
+        return true;
+    }
+    return false;
+}
+
 /// 获取窗口模式
 pub fn get_window_mode() -> WindowMode {
     let perference = get_app_preference();
@@ -100,6 +111,14 @@ pub fn get_window_mode() -> WindowMode {
     }
     let perference = perference.unwrap();
     return perference.window_mode;
+}
+
+/// 是否退出app
+pub fn is_exit_app() -> bool {
+    if let Ok(perference) = get_app_preference() {
+        return perference.exit_app.unwrap_or_default();
+    }
+    return false;
 }
 
 /// 设置模式
@@ -178,7 +197,7 @@ pub fn set_preference(key: i32, value: &str) -> bool {
 pub fn get_preference(key: i32, value: &str) -> String {
     let perference = get_app_preference();
     if perference.is_err() {
-        dbg!("读取配置文件失败");
+        warn!("读取配置文件失败");
         return value.into();
     }
     let p = perference.unwrap();
