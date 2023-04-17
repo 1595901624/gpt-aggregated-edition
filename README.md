@@ -1,8 +1,8 @@
 <div align="center">
     <img src="demo/gpt_all_in_one.jpg" alt="chatgpt"/>
     <h1>OneGPT - GPT聚合版</h1>
-    <div><img src="https://img.shields.io/badge/stable%20version-v0.5.0-blue.svg?style=flat"></img>
-<img src="https://img.shields.io/badge/preview%20version-v0.6.0%20Beta-orange.svg?style=flat"></img>
+    <div><img src="https://img.shields.io/badge/stable%20version-v0.6.0-blue.svg?style=flat"></img>
+<img src="https://img.shields.io/badge/preview%20version-v0.7.0%20Beta-orange.svg?style=flat"></img>
 <img src="https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg?style=flat"></img>
 <img src="https://img.shields.io/badge/language-简体中文-brightgreen.svg?style=flat"></img></div>
     <h4>聚合ChatGPT官方版、ChatGPT免费版、文心一言、POE、chat chat等多个平台。</h4>
@@ -15,6 +15,8 @@
 如果您 **不希望我将您的网站聚合到软件内** 或者 **您需要将您的网站聚合到软件内** 。可以通过邮件 <haoyu3@163.com> 联系我。
 
 **首次使用时切换平台会很慢，请耐心等待**
+
+**`Gitee`仅仅是为了国内访问方便而创建的镜像，如果提 issue 优先 Github**
 
 #### 截图样例
 <div>
@@ -105,9 +107,9 @@
 感谢 [lpdswing](https://github.com/lpdswing) 提出的自定义平台的灵感。
 
 #### 下载安装
-`Windows`: 请下载 `OneGPT_xx.msi` 文件
-`Linux`: 请下载 `one-gpt_xx.AppImage（推荐）` 或者 `one-gpt_xx.deb`文件
-`MacOs`: 请下载 `OneGPT_xx.dmg` 文件
+`Windows`: 请下载 `OneGPT_xx.msi` 文件  
+`Linux`: 请下载 `one-gpt_xx.AppImage（推荐）` 或者 `one-gpt_xx.deb`文件  
+`MacOs`: 请下载 `OneGPT_xx.dmg` 文件  
 
 #### 捐赠
 
