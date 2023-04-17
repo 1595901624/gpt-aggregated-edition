@@ -1,7 +1,7 @@
 [
     {
         "id": 0,
-        "title": "",
+        "title": "ssss",
         "priority": 0,
         "menu": [
             {
@@ -11,7 +11,7 @@
                 "priority": 0
             },
             {
-                "divider": true
+                "separator": true
             },
             {
                 "id": 2,
@@ -37,7 +37,7 @@
     },
     {
         "id": 1,
-        "title": "",
+        "title": "xxxxxxxx",
         "priority": 0,
         "menu": [
             {
@@ -47,7 +47,7 @@
                 "priority": 0
             },
             {
-                "divider": true
+                "separator": true
             },
             {
                 "id": 2,
@@ -62,10 +62,18 @@
                 "priority": 0,
                 "submenu": [
                     {
-                        "id": 1,
+                        "id": 3,
                         "name": "测试",
                         "url": "https://www.baidu.com",
-                        "priority": 0
+                        "priority": 0,
+                        "submenu": [
+                            {
+                                "id": 1,
+                                "name": "测试",
+                                "url": "https://www.baidu.com",
+                                "priority": 0
+                            }
+                        ]
                     }
                 ]
             }

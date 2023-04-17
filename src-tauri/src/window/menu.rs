@@ -1,14 +1,15 @@
 use log::info;
 use tauri::{
-    api, AppHandle, CustomMenuItem, GlobalWindowEvent, LogicalSize, Manager, Menu,
+    api, AppHandle, CustomMenuItem, GlobalWindowEvent, LogicalSize, Manager, Menu, MenuItem,
     PhysicalPosition, PhysicalSize, Submenu, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
-    SystemTraySubmenu, Window, WindowMenuEvent, MenuItem,
+    SystemTraySubmenu, Window, WindowMenuEvent,
 };
 use tauri_plugin_positioner::{Position, WindowExt};
 
 use crate::{
     model::{
         constant::{self, PREFERENCE_CURRENT_PAGE_URL, WINDOW_LABEL_MAIN},
+        extension_menu::{self, ExtensionMenu},
         preference_model::WindowMode,
     },
     preference_util,
@@ -176,18 +177,52 @@ pub fn create_window_menu() -> Menu {
         .add_submenu(about_submenu);
 
     // 生成菜单
-    // let internal_menu = Menu::new();
+    // let mut internal_main_menu = Menu::new();
     // if let Some(list) = preference_util::get_internal_menu_list() {
     //     list.iter().for_each(|parent_menu| {
     //         if parent_menu.is_separator() {
-    //             internal_menu = internal_menu.add_native_item(MenuItem::Separator);
+    //             internal_main_menu = internal_main_menu
+    //                 .clone()
+    //                 .add_native_item(MenuItem::Separator);
+    //         } else if !parent_menu.get_menu().is_empty() {
+    //             // let temp = parent_menu.exist_menu()
+    //             // internal_menu = internal_menu.add_submenu(submenu);
+    //             // parent_menu.get_menu().iter().for_each(|item_menu| {});
+    //             internal_main_menu = internal_main_menu.clone().add_submenu(get_submenu_list(
+    //                 &parent_menu.get_title(),
+    //                 &parent_menu.get_menu(),
+    //             ))
     //         } else {
-    //             internal_menu = internal_menu.add_native_item(item);
+    //             internal_main_menu = internal_main_menu.clone().add_item(CustomMenuItem::new(
+    //                 parent_menu.get_string_id(),
+    //                 parent_menu.get_title(),
+    //             ));
     //         }
     //     });
     // }
 
     return menu;
+}
+
+/// 获取子菜单
+fn get_submenu_list(name: &String, extension_menu_list: &Vec<ExtensionMenu>) -> Submenu {
+    let mut menu = Menu::new();
+    extension_menu_list.iter().for_each(|item| {
+        if item.exist_submenu() {
+            menu = menu.clone().add_submenu(get_submenu_list(
+                &item.get_name().unwrap(),
+                &item.get_submenu(),
+            ));
+        } else if item.is_separator() {
+            menu = menu.clone().add_native_item(MenuItem::Separator);
+        } else {
+            menu = menu.clone().add_item(CustomMenuItem::new(
+                item.get_string_id().unwrap(),
+                item.get_name().unwrap(),
+            ));
+        }
+    });
+    return Submenu::new(name, menu);
 }
 
 /// 窗口菜单事件

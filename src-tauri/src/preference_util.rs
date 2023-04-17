@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use log::warn;
+use log::{info, warn};
 use tauri::{
     api::path::{resolve_path, BaseDirectory},
     Env,
@@ -272,10 +272,10 @@ pub fn get_custom_menu_list() -> Option<Vec<ExtensionMenu>> {
 
 /// 读取内置菜单
 pub fn get_internal_menu_list() -> Option<Vec<ParentMenu>> {
-    // if let Ok(byte) = std::fs::read(include!("../resource/menu.json")) {
-    //     if let Ok(list) = serde_json::from_slice::<Vec<ParentMenu>>(&byte) {
-    //         return Some(list);
-    //     }
-    // }
+    let content = include_str!("../resource/menu.json");
+    if let Ok(list) = serde_json::from_str::<Vec<ParentMenu>>(content) {
+        info!("get_internal_menu_list {:?}", list);
+        return Some(list);
+    }
     return None;
 }

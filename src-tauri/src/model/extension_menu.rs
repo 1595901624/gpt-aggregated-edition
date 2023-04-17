@@ -2,7 +2,7 @@
 #![allow(unused_variables)]
 
 /// 用户扩展的菜单
-#[derive(Debug, serde::Serialize, serde::Deserialize, Default)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize, Default)]
 pub struct ExtensionMenu {
     id: Option<i32>,
     name: Option<String>,
@@ -71,11 +71,22 @@ impl ExtensionMenu {
     pub fn is_separator(&self) -> bool {
         self.separator.unwrap_or_default()
     }
+
+    pub fn exist_submenu(&self) -> bool {
+        if let Some(_) = self.submenu {
+            return true;
+        }
+        return false;
+    }
+
+    pub fn get_submenu(&self) -> Vec<ExtensionMenu> {
+        self.submenu.clone().unwrap_or_else(|| vec![])
+    }
 }
 
 /// 父级菜单
 /// 显示在窗口或者右下角的一级菜单
-#[derive(Debug, serde::Serialize, serde::Deserialize, Default)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize, Default)]
 pub struct ParentMenu {
     id: Option<i32>,
     title: Option<String>,
@@ -86,6 +97,18 @@ pub struct ParentMenu {
 }
 
 impl ParentMenu {
+    pub fn get_id(&self) -> i32 {
+        self.id.unwrap_or_default()
+    }
+
+    pub fn get_string_id(&self) -> String {
+        return format!("main_{}", self.get_id());
+    }
+
+    pub fn get_title(&self) -> String {
+        return self.title.clone().unwrap_or_else(|| "未设置值".to_string());
+    }
+
     // fn new(id: i32, title: String) -> Self {}
     pub fn is_separator(&self) -> bool {
         self.separator.unwrap_or_default()
@@ -100,5 +123,9 @@ impl ParentMenu {
             return true;
         }
         return false;
+    }
+
+    pub fn get_menu(&self) -> Vec<ExtensionMenu> {
+        self.menu.clone().unwrap_or_else(|| vec![])
     }
 }
