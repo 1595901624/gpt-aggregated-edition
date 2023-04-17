@@ -9,7 +9,7 @@ use tauri::{
 use crate::{
     constant,
     model::{
-        extension_menu::ExtensionMenu,
+        extension_menu::{ExtensionMenu, ParentMenu},
         preference_model::{Preference, WindowMode},
     },
 };
@@ -268,4 +268,14 @@ pub fn get_custom_menu_list() -> Option<Vec<ExtensionMenu>> {
         }
     }
     return Some(vec![]);
+}
+
+/// 读取内置菜单
+pub fn get_internal_menu_list() -> Option<Vec<ParentMenu>> {
+    // if let Ok(byte) = std::fs::read(include!("../resource/menu.json")) {
+    //     if let Ok(list) = serde_json::from_slice::<Vec<ParentMenu>>(&byte) {
+    //         return Some(list);
+    //     }
+    // }
+    return None;
 }

@@ -2,7 +2,7 @@ use log::info;
 use tauri::{
     api, AppHandle, CustomMenuItem, GlobalWindowEvent, LogicalSize, Manager, Menu,
     PhysicalPosition, PhysicalSize, Submenu, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
-    SystemTraySubmenu, Window, WindowMenuEvent,
+    SystemTraySubmenu, Window, WindowMenuEvent, MenuItem,
 };
 use tauri_plugin_positioner::{Position, WindowExt};
 
@@ -174,6 +174,18 @@ pub fn create_window_menu() -> Menu {
         .add_item(CustomMenuItem::new("refresh", "刷新"))
         .add_item(CustomMenuItem::new("preference", "设置"))
         .add_submenu(about_submenu);
+
+    // 生成菜单
+    // let internal_menu = Menu::new();
+    // if let Some(list) = preference_util::get_internal_menu_list() {
+    //     list.iter().for_each(|parent_menu| {
+    //         if parent_menu.is_separator() {
+    //             internal_menu = internal_menu.add_native_item(MenuItem::Separator);
+    //         } else {
+    //             internal_menu = internal_menu.add_native_item(item);
+    //         }
+    //     });
+    // }
 
     return menu;
 }

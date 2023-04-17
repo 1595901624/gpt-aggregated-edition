@@ -1,0 +1,74 @@
+[
+    {
+        "id": 0,
+        "title": "",
+        "priority": 0,
+        "menu": [
+            {
+                "id": 1,
+                "name": "测试",
+                "url": "https://www.baidu.com",
+                "priority": 0
+            },
+            {
+                "divider": true
+            },
+            {
+                "id": 2,
+                "name": "测试",
+                "url": "https://www.baidu.com",
+                "priority": 0
+            },
+            {
+                "id": 3,
+                "name": "测试",
+                "url": "https://www.baidu.com",
+                "priority": 0,
+                "submenu": [
+                    {
+                        "id": 1,
+                        "name": "测试",
+                        "url": "https://www.baidu.com",
+                        "priority": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 1,
+        "title": "",
+        "priority": 0,
+        "menu": [
+            {
+                "id": 1,
+                "name": "测试",
+                "url": "https://www.baidu.com",
+                "priority": 0
+            },
+            {
+                "divider": true
+            },
+            {
+                "id": 2,
+                "name": "测试",
+                "url": "https://www.baidu.com",
+                "priority": 0
+            },
+            {
+                "id": 3,
+                "name": "测试",
+                "url": "https://www.baidu.com",
+                "priority": 0,
+                "submenu": [
+                    {
+                        "id": 1,
+                        "name": "测试",
+                        "url": "https://www.baidu.com",
+                        "priority": 0
+                    }
+                ]
+            }
+        ]
+    }
+]

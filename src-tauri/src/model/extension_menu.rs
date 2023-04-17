@@ -2,13 +2,15 @@
 #![allow(unused_variables)]
 
 /// 用户扩展的菜单
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Default)]
 pub struct ExtensionMenu {
     id: Option<i32>,
     name: Option<String>,
     url: Option<String>,
     // 优先级
     priority: Option<i32>,
+    separator: Option<bool>,
+    submenu: Option<Vec<ExtensionMenu>>,
 }
 
 impl ExtensionMenu {
@@ -26,6 +28,7 @@ impl ExtensionMenu {
             name: Some(name),
             url: Some(url),
             priority: Some(priority),
+            ..Default::default()
         }
     }
 
@@ -63,5 +66,39 @@ impl ExtensionMenu {
 
     pub fn set_priority(&mut self, priority: i32) {
         self.priority = Some(priority);
+    }
+
+    pub fn is_separator(&self) -> bool {
+        self.separator.unwrap_or_default()
+    }
+}
+
+/// 父级菜单
+/// 显示在窗口或者右下角的一级菜单
+#[derive(Debug, serde::Serialize, serde::Deserialize, Default)]
+pub struct ParentMenu {
+    id: Option<i32>,
+    title: Option<String>,
+    // 优先级
+    priority: Option<i32>,
+    separator: Option<bool>,
+    menu: Option<Vec<ExtensionMenu>>,
+}
+
+impl ParentMenu {
+    // fn new(id: i32, title: String) -> Self {}
+    pub fn is_separator(&self) -> bool {
+        self.separator.unwrap_or_default()
+    }
+
+    pub fn get_priority(&self) -> i32 {
+        self.priority.unwrap_or_default()
+    }
+
+    pub fn exist_menu(&self) -> bool {
+        if let Some(_) = self.menu {
+            return true;
+        }
+        return false;
     }
 }
