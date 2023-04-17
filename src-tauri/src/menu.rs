@@ -77,6 +77,9 @@ pub fn create_tary_menu() -> SystemTrayMenu {
 /// 创建自定义右下角菜单
 fn create_custom_tray_menu() -> Option<SystemTraySubmenu> {
     if let Some(mut list) = preference_util::get_custom_menu_list() {
+        if list.is_empty() {
+            return None;
+        }
         // info!("{:?}", &list);
         let mut menu = SystemTrayMenu::new();
 
@@ -98,6 +101,9 @@ fn create_custom_tray_menu() -> Option<SystemTraySubmenu> {
 /// 创建自定义窗口菜单
 fn create_custom_menu() -> Option<Submenu> {
     if let Some(mut list) = preference_util::get_custom_menu_list() {
+        if list.is_empty() {
+            return None;
+        }
         info!("{:?}", &list);
         let mut menu = Menu::new();
 

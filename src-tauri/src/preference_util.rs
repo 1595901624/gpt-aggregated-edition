@@ -267,5 +267,5 @@ pub fn get_custom_menu_list() -> Option<Vec<ExtensionMenu>> {
             }
         }
     }
-    return None;
+    return Some(vec![]);
 }
