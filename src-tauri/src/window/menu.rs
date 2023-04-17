@@ -1,14 +1,14 @@
 use log::info;
 use tauri::{
-    api, AppHandle, CustomMenuItem, Manager, Menu, PhysicalPosition, LogicalSize, Submenu,
-    SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem, SystemTraySubmenu, Window,
-    WindowMenuEvent, PhysicalSize,
+    api, AppHandle, CustomMenuItem, GlobalWindowEvent, LogicalSize, Manager, Menu,
+    PhysicalPosition, PhysicalSize, Submenu, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
+    SystemTraySubmenu, Window, WindowMenuEvent,
 };
 use tauri_plugin_positioner::{Position, WindowExt};
 
 use crate::{
     model::{
-        constant::{self, PREFERENCE_CURRENT_PAGE_URL},
+        constant::{self, PREFERENCE_CURRENT_PAGE_URL, WINDOW_LABEL_MAIN},
         preference_model::WindowMode,
     },
     preference_util,
@@ -290,9 +290,10 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
 
                 let side_bar_height = screen_height - size.height as i32 * 2;
                 // let side_bar_y = position.y as i32 - side_bar_height;
-                
-                let physical_width = constant::SIDE_BAR_WIDTH as f64 * window.scale_factor().unwrap();
-                
+
+                let physical_width =
+                    constant::SIDE_BAR_WIDTH as f64 * window.scale_factor().unwrap();
+
                 window
                     .set_size(PhysicalSize::new(physical_width as i32, side_bar_height))
                     .unwrap();
@@ -435,6 +436,40 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                     redirect_url(&app.get_window("main").unwrap(), "https://yige.baidu.com/");
                 }
                 _ => {}
+            }
+        }
+        _ => {}
+    }
+}
+
+/// 窗口监听
+pub fn on_window_event(event: GlobalWindowEvent) {
+    match event.event() {
+        tauri::WindowEvent::CloseRequested { api, .. } => {
+            // info!("{}", event.window().label());
+            // 非Main窗口都隐藏
+            if event.window().label() != WINDOW_LABEL_MAIN {
+                event.window().hide().unwrap();
+                api.prevent_close();
+                return;
+            }
+
+            if !preference_util::is_exit_app() {
+                event.window().hide().unwrap();
+                api.prevent_close();
+            } else {
+                std::process::exit(0);
+            }
+        }
+        tauri::WindowEvent::Focused(is_focused) => {
+            // 当点击外侧的时候隐藏窗口
+            // 获取当前的窗口模式
+            let mode = preference_util::get_window_mode();
+            let auto_hide = preference_util::auto_hide_when_click_outside();
+            if mode == WindowMode::TaskBar && auto_hide {
+                if !is_focused {
+                    event.window().hide().unwrap();
+                }
             }
         }
         _ => {}
