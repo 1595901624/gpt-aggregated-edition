@@ -9,7 +9,7 @@ use tauri_plugin_positioner::{Position, WindowExt};
 use crate::{
     model::{
         constant::{self, PREFERENCE_CURRENT_PAGE_URL, WINDOW_LABEL_MAIN},
-        extension_menu::{ExtensionMenu},
+        extension_menu::ExtensionMenu,
         preference_model::WindowMode,
     },
     preference_util,
@@ -72,6 +72,26 @@ pub fn create_tary_menu() -> SystemTrayMenu {
         .add_item(preference)
         .add_native_item(SystemTrayMenuItem::Separator)
         .add_item(quit);
+
+    // 生成菜单
+    // let mut internal_main_menu = SystemTrayMenu::new();
+    // if let Some(list) = preference_util::get_internal_menu_list() {
+    //     list.iter().for_each(|parent_menu| {
+    //         if parent_menu.is_separator() {
+    //             internal_main_menu = internal_main_menu
+    //                 .clone()
+    //                 .add_native_item(MenuItem::Separator);
+    //         } else if !parent_menu.get_menu().is_empty() {
+    //             internal_main_menu = internal_main_menu
+    //                 .clone()
+    //                 .add_submenu(create_internal_tray_submenu(
+    //                     &parent_menu.get_title(),
+    //                     &parent_menu.get_menu(),
+    //                 ))
+    //         }
+    //     });
+    // }
+
     return submenu;
 }
 
@@ -94,7 +114,7 @@ fn create_custom_tray_menu() -> Option<SystemTraySubmenu> {
             }
         });
         // info!("{:?}", &menu);
-        return Some(SystemTraySubmenu::new("自定义平台", menu));
+        return Some(SystemTraySubmenu::new("我的平台", menu));
     }
     return None;
 }
@@ -126,55 +146,55 @@ fn create_custom_menu() -> Option<Submenu> {
 /// 创建窗口菜单
 pub fn create_window_menu() -> Menu {
     // 创建普通菜单
-    let chat_gpt = CustomMenuItem::new("chat_gpt".to_string(), "ChatGPT(免费线路1)");
-    let chat_gpt_free2 =
-        CustomMenuItem::new("chat_gpt_free2".to_string(), "ChatGPT(免费线路2)-推荐");
-    let chat_gpt_free3 = CustomMenuItem::new("chat_gpt_free3".to_string(), "ChatGPT(免费线路3)");
-    let chat_gpt_official = CustomMenuItem::new("chat_gpt_official".to_string(), "ChatGPT(官方版)");
-    let ernie_bot = CustomMenuItem::new("ernie_bot".to_string(), "文心一言");
-    let tongyi = CustomMenuItem::new("tongyi".to_string(), "通义千问");
-    let chat_chat = CustomMenuItem::new("chat_chat".to_string(), "ChatGPT(限额版)");
-    let poe = CustomMenuItem::new("poe".to_string(), "POE");
-    let bing = CustomMenuItem::new("bing".to_string(), "NewBing");
-    let bard = CustomMenuItem::new("bard".to_string(), "Bard");
+    // let chat_gpt = CustomMenuItem::new("chat_gpt".to_string(), "ChatGPT(免费线路1)");
+    // let chat_gpt_free2 =
+    //     CustomMenuItem::new("chat_gpt_free2".to_string(), "ChatGPT(免费线路2)-推荐");
+    // let chat_gpt_free3 = CustomMenuItem::new("chat_gpt_free3".to_string(), "ChatGPT(免费线路3)");
+    // let chat_gpt_official = CustomMenuItem::new("chat_gpt_official".to_string(), "ChatGPT(官方版)");
+    // let ernie_bot = CustomMenuItem::new("ernie_bot".to_string(), "文心一言");
+    // let tongyi = CustomMenuItem::new("tongyi".to_string(), "通义千问");
+    // let chat_chat = CustomMenuItem::new("chat_chat".to_string(), "ChatGPT(限额版)");
+    // let poe = CustomMenuItem::new("poe".to_string(), "POE");
+    // let bing = CustomMenuItem::new("bing".to_string(), "NewBing");
+    // let bard = CustomMenuItem::new("bard".to_string(), "Bard");
     let github = CustomMenuItem::new("github".to_string(), "访问 Github");
     let gitee = CustomMenuItem::new("gitee".to_string(), "访问 Gitee");
-    // let close = CustomMenuItem::new("close".to_string(), "Close");
-    // AI对话平台
-    let mode_submenu = Submenu::new(
-        "AI对话平台",
-        Menu::new()
-            .add_item(ernie_bot)
-            .add_item(tongyi)
-            .add_item(chat_chat)
-            .add_item(chat_gpt)
-            .add_item(chat_gpt_free2)
-            .add_item(chat_gpt_free3)
-            .add_item(chat_gpt_official)
-            .add_item(bing)
-            .add_item(poe)
-            .add_item(bard),
-    );
+    // // let close = CustomMenuItem::new("close".to_string(), "Close");
+    // // AI对话平台
+    // let mode_submenu = Submenu::new(
+    //     "AI对话平台",
+    //     Menu::new()
+    //         .add_item(ernie_bot)
+    //         .add_item(tongyi)
+    //         .add_item(chat_chat)
+    //         .add_item(chat_gpt)
+    //         .add_item(chat_gpt_free2)
+    //         .add_item(chat_gpt_free3)
+    //         .add_item(chat_gpt_official)
+    //         .add_item(bing)
+    //         .add_item(poe)
+    //         .add_item(bard),
+    // );
 
     // AI图像平台
-    let wenxinyige = CustomMenuItem::new("wenxinyige".to_string(), "文心一格");
-    let image_submenu = Submenu::new("AI图像平台", Menu::new().add_item(wenxinyige));
+    // let wenxinyige = CustomMenuItem::new("wenxinyige".to_string(), "文心一格");
+    // let image_submenu = Submenu::new("AI图像平台", Menu::new().add_item(wenxinyige));
     let about_submenu = Submenu::new(
         "帮助".to_string(),
         Menu::new().add_item(github).add_item(gitee),
     );
 
-    let mut menu = Menu::new()
-        .add_submenu(mode_submenu)
-        .add_submenu(image_submenu);
+    // let mut menu = Menu::new()
+    //     .add_submenu(mode_submenu)
+    //     .add_submenu(image_submenu);
 
-    if let Some(submenu) = create_custom_menu() {
-        menu = menu.add_submenu(submenu);
-    }
-    menu = menu
-        .add_item(CustomMenuItem::new("refresh", "刷新"))
-        .add_item(CustomMenuItem::new("preference", "设置"))
-        .add_submenu(about_submenu);
+    // if let Some(submenu) = create_custom_menu() {
+    //     menu = menu.add_submenu(submenu);
+    // }
+    // menu = menu
+    //     .add_item(CustomMenuItem::new("refresh", "刷新"))
+    //     .add_item(CustomMenuItem::new("preference", "设置"))
+    //     .add_submenu(about_submenu);
 
     // 生成菜单
     let mut internal_main_menu = Menu::new();
@@ -185,54 +205,25 @@ pub fn create_window_menu() -> Menu {
                     .clone()
                     .add_native_item(MenuItem::Separator);
             } else if !parent_menu.get_menu().is_empty() {
-                // let temp = parent_menu.exist_menu()
-                // internal_menu = internal_menu.add_submenu(submenu);
-                // parent_menu.get_menu().iter().for_each(|item_menu| {});
-                internal_main_menu = internal_main_menu.clone().add_submenu(get_submenu_list(
-                    &parent_menu.get_title(),
-                    &parent_menu.get_menu(),
-                ))
-            } else {
-                // internal_main_menu = internal_main_menu.clone().add_item(CustomMenuItem::new(
-                //     parent_menu.get_string_id(),
-                //     parent_menu.get_title(),
-                // ));
-                // constant::MENU_MAP
-                //     .try_lock()
-                //     .unwrap()
-                //     .get_mut()
-                //     .insert(parent_menu.get_string_id(), parent_menu.get_url());
+                internal_main_menu = internal_main_menu
+                    .clone()
+                    .add_submenu(create_window_submenu(
+                        &parent_menu.get_title(),
+                        &parent_menu.get_menu(),
+                    ))
             }
         });
     }
 
-    return menu;
-}
+    if let Some(submenu) = create_custom_menu() {
+        internal_main_menu = internal_main_menu.add_submenu(submenu);
+    }
 
-/// 递归获取子菜单
-fn get_submenu_list(name: &String, extension_menu_list: &Vec<ExtensionMenu>) -> Submenu {
-    let mut menu = Menu::new();
-    extension_menu_list.iter().for_each(|item| {
-        if item.exist_submenu() {
-            menu = menu.clone().add_submenu(get_submenu_list(
-                &item.get_name().unwrap(),
-                &item.get_submenu(),
-            ));
-        } else if item.is_separator() {
-            menu = menu.clone().add_native_item(MenuItem::Separator);
-        } else {
-            menu = menu.clone().add_item(CustomMenuItem::new(
-                item.get_string_id().unwrap(),
-                item.get_name().unwrap(),
-            ));
-            constant::MENU_MAP
-                .try_lock()
-                .unwrap()
-                .get_mut()
-                .insert(item.get_string_id().unwrap(), item.get_url().unwrap());
-        }
-    });
-    return Submenu::new(name, menu);
+    internal_main_menu = internal_main_menu
+        .add_item(CustomMenuItem::new("refresh", "刷新"))
+        .add_item(CustomMenuItem::new("preference", "设置"))
+        .add_submenu(about_submenu);
+    return internal_main_menu;
 }
 
 /// 窗口菜单事件
@@ -417,6 +408,18 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
             //println!("system tray received a double click");
         }
         SystemTrayEvent::MenuItemClick { id, .. } => {
+            // 内置菜单
+            // let mut binding = constant::MENU_MAP.try_lock().unwrap();
+            // let menu_map = binding.get_mut();
+            // if menu_map.contains_key(&id) {
+            //     redirect_url(
+            //         &app.get_window(constant::WINDOW_LABEL_MAIN).unwrap(),
+            //         menu_map.get(&id).unwrap(),
+            //     );
+            //     return;
+            // }
+
+            // 用户自定义菜单
             if let Some(extension_menu_list) = preference_util::get_custom_menu_list() {
                 extension_menu_list.iter().for_each(|item| {
                     if item.get_string_id().is_some()
@@ -590,3 +593,53 @@ fn show_window_to_center(window: &Window) {
     window.show().unwrap();
     window.set_focus().unwrap();
 }
+
+/// 递归创建窗口子菜单
+fn create_window_submenu(name: &String, extension_menu_list: &Vec<ExtensionMenu>) -> Submenu {
+    let mut menu = Menu::new();
+    extension_menu_list.iter().for_each(|item| {
+        if item.exist_submenu() {
+            menu = menu.clone().add_submenu(create_window_submenu(
+                &item.get_name().unwrap(),
+                &item.get_submenu(),
+            ));
+        } else if item.is_separator() {
+            menu = menu.clone().add_native_item(MenuItem::Separator);
+        } else {
+            menu = menu.clone().add_item(CustomMenuItem::new(
+                item.get_string_id().unwrap(),
+                item.get_name().unwrap(),
+            ));
+            constant::MENU_MAP
+                .try_lock()
+                .unwrap()
+                .get_mut()
+                .insert(item.get_string_id().unwrap(), item.get_url().unwrap());
+        }
+    });
+    return Submenu::new(name, menu);
+}
+
+// /// 递归创建任务栏子菜单
+// fn create_internal_tray_submenu(
+//     name: &String,
+//     extension_menu_list: &Vec<ExtensionMenu>,
+// ) -> SystemTraySubmenu {
+//     let mut menu = SystemTrayMenu::new();
+//     extension_menu_list.iter().for_each(|item| {
+//         if item.exist_submenu() {
+//             menu = menu.clone().add_submenu(create_internal_tray_submenu(
+//                 &item.get_name().unwrap(),
+//                 &item.get_submenu(),
+//             ));
+//         } else if item.is_separator() {
+//             menu = menu.clone().add_native_item(SystemTrayMenuItem::Separator);
+//         } else {
+//             menu = menu.clone().add_item(CustomMenuItem::new(
+//                 item.get_string_id().unwrap(),
+//                 item.get_name().unwrap(),
+//             ));
+//         }
+//     });
+//     return SystemTraySubmenu::new(name, menu);
+// }

@@ -1,81 +1,85 @@
 [
     {
-        "id": 0,
-        "title": "ssss",
+        "id": 10000,
+        "title": "AI对话平台",
         "priority": 0,
         "menu": [
             {
-                "id": 1,
-                "name": "测试",
-                "url": "https://www.baidu.com",
+                "id": 10100,
+                "name": "文心一言",
+                "url": "https://yiyan.baidu.com/",
+                "priority": 0
+            },
+            {
+                "id": 10200,
+                "name": "通义千问",
+                "url": "https://tongyi.aliyun.com/",
                 "priority": 0
             },
             {
                 "separator": true
             },
             {
-                "id": 2,
-                "name": "测试",
-                "url": "https://www.baidu.com",
-                "priority": 0
-            },
-            {
-                "id": 3,
-                "name": "测试",
-                "url": "https://www.baidu.com",
+                "id": 10300,
+                "name": "ChatGPT",
                 "priority": 0,
                 "submenu": [
                     {
-                        "id": 1,
-                        "name": "测试",
-                        "url": "https://www.baidu.com",
+                        "id": 10310,
+                        "name": "ChatGPT(官方版)",
+                        "url": "https://chat.openai.com/chat",
+                        "priority": 0
+                    },
+                    {
+                        "id": 10311,
+                        "name": "Chat Chat(直连/限额)",
+                        "url": "https://chat.okis.dev/zh-CN?mode=chat",
+                        "priority": 0
+                    },
+                    {
+                        "id": 10312,
+                        "name": "ChatBot(推荐)",
+                        "url": "https://chatbot.theb.ai/",
+                        "priority": 0
+                    },
+                    {
+                        "id": 10313,
+                        "name": "FreeGpt",
+                        "url": "https://freegpt.one/",
                         "priority": 0
                     }
                 ]
+            },
+            {
+                "id": 10400,
+                "name": "Poe",
+                "url": "https://poe.com/",
+                "priority": 0
+            },
+            {
+                "id": 10500,
+                "name": "BARD",
+                "url": "https://bard.google.com/",
+                "priority": 0
             }
         ]
     },
     {
-        "id": 1,
-        "title": "xxxxxxxx",
+        "id": 20000,
+        "title": "AI图像平台",
         "priority": 0,
         "menu": [
             {
-                "id": 1,
-                "name": "测试",
-                "url": "https://www.baidu.com",
+                "id": 20100,
+                "name": "文心一格",
+                "url": "https://yige.baidu.com",
                 "priority": 0
             },
             {
-                "separator": true
-            },
-            {
-                "id": 2,
-                "name": "测试",
-                "url": "https://www.baidu.com",
+                "id": 20200,
+                "name": "Bing Image Creator",
+                "url": "https://www.bing.com/create",
                 "priority": 0
-            },
-            {
-                "id": 3,
-                "name": "测试",
-                "url": "https://www.baidu.com",
-                "priority": 0,
-                "submenu": [
-                    {
-                        "id": 3,
-                        "name": "测试",
-                        "url": "https://www.baidu.com",
-                        "priority": 0,
-                        "submenu": [
-                            {
-                                "id": 1,
-                                "name": "测试",
-                                "url": "https://www.baidu.com",
-                                "priority": 0
-                            }
-                        ]
-                    }
-                ]
             }
         ]
     }
