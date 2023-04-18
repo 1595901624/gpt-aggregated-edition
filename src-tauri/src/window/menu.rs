@@ -138,7 +138,7 @@ fn create_custom_menu() -> Option<Submenu> {
             }
         });
         // info!("{:?}", &menu);
-        return Some(Submenu::new("自定义平台", menu));
+        return Some(Submenu::new("我的平台", menu));
     }
     return None;
 }
