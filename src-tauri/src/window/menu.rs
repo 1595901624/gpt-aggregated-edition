@@ -9,7 +9,7 @@ use tauri_plugin_positioner::{Position, WindowExt};
 use crate::{
     model::{
         constant::{self, PREFERENCE_CURRENT_PAGE_URL, WINDOW_LABEL_MAIN},
-        extension_menu::{self, ExtensionMenu},
+        extension_menu::{ExtensionMenu},
         preference_model::WindowMode,
     },
     preference_util,
@@ -177,34 +177,39 @@ pub fn create_window_menu() -> Menu {
         .add_submenu(about_submenu);
 
     // 生成菜单
-    // let mut internal_main_menu = Menu::new();
-    // if let Some(list) = preference_util::get_internal_menu_list() {
-    //     list.iter().for_each(|parent_menu| {
-    //         if parent_menu.is_separator() {
-    //             internal_main_menu = internal_main_menu
-    //                 .clone()
-    //                 .add_native_item(MenuItem::Separator);
-    //         } else if !parent_menu.get_menu().is_empty() {
-    //             // let temp = parent_menu.exist_menu()
-    //             // internal_menu = internal_menu.add_submenu(submenu);
-    //             // parent_menu.get_menu().iter().for_each(|item_menu| {});
-    //             internal_main_menu = internal_main_menu.clone().add_submenu(get_submenu_list(
-    //                 &parent_menu.get_title(),
-    //                 &parent_menu.get_menu(),
-    //             ))
-    //         } else {
-    //             internal_main_menu = internal_main_menu.clone().add_item(CustomMenuItem::new(
-    //                 parent_menu.get_string_id(),
-    //                 parent_menu.get_title(),
-    //             ));
-    //         }
-    //     });
-    // }
+    let mut internal_main_menu = Menu::new();
+    if let Some(list) = preference_util::get_internal_menu_list() {
+        list.iter().for_each(|parent_menu| {
+            if parent_menu.is_separator() {
+                internal_main_menu = internal_main_menu
+                    .clone()
+                    .add_native_item(MenuItem::Separator);
+            } else if !parent_menu.get_menu().is_empty() {
+                // let temp = parent_menu.exist_menu()
+                // internal_menu = internal_menu.add_submenu(submenu);
+                // parent_menu.get_menu().iter().for_each(|item_menu| {});
+                internal_main_menu = internal_main_menu.clone().add_submenu(get_submenu_list(
+                    &parent_menu.get_title(),
+                    &parent_menu.get_menu(),
+                ))
+            } else {
+                // internal_main_menu = internal_main_menu.clone().add_item(CustomMenuItem::new(
+                //     parent_menu.get_string_id(),
+                //     parent_menu.get_title(),
+                // ));
+                // constant::MENU_MAP
+                //     .try_lock()
+                //     .unwrap()
+                //     .get_mut()
+                //     .insert(parent_menu.get_string_id(), parent_menu.get_url());
+            }
+        });
+    }
 
     return menu;
 }
 
-/// 获取子菜单
+/// 递归获取子菜单
 fn get_submenu_list(name: &String, extension_menu_list: &Vec<ExtensionMenu>) -> Submenu {
     let mut menu = Menu::new();
     extension_menu_list.iter().for_each(|item| {
@@ -220,6 +225,11 @@ fn get_submenu_list(name: &String, extension_menu_list: &Vec<ExtensionMenu>) -> 
                 item.get_string_id().unwrap(),
                 item.get_name().unwrap(),
             ));
+            constant::MENU_MAP
+                .try_lock()
+                .unwrap()
+                .get_mut()
+                .insert(item.get_string_id().unwrap(), item.get_url().unwrap());
         }
     });
     return Submenu::new(name, menu);
@@ -227,6 +237,18 @@ fn get_submenu_list(name: &String, extension_menu_list: &Vec<ExtensionMenu>) -> 
 
 /// 窗口菜单事件
 pub fn on_window_event_handler(event: WindowMenuEvent) {
+    // 内置菜单
+    let mut binding = constant::MENU_MAP.try_lock().unwrap();
+    let menu_map = binding.get_mut();
+    if menu_map.contains_key(&event.menu_item_id().to_string()) {
+        redirect_url(
+            &event.window(),
+            menu_map.get(&event.menu_item_id().to_string()).unwrap(),
+        );
+        return;
+    }
+
+    // 用户自定义菜单
     if let Some(extension_menu_list) = preference_util::get_custom_menu_list() {
         extension_menu_list.iter().for_each(|item| {
             if item.get_string_id().is_some()
@@ -234,6 +256,7 @@ pub fn on_window_event_handler(event: WindowMenuEvent) {
                 && item.get_url().is_some()
             {
                 redirect_url(&event.window(), item.get_url().unwrap().as_str());
+                return;
             }
         });
     }

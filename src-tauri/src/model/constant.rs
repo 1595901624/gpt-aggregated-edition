@@ -1,6 +1,10 @@
 //// 切换页面后再次执行脚本的时间
 // pub const SWITCH_PAGE_SLEEP_TIME: u64 = 500;
 
+use std::{collections::HashMap, cell::{RefCell}};
+
+use tauri::async_runtime::Mutex;
+
 // 窗口模式的宽
 pub const WINDOW_WIDTH: i32 = 1000;
 // 窗口模式的高
@@ -29,3 +33,8 @@ pub const PREFERENCE_AUTO_HIDE_WHEN_CLICK_OUTSIDE: i32 = 3;
 pub const PREFERENCE_CURRENT_PAGE_URL: i32 = 4;
 pub const PREFERENCE_EXIT_APP: i32 = 5;
 // ***************************设置项 E N D***************************** //
+
+// pub const MENU_MAP: HashMap<String, ExtensionMenu> = HashMap::new();
+lazy_static! {
+    pub static ref MENU_MAP: Mutex<RefCell<HashMap<String, String>>> = Mutex::new(RefCell::new(HashMap::new()));
+}

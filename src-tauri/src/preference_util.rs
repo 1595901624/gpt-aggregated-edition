@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::path::PathBuf;
 
 use log::{info, warn};

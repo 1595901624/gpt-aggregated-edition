@@ -3,7 +3,8 @@
     all(not(debug_assertions), target_os = "windows"),
     windows_subsystem = "windows"
 )]
-
+#[macro_use]
+extern crate lazy_static;
 mod command;
 mod model;
 mod plugin;
@@ -53,7 +54,7 @@ fn main() {
             command::get_preference_handler,
             command::get_app_preference_handler,
             command::set_app_preference_handler,
-            command::create_docx_handler,
+            // command::create_docx_handler,
             command::create_markdown_handler,
             command::query_extension_menus_handler,
             command::add_extension_menu_item_handler,

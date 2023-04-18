@@ -82,6 +82,11 @@ impl ExtensionMenu {
     pub fn get_submenu(&self) -> Vec<ExtensionMenu> {
         self.submenu.clone().unwrap_or_else(|| vec![])
     }
+
+    // 是否需要添加监听器
+    pub fn is_add_listener(&self) -> bool {
+        self.id.is_some() && self.url.is_some()
+    }
 }
 
 /// 父级菜单
