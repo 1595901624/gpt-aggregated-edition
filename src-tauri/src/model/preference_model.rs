@@ -62,6 +62,8 @@ pub enum WindowMode {
     TaskBar,
     // 侧边栏
     SideBar,
+    // QQ模式
+    QQ
 }
 
 impl Default for WindowMode {

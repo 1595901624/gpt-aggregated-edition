@@ -23,4 +23,5 @@ export enum WindowMode {
     'TaskBar',
     // 侧边栏
     'SideBar',
+    'QQ'
 }

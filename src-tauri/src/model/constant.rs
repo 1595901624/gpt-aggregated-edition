@@ -1,7 +1,10 @@
 //// 切换页面后再次执行脚本的时间
 // pub const SWITCH_PAGE_SLEEP_TIME: u64 = 500;
 
-use std::{collections::HashMap, cell::{RefCell}};
+use std::{
+    cell::{Cell, RefCell},
+    collections::HashMap,
+};
 
 use tauri::async_runtime::Mutex;
 
@@ -34,7 +37,18 @@ pub const PREFERENCE_CURRENT_PAGE_URL: i32 = 4;
 pub const PREFERENCE_EXIT_APP: i32 = 5;
 // ***************************设置项 E N D***************************** //
 
+// 当前是否是最小化
+// pub const BRFORE_WINDOW_MINIMIZED_SIZE: Cell<(u32, u32)> = Cell::new((0, 0));
+// pub const BRFORE_WINDOW_MINIMIZED_POSITION: Cell<(i32, i32)> = Cell::new((0, 0));
+
 // pub const MENU_MAP: HashMap<String, ExtensionMenu> = HashMap::new();
 lazy_static! {
+    // 菜单缓存
     pub static ref MENU_MAP: Mutex<RefCell<HashMap<String, String>>> = Mutex::new(RefCell::new(HashMap::new()));
+
+    // 当前状态是否是最小化
+    pub static ref IS_MINIMIZED: Mutex<Cell<bool>> = Mutex::new(Cell::new(false));
+    pub static ref BRFORE_WINDOW_MINIMIZED_SIZE: Mutex<Cell<(u32, u32)>> = Mutex::new(Cell::new((0, 0)));
+    pub static ref BRFORE_WINDOW_MINIMIZED_POSITION: Mutex<Cell<(i32, i32)>> = Mutex::new(Cell::new((0, 0)));
+    pub static ref IS_INIT_SIDE_BAR: Mutex<Cell<bool>> = Mutex::new(Cell::new(false));
 }

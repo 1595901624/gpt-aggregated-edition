@@ -84,6 +84,7 @@ async function setPreferenceData() {
           <el-radio-button :label="WindowMode[0]">窗口模式</el-radio-button>
           <el-radio-button :label="WindowMode[1]">任务栏模式</el-radio-button>
           <el-radio-button :label="WindowMode[2]">侧边栏模式（试验）</el-radio-button>
+          <el-radio-button :label="WindowMode[3]">QQ模式（试验）</el-radio-button>
         </el-radio-group>
       </div>
 
