@@ -3,10 +3,9 @@
  *                              这是一个Chat Chat的脚本 V1.0
  * 
  **********************************************************************************/
-const _chatChatMinHeithClassName = "md:min-h-[600px]";
-
 if (window.location.href.indexOf("chat.okis.dev") != -1) {
     try {
+        let _chatChatMinHeithClassName = "md:min-h-[600px]";
         // 创建一个MutationObserver实例
         const observer = new MutationObserver(function (mutations) {
             // 获取中级空白区域

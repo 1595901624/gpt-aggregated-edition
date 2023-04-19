@@ -28,6 +28,7 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
             // .initialization_script(include_str!("./plugin/third/html2canvas.js"))
             .initialization_script(include_str!("../../plugin/erniebot.js"))
             .initialization_script(include_str!("../../plugin/chatchat.js"))
+            .initialization_script(include_str!("../../plugin/chatbot.js"))
             .menu(window::menu::create_window_menu())
             .build()
             .unwrap();
