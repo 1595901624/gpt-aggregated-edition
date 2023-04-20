@@ -56,6 +56,7 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
 
     if preference_util::get_window_mode() == WindowMode::Window {
         let main_window = app.get_window(WINDOW_LABEL_MAIN).unwrap();
+        let init_window_mutex = constant::INIT_WINDOW_MODE.try_lock().unwrap();
         main_window
             .set_size(LogicalSize::new(
                 constant::WINDOW_WIDTH,
@@ -69,6 +70,7 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
         main_window.menu_handle().show().unwrap();
         main_window.show().unwrap();
         main_window.set_focus().unwrap();
+        init_window_mutex.set(true);
     } else if preference_util::get_window_mode() == WindowMode::QQ {
         let main_window = app.get_window(WINDOW_LABEL_MAIN).unwrap();
         let init_qq_mutex = constant::INIT_QQ_MODE.try_lock().unwrap();

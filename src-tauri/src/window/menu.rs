@@ -325,14 +325,17 @@ pub fn on_window_event_handler(event: WindowMenuEvent) {
 /// 任务栏事件
 pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
     tauri_plugin_positioner::on_tray_event(app, &event);
+    let mini_mutex = constant::IS_MINIMIZED.try_lock().unwrap();
     match event {
         SystemTrayEvent::LeftClick { position, size, .. } => {
             let window = app.get_window("main").unwrap();
             let init_qq_mutex = constant::INIT_QQ_MODE.try_lock().unwrap();
+            let init_window_mutex = constant::INIT_WINDOW_MODE.try_lock().unwrap();
 
             let mode = preference_util::get_window_mode();
             if mode == WindowMode::TaskBar {
                 init_qq_mutex.set(false);
+                init_window_mutex.set(false);
                 // 任务栏模式
                 window
                     .set_size(LogicalSize::new(
@@ -347,6 +350,7 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 // window.menu_handle().hide().unwrap();
             } else if mode == WindowMode::SideBar {
                 init_qq_mutex.set(false);
+                init_window_mutex.set(false);
                 // 侧边栏模式
                 let screen = window.current_monitor().unwrap().unwrap();
                 let screen_height = screen.size().height as i32;
@@ -374,10 +378,21 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 window.menu_handle().show().unwrap();
             } else if mode == WindowMode::QQ {
                 // QQ 模式
+                info!("init_qq_mutex = {}", init_qq_mutex.get());
+
+                if mini_mutex.get() {
+                    window.unminimize().unwrap();
+                }
+
                 if !init_qq_mutex.get() {
                     let screen = window.current_monitor().unwrap().unwrap();
                     let screen_height = screen.size().height as i32;
                     let screen_width = screen.size().width as i32;
+
+                    info!(
+                        "outsize = {}, screen height = {}",
+                        screen_height, screen_width
+                    );
 
                     let physical_width =
                         constant::SIDE_BAR_WIDTH as f64 * window.scale_factor().unwrap();
@@ -387,7 +402,7 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                             screen_height - 500,
                         ))
                         .unwrap();
-                    info!("outsize = {}, screen height = {}", window.outer_size().unwrap().height, screen_height);
+
                     window
                         .set_position(PhysicalPosition::new(
                             screen_width - window.outer_size().unwrap().width as i32 - 100,
@@ -397,44 +412,36 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                     init_qq_mutex.set(true);
                     // window.move_window(Position::TrayRight).unwrap();
                 }
-
-                // let side_bar_height = screen_height - size.height as i32 * 2;
-                // // let side_bar_y = position.y as i32 - side_bar_height;
-
-                // window
-                //     .set_size(PhysicalSize::new(physical_width as i32, side_bar_height))
-                //     .unwrap();
-                // window
-                //     .set_position(PhysicalPosition::new(
-                //         screen_width - window.outer_size().unwrap().width as i32,
-                //         position.y as i32 - window.outer_size().unwrap().height as i32,
-                //     ))
-                //     .unwrap();
-                // window.move_window(Position::TrayRight).unwrap();
-                // window.set_decorations(false).unwrap();
+                window.set_decorations(true).unwrap();
                 window.set_always_on_top(true).unwrap();
                 window.set_skip_taskbar(true).unwrap();
                 window.menu_handle().show().unwrap();
             } else {
+                // 窗口模式
                 init_qq_mutex.set(false);
-                // 桌面模式
-                window
-                    .set_size(LogicalSize::new(
-                        constant::WINDOW_WIDTH,
-                        constant::WINDOW_HEIGHT,
-                    ))
-                    .unwrap();
-                window.move_window(Position::Center).unwrap();
+
+                if !init_window_mutex.get() {
+                    window
+                        .set_size(LogicalSize::new(
+                            constant::WINDOW_WIDTH,
+                            constant::WINDOW_HEIGHT,
+                        ))
+                        .unwrap();
+                    window.move_window(Position::Center).unwrap();
+                    init_window_mutex.set(true);
+                }
+
                 window.set_decorations(true).unwrap();
                 window.set_always_on_top(false).unwrap();
                 window.set_skip_taskbar(false).unwrap();
                 window.menu_handle().show().unwrap();
+
             }
 
-            let mini_mutex = constant::IS_MINIMIZED.try_lock().unwrap();
-
-            //
             if mini_mutex.get() && mode == WindowMode::QQ {
+                window.show().unwrap();
+                window.set_focus().unwrap();
+            } else if mini_mutex.get() && mode == WindowMode::Window {
                 window.unminimize().unwrap();
                 window.show().unwrap();
                 window.set_focus().unwrap();
@@ -447,7 +454,7 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 }
             }
 
-            info!("window.is_visible = {:?}", &window.is_visible());
+            // info!("window.is_visible = {:?}", &window.is_visible());
             // app.get_window("main").unwrap().show().unwrap();
             // app.get_window("main").unwrap().set_focus().unwrap();
         }
@@ -597,7 +604,10 @@ pub fn on_window_event(event: GlobalWindowEvent) {
             // 获取当前的窗口模式
             let mode = preference_util::get_window_mode();
             let auto_hide = preference_util::auto_hide_when_click_outside();
-            if mode == WindowMode::TaskBar && auto_hide {
+            if mode == WindowMode::TaskBar
+                && auto_hide
+                && event.window().label() == constant::WINDOW_LABEL_MAIN
+            {
                 if !is_focused {
                     event.window().hide().unwrap();
                 }
@@ -605,9 +615,11 @@ pub fn on_window_event(event: GlobalWindowEvent) {
         }
         tauri::WindowEvent::Resized(physical_size) => {
             // info!("physical_size: {:?}", physical_size);
-            let mini_mutex = constant::IS_MINIMIZED.try_lock().unwrap();
             // let size_mutex = constant::BRFORE_WINDOW_MINIMIZED_SIZE.try_lock().unwrap();
-
+            if event.window().label() != WINDOW_LABEL_MAIN {
+                return;
+            }
+            let mini_mutex = constant::IS_MINIMIZED.try_lock().unwrap();
             if physical_size.height == 0 && physical_size.width == 0 {
                 // 窗口被最小化
                 // info!("MINIMIZED");
@@ -617,6 +629,7 @@ pub fn on_window_event(event: GlobalWindowEvent) {
                 mini_mutex.set(false);
                 // size_mutex.set((physical_size.width, physical_size.height));
             }
+            info!("minimize = {}", mini_mutex.get());
         }
         // tauri::WindowEvent::Moved(physical_position) => {
         // let position_mutex = constant::BRFORE_WINDOW_MINIMIZED_POSITION

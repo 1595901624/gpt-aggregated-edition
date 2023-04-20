@@ -51,6 +51,10 @@ lazy_static! {
 
     // 是否已经初始过QQ模式
     pub static ref INIT_QQ_MODE: Mutex<Cell<bool>> = Mutex::new(Cell::new(false));
+
+    // 是否已经初始过窗口模式
+    pub static ref INIT_WINDOW_MODE: Mutex<Cell<bool>> = Mutex::new(Cell::new(false));
+
     // pub static ref BRFORE_WINDOW_MINIMIZED_SIZE: Mutex<Cell<(u32, u32)>> = Mutex::new(Cell::new((0, 0)));
     // pub static ref BRFORE_WINDOW_MINIMIZED_POSITION: Mutex<Cell<(i32, i32)>> = Mutex::new(Cell::new((0, 0)));
     // pub static ref IS_INIT_SIDE_BAR: Mutex<Cell<bool>> = Mutex::new(Cell::new(false));
