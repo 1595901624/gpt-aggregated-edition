@@ -328,9 +328,11 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
     match event {
         SystemTrayEvent::LeftClick { position, size, .. } => {
             let window = app.get_window("main").unwrap();
+            let init_qq_mutex = constant::INIT_QQ_MODE.try_lock().unwrap();
 
             let mode = preference_util::get_window_mode();
             if mode == WindowMode::TaskBar {
+                init_qq_mutex.set(false);
                 // 任务栏模式
                 window
                     .set_size(LogicalSize::new(
@@ -344,6 +346,7 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 window.set_skip_taskbar(true).unwrap();
                 // window.menu_handle().hide().unwrap();
             } else if mode == WindowMode::SideBar {
+                init_qq_mutex.set(false);
                 // 侧边栏模式
                 let screen = window.current_monitor().unwrap().unwrap();
                 let screen_height = screen.size().height as i32;
@@ -371,7 +374,6 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 window.menu_handle().show().unwrap();
             } else if mode == WindowMode::QQ {
                 // QQ 模式
-                let init_qq_mutex = constant::INIT_QQ_MODE.try_lock().unwrap();
                 if !init_qq_mutex.get() {
                     let screen = window.current_monitor().unwrap().unwrap();
                     let screen_height = screen.size().height as i32;
@@ -414,6 +416,7 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 window.set_skip_taskbar(true).unwrap();
                 window.menu_handle().show().unwrap();
             } else {
+                init_qq_mutex.set(false);
                 // 桌面模式
                 window
                     .set_size(LogicalSize::new(
