@@ -371,16 +371,33 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 window.menu_handle().show().unwrap();
             } else if mode == WindowMode::QQ {
                 // QQ 模式
+                let init_qq_mutex = constant::INIT_QQ_MODE.try_lock().unwrap();
+                if !init_qq_mutex.get() {
+                    let screen = window.current_monitor().unwrap().unwrap();
+                    let screen_height = screen.size().height as i32;
+                    let screen_width = screen.size().width as i32;
 
-                // let screen = window.current_monitor().unwrap().unwrap();
-                // let screen_height = screen.size().height as i32;
-                // let screen_width = screen.size().width as i32;
+                    let physical_width =
+                        constant::SIDE_BAR_WIDTH as f64 * window.scale_factor().unwrap();
+                    window
+                        .set_size(PhysicalSize::new(
+                            physical_width as i32,
+                            screen_height - 500,
+                        ))
+                        .unwrap();
+                    info!("outsize = {}, screen height = {}", window.outer_size().unwrap().height, screen_height);
+                    window
+                        .set_position(PhysicalPosition::new(
+                            screen_width - window.outer_size().unwrap().width as i32 - 100,
+                            (screen_height - window.outer_size().unwrap().height as i32) / 2,
+                        ))
+                        .unwrap();
+                    init_qq_mutex.set(true);
+                    // window.move_window(Position::TrayRight).unwrap();
+                }
 
                 // let side_bar_height = screen_height - size.height as i32 * 2;
                 // // let side_bar_y = position.y as i32 - side_bar_height;
-
-                // let physical_width =
-                //     constant::SIDE_BAR_WIDTH as f64 * window.scale_factor().unwrap();
 
                 // window
                 //     .set_size(PhysicalSize::new(physical_width as i32, side_bar_height))
@@ -412,21 +429,12 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
             }
 
             let mini_mutex = constant::IS_MINIMIZED.try_lock().unwrap();
-            let position_mutex = constant::BRFORE_WINDOW_MINIMIZED_POSITION
-                .try_lock()
-                .unwrap();
-            let size_mutex = constant::BRFORE_WINDOW_MINIMIZED_SIZE.try_lock().unwrap();
 
-            // 
+            //
             if mini_mutex.get() && mode == WindowMode::QQ {
-                let (width, height) = size_mutex.get();
-                let (x, y) = position_mutex.get();
-                info!("restore {:?} - {:?}", (x, y), (width, height));
-                // window.hide().unwrap();
                 window.unminimize().unwrap();
-                window.set_size(PhysicalSize::new(width, height)).unwrap();
-                window.set_position(PhysicalPosition::new(x, y)).unwrap();
                 window.show().unwrap();
+                window.set_focus().unwrap();
             } else {
                 if window.is_visible().unwrap() {
                     window.hide().unwrap();
@@ -595,7 +603,7 @@ pub fn on_window_event(event: GlobalWindowEvent) {
         tauri::WindowEvent::Resized(physical_size) => {
             // info!("physical_size: {:?}", physical_size);
             let mini_mutex = constant::IS_MINIMIZED.try_lock().unwrap();
-            let size_mutex = constant::BRFORE_WINDOW_MINIMIZED_SIZE.try_lock().unwrap();
+            // let size_mutex = constant::BRFORE_WINDOW_MINIMIZED_SIZE.try_lock().unwrap();
 
             if physical_size.height == 0 && physical_size.width == 0 {
                 // 窗口被最小化
@@ -604,20 +612,20 @@ pub fn on_window_event(event: GlobalWindowEvent) {
             } else {
                 // info!("NO MINIMIZED");
                 mini_mutex.set(false);
-                size_mutex.set((physical_size.width, physical_size.height));
+                // size_mutex.set((physical_size.width, physical_size.height));
             }
         }
-        tauri::WindowEvent::Moved(physical_position) => {
-            let position_mutex = constant::BRFORE_WINDOW_MINIMIZED_POSITION
-                .try_lock()
-                .unwrap();
-            // info!("physical_position: {:?}", physical_position);
-            // constant::BRFORE_WINDOW_MINIMIZED_SIZE.set((physical_position.width, physical_size.height));
-            if physical_position.x > -30000 && physical_position.y > -30000 {
-                position_mutex.set((physical_position.x, physical_position.y));
-                // info!("after physical_position: {:?}", &position_mutex);
-            }
-        }
+        // tauri::WindowEvent::Moved(physical_position) => {
+        // let position_mutex = constant::BRFORE_WINDOW_MINIMIZED_POSITION
+        //     .try_lock()
+        //     .unwrap();
+        // info!("physical_position: {:?}", physical_position);
+        // constant::BRFORE_WINDOW_MINIMIZED_SIZE.set((physical_position.width, physical_size.height));
+        // if physical_position.x > -30000 && physical_position.y > -30000 {
+        //     position_mutex.set((physical_position.x, physical_position.y));
+        //     // info!("after physical_position: {:?}", &position_mutex);
+        // }
+        // }
         _ => {}
     }
 }

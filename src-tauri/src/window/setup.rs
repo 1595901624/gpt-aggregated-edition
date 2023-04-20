@@ -1,9 +1,12 @@
 use log::info;
-use tauri::{App, LogicalSize, GlobalShortcutManager, Manager};
+use tauri::{App, GlobalShortcutManager, LogicalSize, Manager, PhysicalPosition, PhysicalSize};
 use tauri_plugin_positioner::{Position, WindowExt};
 
 use crate::{
-    model::{constant::{self, WINDOW_LABEL_MAIN}, preference_model::WindowMode},
+    model::{
+        constant::{self, WINDOW_LABEL_MAIN},
+        preference_model::WindowMode,
+    },
     preference_util, window,
 };
 
@@ -66,6 +69,34 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
         main_window.menu_handle().show().unwrap();
         main_window.show().unwrap();
         main_window.set_focus().unwrap();
+    } else if preference_util::get_window_mode() == WindowMode::QQ {
+        let main_window = app.get_window(WINDOW_LABEL_MAIN).unwrap();
+        let init_qq_mutex = constant::INIT_QQ_MODE.try_lock().unwrap();
+        let screen = main_window.current_monitor().unwrap().unwrap();
+        let screen_height = screen.size().height as i32;
+        let screen_width = screen.size().width as i32;
+
+        let physical_width = constant::SIDE_BAR_WIDTH as f64 * main_window.scale_factor().unwrap();
+        main_window
+            .set_size(PhysicalSize::new(
+                physical_width as i32,
+                screen_height - 500,
+            ))
+            .unwrap();
+        main_window
+            .set_position(PhysicalPosition::new(
+                screen_width - main_window.outer_size().unwrap().width as i32 - 100,
+                (screen_height - main_window.outer_size().unwrap().height as i32) / 2,
+            ))
+            .unwrap();
+
+        main_window.set_decorations(true).unwrap();
+        main_window.set_always_on_top(true).unwrap();
+        main_window.set_skip_taskbar(true).unwrap();
+        main_window.menu_handle().show().unwrap();
+        main_window.show().unwrap();
+        main_window.set_focus().unwrap();
+        init_qq_mutex.set(true);
     }
     Ok(())
 }
