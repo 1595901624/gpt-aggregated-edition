@@ -3,8 +3,6 @@
  *                              这是一个Chat Bot的脚本 V1.0
  * 
  **********************************************************************************/
-const _chatChatMinHeithClassName = "md:min-h-[600px]";
-
 if (window.location.href.indexOf("chatbot.theb.ai") != -1) {
     try {
         // 创建一个MutationObserver实例
