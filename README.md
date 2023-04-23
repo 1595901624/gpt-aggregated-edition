@@ -39,16 +39,16 @@
 * ChatGPT免费版  
 无需注册账号、无需登录账号、稳定极速(部分国家和地区无法正常访问)
 
-* ChatGPT限额版——ChatChat(推荐使用)
+* ChatGPT限额版——[ChatChat](https://chat.okis.dev/zh-CN?mode=chat)(推荐使用)
 这是一个ChatGPT镜像。无需注册账号、无需登录账号、稳定极速、每日限额，国内可正常访问。
 
-* ChatGPT免费线路1——FreeGPT 
+* ChatGPT免费线路1——[FreeGPT](https://freegpt.one/) 
 这是一个ChatGPT镜像。无需注册账号、无需登录账号、稳定极速(部分国家和地区无法正常访问)
 
-* ChatGPT免费线路2——BAI Chat(推荐使用)
+* ChatGPT免费线路2——[BAI Chat](https://chatbot.theb.ai/#/chat/1002)(推荐使用)
 这是一个ChatGPT镜像。无需注册账号、无需登录账号、稳定极速(部分国家和地区无法正常访问)
 
-* ChatGPT免费线路3——ChatGPT-35-Turbo.com
+* ChatGPT免费线路3——[ChatGPT-35-Turbo.com](https://chatgpt-35-turbo.com/)
 这是一个ChatGPT镜像。无需注册账号、无需登录账号、稳定极速(部分国家和地区无法正常访问)
 
 ##### POE
