@@ -83,6 +83,7 @@
 - [x] 聚合更多平台
 - [x] 文心一言定制化功能
 - [x] 支持自定义平台（来自[ GPTFusion ](https://github.com/lpdswing/chatgpt)的灵感）
+- [x] QQ 模式（来自[ ESwordCn ](https://github.com/ESwordCn)的建议）
 - [ ] 自定义脚本支持
 - [ ] 更多功能敬请期待...
 
@@ -104,12 +105,17 @@
 * Gitee 提 issue
 
 #### 感谢
-感谢 [lpdswing](https://github.com/lpdswing) 提出的自定义平台的灵感。
+* 感谢 [lpdswing](https://github.com/lpdswing) 提出的建议。
+* 感谢 [ ESwordCn ](https://github.com/ESwordCn) 提出 `QQ` 侧边栏的建议 
+* 感谢所有各位搭建免费 GPT 镜像的研发工程师
 
 #### 下载安装
 `Windows`: 请下载 `OneGPT_xx.msi` 文件  
 `Linux`: 请下载 `one-gpt_xx.AppImage（推荐）` 或者 `one-gpt_xx.deb`文件  
 `MacOs`: 请下载 `OneGPT_xx.dmg` 文件  
+
+#### 《Rust学习日记》公众号
+<img src="demo/qrcode.jpg" height="240" />
 
 #### 捐赠
 
