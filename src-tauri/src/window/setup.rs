@@ -21,17 +21,20 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     info!("[init url] => {}", &url);
     let main_window_builder =
         tauri::WindowBuilder::new(app, WINDOW_LABEL_MAIN, tauri::WindowUrl::App(url.into()))
+            .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 Edg/112.0.1722.58")
             .title(constant::APP_NAME)
             .enable_clipboard_access()
             .visible(false);
     let main_window;
     if preference_util::is_enable_internal_script() {
         main_window = main_window_builder
+            // .user_agent(user_agent)
             .initialization_script(include_str!("../../plugin/base.js"))
             // .initialization_script(include_str!("./plugin/third/html2canvas.js"))
             .initialization_script(include_str!("../../plugin/erniebot.js"))
             .initialization_script(include_str!("../../plugin/chatchat.js"))
             .initialization_script(include_str!("../../plugin/chatbot.js"))
+            .initialization_script(include_str!("../../plugin/newbing.js"))
             .menu(window::menu::create_window_menu())
             .build()
             .unwrap();
