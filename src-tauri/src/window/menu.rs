@@ -2,7 +2,7 @@ use log::info;
 use tauri::{
     api, AppHandle, CustomMenuItem, GlobalWindowEvent, LogicalSize, Manager, Menu, MenuItem,
     PhysicalPosition, PhysicalSize, Submenu, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
-    SystemTraySubmenu, Window, WindowMenuEvent,
+    SystemTraySubmenu, Window, WindowMenuEvent, AboutMetadata,
 };
 use tauri_plugin_positioner::{Position, WindowExt};
 
@@ -120,6 +120,9 @@ pub fn create_window_menu() -> Menu {
     let github = CustomMenuItem::new("github".to_string(), "访问 Github");
     let gitee = CustomMenuItem::new("gitee".to_string(), "访问 Gitee");
 
+    // let about_meta_data = AboutMetadata::new().authors(vec!["Cloris".to_string()]);
+    // let about = MenuItem::About("OneGPT".to_string(), about_meta_data);
+
     let about_submenu = Submenu::new(
         "帮助".to_string(),
         Menu::new().add_item(github).add_item(gitee),
@@ -146,6 +149,21 @@ pub fn create_window_menu() -> Menu {
 
     if let Some(submenu) = create_custom_menu() {
         internal_main_menu = internal_main_menu.add_submenu(submenu);
+    }
+
+    if cfg!(target_os = "macos") {
+        let edit_menu = Submenu::new(
+            "编辑",
+            Menu::new()
+                .add_native_item(MenuItem::Undo)
+                .add_native_item(MenuItem::Redo)
+                .add_native_item(MenuItem::Separator)
+                .add_native_item(MenuItem::Cut)
+                .add_native_item(MenuItem::Copy)
+                .add_native_item(MenuItem::Paste)
+                .add_native_item(MenuItem::SelectAll),
+        );
+        internal_main_menu = internal_main_menu.add_submenu(edit_menu);
     }
 
     internal_main_menu = internal_main_menu
