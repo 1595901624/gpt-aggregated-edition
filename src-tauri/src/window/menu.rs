@@ -2,7 +2,7 @@ use log::info;
 use tauri::{
     api, AppHandle, CustomMenuItem, GlobalWindowEvent, LogicalSize, Manager, Menu, MenuItem,
     PhysicalPosition, PhysicalSize, Submenu, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
-    SystemTraySubmenu, Window, WindowMenuEvent, AboutMetadata,
+    SystemTraySubmenu, Window, WindowMenuEvent,
 };
 use tauri_plugin_positioner::{Position, WindowExt};
 
