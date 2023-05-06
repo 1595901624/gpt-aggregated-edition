@@ -24,9 +24,17 @@ async function getData() {
     <!-- <GeneralPreference /> -->
     <!-- <CustomMenu /> -->
     <!-- <NewUI /> -->
-    <MultiTabPage />
+    <!-- <MultiTabPage />
 
-    <footer class="footer">© Github@Cloris Version {{ appVersion }} </footer>
+    <footer class="footer">© Github@Cloris Version {{ appVersion }} </footer> -->
+
+    <div>
+      <nav>
+        <router-link to="/"></router-link>
+        <router-link to="/mirror"></router-link>
+      </nav>
+      <router-view></router-view>
+    </div>
   </div>
   <!-- <el-card>
    
