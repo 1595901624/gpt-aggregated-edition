@@ -6,7 +6,8 @@ on:
   #     - 'v*'
   workflow_dispatch:
     inputs:    
-  
+      version:
+        description: 'Version to release'
 
 jobs:
   create-release:
