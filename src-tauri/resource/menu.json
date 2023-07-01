@@ -17,6 +17,12 @@
                 "priority": 0
             },
             {
+                "id": 10201,
+                "name": "讯飞星火",
+                "url": "https://xinghuo.xfyun.cn/desk/",
+                "priority": 0
+            },
+            {
                 "separator": true
             },
             {
