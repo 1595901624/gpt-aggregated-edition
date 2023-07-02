@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
 import { invoke } from "@tauri-apps/api/tauri";
-import { de, fa, ro } from "element-plus/es/locale";
-import { a } from "@tauri-apps/api/app-373d24a3";
 import { ElMessage } from "element-plus";
 import { appWindow } from '@tauri-apps/api/window'
 import { ExtensionMenu } from "../../extension_menu";
