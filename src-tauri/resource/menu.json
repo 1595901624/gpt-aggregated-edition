@@ -23,6 +23,18 @@
                 "priority": 0
             },
             {
+                "id": 10202,
+                "name": "360智脑",
+                "url": "https://ai.360.cn/",
+                "priority": 0
+            },
+            {
+                "id": 10203,
+                "name": "昆仑天工",
+                "url": "https://tiangong.kunlun.com/",
+                "priority": 0
+            },
+            {
                 "separator": true
             },
             {
@@ -41,12 +53,6 @@
                 "id": 10312,
                 "name": "ChatBot(推荐)",
                 "url": "https://chatbot.theb.ai/",
-                "priority": 0
-            },
-            {
-                "id": 10313,
-                "name": "FreeGpt",
-                "url": "https://freegpt.one/",
                 "priority": 0
             },
             {
