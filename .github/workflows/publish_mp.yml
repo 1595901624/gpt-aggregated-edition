@@ -111,6 +111,7 @@ jobs:
         if : matrix.build == 'windows' && matrix.arch == 'aarch64'
         uses: tauri-apps/tauri-action@dev
         env:
+          args: --target ${{ matrix.target }} --bundles nsis
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # 编译其它架构
       - name: build other
