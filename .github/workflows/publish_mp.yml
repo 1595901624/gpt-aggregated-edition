@@ -56,6 +56,7 @@ jobs:
             os: ubuntu-20.04
             arch: x86_64
             target: x86_64-unknown-linux-gnu
+            bundle:
           # - build: linux
           #   os: ubuntu-20.04
           #   arch: aarch64
@@ -68,22 +69,27 @@ jobs:
             os: macos-latest
             arch: x86_64
             target: x86_64-apple-darwin
+            bundle:
           - build: macos
             os: macos-latest
             arch: aarch64
             target: aarch64-apple-darwin
+            bundle:
           - build: windows
             os: windows-latest
             arch: x86_64
             target: x86_64-pc-windows-msvc
+            bundle:
           - build: windows
             os: windows-latest
             arch: i686
             target: i686-pc-windows-msvc
-          - build: windows-aarch64
+            bundle:
+          - build: windows
             os: windows-latest
             arch: aarch64
             target: aarch64-pc-windows-msvc
+            bundle: --bundles nsis
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -106,21 +112,11 @@ jobs:
         run: rustup target add ${{ matrix.target }}
       - name: install frontend dependencies
         run: pnpm install # change this to npm or pnpm depending on which one you use
-      # 编译windows arm64位架构，只用nsis打包
-      - name: build windows aarch64 (windows-aarch64 only)
-        if : matrix.build == 'windows-aarch64'
-        uses: tauri-apps/tauri-action@dev
-        env:
-          args: --target ${{ matrix.target }} --bundles nsis
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # 编译其它架构
-      - name: build other
-        if : matrix.build != 'windows-aarch64'
-        uses: tauri-apps/tauri-action@dev
+      - uses: 1595901624/tauri-action@win_aarch64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          args: --target ${{ matrix.target }}
+          args: --target ${{ matrix.target }} ${{ matrix.bundle }}
           releaseId: ${{ needs.create-release.outputs.release_id }}
 
   publish-release:
