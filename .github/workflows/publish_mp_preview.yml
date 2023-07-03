@@ -86,7 +86,7 @@ jobs:
             arch: i686
             target: i686-pc-windows-msvc
             bundle:
-          - build: windows-aarch64
+          - build: windows
             os: windows-latest
             arch: aarch64
             target: aarch64-pc-windows-msvc
@@ -113,7 +113,7 @@ jobs:
         run: rustup target add ${{ matrix.target }}
       - name: install frontend dependencies
         run: pnpm install # change this to npm or pnpm depending on which one you use
-      - uses: tauri-apps/tauri-action@dev
+      - uses: 1595901624/tauri-action@win_aarch64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
