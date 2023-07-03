@@ -112,14 +112,14 @@
 
 #### 下载安装
 - Windows  
-`Windows (32位架构)`: 请下载 `OneGPT_版本号_x86_zh-CN.msi` 文件 或者 `OneGPT_版本号_x86-setup.exe`   
-`Windows (64位架构)`: 请下载 `OneGPT_版本号_amd64_zh-CN.msi` 文件 或者 `OneGPT_版本号_amd64-setup.exe`   
+`Windows (32位架构)`: 请下载 `OneGPT_版本号_x86_zh-CN.msi` 或者 `OneGPT_版本号_x86-setup.exe`   
+`Windows (64位架构)`: 请下载 `OneGPT_版本号_amd64_zh-CN.msi` 或者 `OneGPT_版本号_amd64-setup.exe`   
 `Windows (arm64架构 MS SQ/MS SQ2/高通处理器)`: 请下载  `OneGPT_版本号_arm64-setup.exe`   
 - Mac  
-`MacOs (Intel芯片)`: 请下载 `OneGPT_版本号_x64.dmg` 文件  
-`MacOs (Apple芯片 M1/M2系列等)`: 请下载 `OneGPT_版本号_aarch64.dmg` 文件  
+`MacOs (Intel芯片)`: 请下载 `OneGPT_版本号_x64.dmg`  
+`MacOs (Apple芯片 M1/M2系列等)`: 请下载 `OneGPT_版本号_aarch64.dmg`   
 - Linux  
-- `Linux (仅支持64位架构)`: 请下载 `one-gpt_版本号_amd64.AppImage（推荐）` 或者 `one-gpt_版本号_amd64.deb`文件   
+`Linux (仅支持64位架构)`: 请下载 `one-gpt_版本号_amd64.AppImage（推荐）` 或者 `one-gpt_版本号_amd64.deb`   
 
 #### 《Rust学习日记》公众号
 <img src="demo/qrcode.jpg" height="240" />
