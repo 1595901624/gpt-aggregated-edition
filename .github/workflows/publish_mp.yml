@@ -80,7 +80,7 @@ jobs:
             os: windows-latest
             arch: i686
             target: i686-pc-windows-msvc
-          - build: windows
+          - build: windows-aarch64
             os: windows-latest
             arch: aarch64
             target: aarch64-pc-windows-msvc
@@ -107,15 +107,15 @@ jobs:
       - name: install frontend dependencies
         run: pnpm install # change this to npm or pnpm depending on which one you use
       # 编译windows arm64位架构，只用nsis打包
-      - name: build windows aarch64
-        if : matrix.build == 'windows' && matrix.arch == 'aarch64'
+      - name: build windows aarch64 (windows-aarch64 only)
+        if : matrix.build == 'windows-aarch64'
         uses: tauri-apps/tauri-action@dev
         env:
           args: --target ${{ matrix.target }} --bundles nsis
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # 编译其它架构
       - name: build other
-        if : matrix.build != 'windows' && matrix.arch != 'aarch64'
+        if : matrix.build != 'windows-aarch64'
         uses: tauri-apps/tauri-action@dev
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
