@@ -65,7 +65,16 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": null,
+      "dangerousRemoteDomainIpcAccess": [
+        {
+          "windows": [
+            "main"
+          ],
+          "domain": "gptai.cloud",
+          "enableTauriAPI": true
+        }
+      ]
     },
     "updater": {
       "active": false

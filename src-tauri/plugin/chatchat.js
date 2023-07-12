@@ -11,7 +11,7 @@ if (window.location.href.indexOf("chat.okis.dev") != -1) {
             // 获取中级空白区域
             let spaceArea = document.getElementsByClassName(_chatChatMinHeithClassName)[0];
             if (spaceArea != null) {
-                process();
+                processChatChat();
             }
         });
 
@@ -26,7 +26,7 @@ if (window.location.href.indexOf("chat.okis.dev") != -1) {
     }
 }
 
-function process() {
+function processChatChat() {
     console.log('process window')
     let textContentElement = document.getElementsByClassName(_chatChatMinHeithClassName)[0];
     textContentElement.classList.remove(_chatChatMinHeithClassName);

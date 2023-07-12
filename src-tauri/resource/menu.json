@@ -45,13 +45,25 @@
             },
             {
                 "id": 10311,
-                "name": "Chat Chat(直连/限额)",
-                "url": "https://chat.okis.dev/zh-CN?mode=chat",
+                "name": "GPTAI(直链/推荐)",
+                "url": "https://gptai.cloud/",
                 "priority": 0
             },
             {
                 "id": 10312,
-                "name": "ChatBot(推荐)",
+                "name": "FASTGPT(直链/推荐)",
+                "url": "https://chat5.fastgpt.me/",
+                "priority": 0
+            },
+            {
+                "id": 10313,
+                "name": "Chat Chat(限额/梯子)",
+                "url": "https://chat.okis.dev/zh-CN?mode=chat",
+                "priority": 0
+            },
+            {
+                "id": 10314,
+                "name": "ChatBot(推荐/梯子)",
                 "url": "https://chatbot.theb.ai/",
                 "priority": 0
             },

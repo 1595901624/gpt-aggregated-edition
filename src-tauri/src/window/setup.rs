@@ -31,6 +31,7 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
             // .user_agent(user_agent)
             .initialization_script(include_str!("../../plugin/base.js"))
             // .initialization_script(include_str!("./plugin/third/html2canvas.js"))
+            .initialization_script(include_str!("../../plugin/gptai.js"))
             .initialization_script(include_str!("../../plugin/erniebot.js"))
             .initialization_script(include_str!("../../plugin/chatchat.js"))
             .initialization_script(include_str!("../../plugin/chatbot.js"))

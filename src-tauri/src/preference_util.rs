@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 use std::path::PathBuf;
 
-use log::{info, warn};
+use log::warn;
 use tauri::{
     api::path::{resolve_path, BaseDirectory},
     Env,
@@ -275,7 +275,7 @@ pub fn get_custom_menu_list() -> Option<Vec<ExtensionMenu>> {
 pub fn get_internal_menu_list() -> Option<Vec<ParentMenu>> {
     let content = include_str!("../resource/menu.json");
     if let Ok(list) = serde_json::from_str::<Vec<ParentMenu>>(content) {
-        info!("get_internal_menu_list {:?}", list);
+        // info!("get_internal_menu_list {:?}", list);
         return Some(list);
     }
     return None;

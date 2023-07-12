@@ -8,7 +8,7 @@ if (window.location.href.indexOf("chatbot.theb.ai") != -1) {
         // 创建一个MutationObserver实例
         const observer = new MutationObserver(function (mutations) {
             try {
-                process();
+                processChatBot();
             } catch (e) {
 
             }
@@ -25,7 +25,7 @@ if (window.location.href.indexOf("chatbot.theb.ai") != -1) {
     }
 }
 
-function process() {
+function processChatBot() {
     console.log("process!")
     let ads = document.getElementsByClassName("adsbygoogle");
     if (ads == null || ads == undefined) {

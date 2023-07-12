@@ -4,13 +4,13 @@
  * 
  **********************************************************************************/
 const _chatBtnClass = "joinWaitList link primary";
-if (window.location.href.indexOf("bing.com/new") != -1) {
+if (window.location.href.indexOf("bing.com/new") != -1) {   
     try {
         // 创建一个MutationObserver实例
-        const observer = new MutationObserver(function (mutations) {
+        let observer = new MutationObserver(function (mutations) {
             let chatBtnArray = document.getElementsByClassName(_chatBtnClass);
             // 修复立即聊天弹出新窗口的问题
-            process(chatBtnArray);
+            processNewBing(chatBtnArray);
         });
 
         // 开始观察document，并在节点添加或删除时检测变化
@@ -23,7 +23,7 @@ if (window.location.href.indexOf("bing.com/new") != -1) {
     }
 }
 
-function process(chatBtnArray) {
+function processNewBing(chatBtnArray) {
     console.log('process new bing window');
     if (chatBtnArray.length > 0) {
         for (let index = 0; index < chatBtnArray.length; index++) {
