@@ -5,7 +5,6 @@
 //     styles::{Style, StyleType},
 //     Docx,
 // };
-
 use crate::{
     model::{
         chat_content::ChatContent, extension_menu::ExtensionMenu, preference_model::Preference,
@@ -76,6 +75,39 @@ pub fn add_extension_menu_item_handler(name: &str, url: &str, priority: i32) -> 
 
         let menu = ExtensionMenu::new(id, name.to_string(), url.to_string(), priority);
         menu_list.push(menu);
+        let json = serde_json::to_string(&menu_list).unwrap();
+        if let Some(path) = preference_util::get_custom_menu_path() {
+            if let Ok(_) = std::fs::write(path, json) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+/// 添加列表自定义的菜单
+#[tauri::command]
+pub fn add_extension_menu_list_handler(json: &str) -> bool {
+    if let Some(mut menu_list) = preference_util::get_custom_menu_list() {
+        // let id;
+        let id = if menu_list.is_empty() {
+            0
+        } else {
+            // 按照id排序
+            menu_list.sort_by_key(|item| item.get_id());
+            menu_list.last().unwrap().get_id() + 1
+        };
+
+        let list = serde_json::from_str::<Vec<ExtensionMenu>>(json);
+        if let Ok(mut list) = list {
+            // list.iter_mut().for_each(|item| {
+            //     item.set_id(id + item.get_id());
+            // });
+            for (i, item) in list.iter_mut().enumerate() {
+                item.set_id(id + i as i32);
+            }
+            menu_list.extend(list);
+        }
         let json = serde_json::to_string(&menu_list).unwrap();
         if let Some(path) = preference_util::get_custom_menu_path() {
             if let Ok(_) = std::fs::write(path, json) {
@@ -262,3 +294,22 @@ pub fn get_app_preference_handler() -> Option<Preference> {
 pub fn set_app_preference_handler(p: &str) -> bool {
     preference_util::set_app_preference(p)
 }
+
+// #[tauri::command]
+// pub fn export_menu_config_to_computer_handler() {
+// let dialog_options = tauri::api::dialog::OpenDialogOptions::default().directory(true);
+// let dialog_result = tauri::api::dialog::open(dialog_options);
+// FileDialogBuilder::new().save_file(|file_path_option| {
+//     if let Some(file_path) = file_path_option {
+//         let file_content = "Hello, World!";
+//         let file_name = "myFile.txt";
+//         let file_path = file_path.join(file_name);
+//         info!("[export_menu_config_to_computer_handler] file_path: {:?}", file_path);
+//         if let Err(err) = std::fs::write(&file_path, file_content) {
+//             error!("[export_menu_config_to_computer_handler] Failed to write file: {}", err);
+//         } else {
+//             info!("[export_menu_config_to_computer_handler] File saved successfully!");
+//         }
+//     }
+// });
+// }

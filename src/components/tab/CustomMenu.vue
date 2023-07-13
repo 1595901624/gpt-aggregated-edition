@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from "vue";
+import { fs } from "@tauri-apps/api";
+import { open, save } from '@tauri-apps/api/dialog';
 import { invoke } from "@tauri-apps/api/tauri";
+import { appWindow } from '@tauri-apps/api/window';
 import { ElMessage } from "element-plus";
-import { appWindow } from '@tauri-apps/api/window'
+import { onMounted, ref } from "vue";
 import { ExtensionMenu } from "../../extension_menu";
 
 const tableData = ref<ExtensionMenu[]>([])
@@ -92,7 +94,6 @@ function cancel() {
 }
 
 async function confirm() {
-    // console.log(editFormData);
     if (editFormData.value!.name.trim() == ''
         || editFormData.value!.url.trim() == '') {
         return;
@@ -135,12 +136,56 @@ async function confirm() {
     }
 }
 
-function importConfig() {
-    
+/**
+ * 导入配置文件
+ */
+async function importConfig() {
+    const selected = await open({
+        directory: false,
+        multiple: false,
+        filters: [{
+            name: 'menu',
+            extensions: ['json']
+        }]
+    });
+    if (Array.isArray(selected)) {
+    } else if (selected === null) {
+    } else {
+        // ElMessage.info(selected);
+        let json = await fs.readTextFile(selected);
+        let menuList = JSON.parse(json) as ExtensionMenu[];
+        let result = await invoke('add_extension_menu_list_handler', { 'json': json }) as boolean;
+        if (result) {
+            ElMessage.success("导入配置文件成功！");
+            initData();
+        } else {
+            ElMessage.error("未知错误, 导入配置文件失败!!");
+        }
+    }
 }
 
-function exportConfig() {
-
+/**
+ * 导出配置文件
+ */
+async function exportConfig() {
+    let filePath = await save({
+        filters: [{
+            name: 'menu',
+            extensions: ['json']
+        }]
+    });
+    if (filePath == null) {
+        return;
+    }
+    let result = await fs.writeFile({
+        contents: JSON.stringify(tableData.value),
+        path: filePath ?? '',
+    });
+    if (result == null) {
+        ElMessage.info('导出配置文件成功');
+    } else {
+        ElMessage.error('导出配置文件失败:' + result);
+    }
 }
 </script>
 
