@@ -138,4 +138,7 @@ pnpm tauri dev
 pnpm tauri build
 ```
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=1595901624/gpt-aggregated-edition&type=Timeline)](https://star-history.com/#1595901624/gpt-aggregated-edition&Timeline)
 
