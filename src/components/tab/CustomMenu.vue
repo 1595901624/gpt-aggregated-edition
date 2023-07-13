@@ -134,10 +134,22 @@ async function confirm() {
         }
     }
 }
+
+function importConfig() {
+    
+}
+
+function exportConfig() {
+
+}
 </script>
 
 <template>
     <div>
+        <div>
+            <el-button type="primary" size="mini" @click="importConfig">导入配置文件</el-button>
+            <el-button type="info" size="mini" @click="exportConfig">导出配置文件</el-button>
+        </div>
         <span class="set-subtitle common-margin-top-8">注：新增或者删除自定义平台需在重启应用后生效。</span>
         <el-table :data="tableData" v-sortable:columns.move="onSort" style="height: 470px;">
             <!-- <el-table-column prop="id" label="ID" width="40px"></el-table-column> -->
