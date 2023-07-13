@@ -45,13 +45,13 @@
             },
             {
                 "id": 10311,
-                "name": "GPTAI(直链/推荐)",
+                "name": "GPTAI(直连/推荐)",
                 "url": "https://gptai.cloud/",
                 "priority": 0
             },
             {
                 "id": 10312,
-                "name": "FASTGPT(直链/推荐)",
+                "name": "FASTGPT(直连/推荐)",
                 "url": "https://chat5.fastgpt.me/",
                 "priority": 0
             },
