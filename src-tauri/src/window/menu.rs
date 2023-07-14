@@ -21,6 +21,7 @@ pub fn create_tary_menu() -> SystemTrayMenu {
     let quit = CustomMenuItem::new("quit".to_string(), "退出").accelerator("Cmd+Q");
     let github = CustomMenuItem::new("github".to_string(), "访问 Github");
     let gitee = CustomMenuItem::new("gitee".to_string(), "访问 Gitee");
+    let feedback = CustomMenuItem::new("feedback".to_string(), "反馈问题");
     let preference = CustomMenuItem::new("preference".to_string(), "设置");
     let refresh = CustomMenuItem::new("refresh", "刷新");
     // let always_top = CustomMenuItem::new("always_top", "常驻置顶").selected();
@@ -59,6 +60,7 @@ pub fn create_tary_menu() -> SystemTrayMenu {
         .add_native_item(SystemTrayMenuItem::Separator)
         .add_item(github)
         .add_item(gitee)
+        .add_item(feedback)
         .add_item(preference)
         .add_native_item(SystemTrayMenuItem::Separator)
         .add_item(quit);
@@ -119,13 +121,17 @@ pub fn create_window_menu() -> Menu {
     // 创建普通菜单
     let github = CustomMenuItem::new("github".to_string(), "访问 Github");
     let gitee = CustomMenuItem::new("gitee".to_string(), "访问 Gitee");
+    let feedback = CustomMenuItem::new("feedback", "反馈问题");
 
     // let about_meta_data = AboutMetadata::new().authors(vec!["Cloris".to_string()]);
     // let about = MenuItem::About("OneGPT".to_string(), about_meta_data);
 
     let about_submenu = Submenu::new(
         "帮助".to_string(),
-        Menu::new().add_item(github).add_item(gitee),
+        Menu::new()
+            .add_item(github)
+            .add_item(gitee)
+            .add_item(feedback),
     );
 
     // 生成菜单
@@ -225,6 +231,15 @@ pub fn on_window_event_handler(event: WindowMenuEvent) {
         }
         "gitee" => {
             redirect_gitee(
+                &event
+                    .window()
+                    .get_window(constant::WINDOW_LABEL_MAIN)
+                    .unwrap(),
+            );
+        }
+
+        "feedback" => {
+            redirect_feedback(
                 &event
                     .window()
                     .get_window(constant::WINDOW_LABEL_MAIN)
@@ -421,6 +436,9 @@ pub fn on_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 "gitee" => {
                     redirect_gitee(&app.get_window(constant::WINDOW_LABEL_MAIN).unwrap());
                 }
+                "feedback" => {
+                    redirect_feedback(&app.get_window(constant::WINDOW_LABEL_MAIN).unwrap());
+                }
                 "refresh" => {
                     let url = preference_util::get_preference(PREFERENCE_CURRENT_PAGE_URL, "");
                     app.get_window("main")
@@ -535,6 +553,16 @@ fn redirect_gitee(window: &Window) {
         None,
     )
     .unwrap();
+}
+
+/// 跳转到 Github issue 页面
+fn redirect_feedback(window: &Window) {
+    api::shell::open(
+        &window.shell_scope(),
+        "https://github.com/1595901624/gpt-aggregated-edition/issues",
+        None,
+    )
+    .unwrap()
 }
 
 /// 跳转到某个页面
