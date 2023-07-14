@@ -154,6 +154,18 @@ pub fn delete_extension_menu_item_handler(id: i32) -> bool {
     return false;
 }
 
+#[tauri::command]
+pub fn delete_extension_menu_all_handler() -> bool {
+    if let Some(_) = preference_util::get_custom_menu_list() {
+        if let Some(path) = preference_util::get_custom_menu_path() {
+            if let Ok(_) = std::fs::write(path, "") {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 /// 创建docx文档
 // #[tauri::command]
 // pub fn create_docx_handler(value: &str) -> String {
@@ -294,22 +306,3 @@ pub fn get_app_preference_handler() -> Option<Preference> {
 pub fn set_app_preference_handler(p: &str) -> bool {
     preference_util::set_app_preference(p)
 }
-
-// #[tauri::command]
-// pub fn export_menu_config_to_computer_handler() {
-// let dialog_options = tauri::api::dialog::OpenDialogOptions::default().directory(true);
-// let dialog_result = tauri::api::dialog::open(dialog_options);
-// FileDialogBuilder::new().save_file(|file_path_option| {
-//     if let Some(file_path) = file_path_option {
-//         let file_content = "Hello, World!";
-//         let file_name = "myFile.txt";
-//         let file_path = file_path.join(file_name);
-//         info!("[export_menu_config_to_computer_handler] file_path: {:?}", file_path);
-//         if let Err(err) = std::fs::write(&file_path, file_content) {
-//             error!("[export_menu_config_to_computer_handler] Failed to write file: {}", err);
-//         } else {
-//             info!("[export_menu_config_to_computer_handler] File saved successfully!");
-//         }
-//     }
-// });
-// }

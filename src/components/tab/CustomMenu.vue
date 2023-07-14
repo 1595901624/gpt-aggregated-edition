@@ -45,10 +45,24 @@ async function initData() {
 function remove(row: ExtensionMenu) {
     // 删除操作逻辑
     deleteDialogVisible.value = true;
-    deleteId.value = row.id;
+    if (row.id == null) {
+        deleteId.value = -999;
+    } else {
+        deleteId.value = row.id;
+    }
 }
+
+/**
+ * 确认删除单条数据
+ * */
 async function handleConfirmDelete() {
-    let result = await invoke('delete_extension_menu_item_handler', { id: deleteId.value })
+    let result;
+    if (deleteId.value == -999) {
+        result = await invoke('delete_extension_menu_all_handler')
+    } else {
+        result = await invoke('delete_extension_menu_item_handler', { id: deleteId.value })
+    }
+
     if (result) {
         ElMessage.success("删除平台成功！");
         deleteDialogVisible.value = false;
@@ -57,6 +71,7 @@ async function handleConfirmDelete() {
         ElMessage.error("未知错误, 删除平台失败!!");
     }
 }
+
 
 function edit(row: ExtensionMenu) {
     editStatus.value = true;
@@ -187,6 +202,27 @@ async function exportConfig() {
         ElMessage.error('导出配置文件失败:' + result);
     }
 }
+
+/**
+ * 移除所有配置文件
+ */
+// function removeAllConfig() {
+//     ElMessage.confirm('此操作将移除所有配置文件, 是否继续?', '提示', {
+//         confirmButtonText: '确定',
+//         cancelButtonText: '取消',
+//         type: 'warning'
+//     }).then(async () => {
+//         let result = await invoke('remove_all_extension_menu_handler') as boolean;
+//         if (result) {
+//             ElMessage.success("移除所有配置文件成功！");
+//             initData();
+//         } else {
+//             ElMessage.error("未知错误, 移除所有配置文件失败!!");
+//         }
+//     }).catch(() => {
+//         ElMessage.info('已取消移除所有配置文件');
+//     });
+// }
 </script>
 
 <template>
@@ -194,9 +230,10 @@ async function exportConfig() {
         <div>
             <el-button type="primary" size="mini" @click="importConfig">导入配置文件</el-button>
             <el-button type="info" size="mini" @click="exportConfig">导出配置文件</el-button>
+            <el-button type="danger" size="mini" @click="remove">移除所有配置文件</el-button>
         </div>
         <span class="set-subtitle common-margin-top-8">注：新增或者删除自定义平台需在重启应用后生效。</span>
-        <el-table :data="tableData" v-sortable:columns.move="onSort" style="height: 470px;">
+        <el-table :data="tableData" v-sortable:columns.move="onSort" style="height: 430px;">
             <!-- <el-table-column prop="id" label="ID" width="40px"></el-table-column> -->
             <el-table-column prop="name" label="名称" width="110px"></el-table-column>
             <el-table-column prop="url" label="链接地址"></el-table-column>

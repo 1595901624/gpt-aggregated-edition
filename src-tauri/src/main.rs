@@ -52,6 +52,7 @@ fn main() {
             command::add_extension_menu_list_handler,
             command::edit_extension_menu_item_handler,
             command::delete_extension_menu_item_handler,
+            command::delete_extension_menu_all_handler,
         ])
         .plugin(tauri_plugin_positioner::init())
         .setup(window::setup::setup)
