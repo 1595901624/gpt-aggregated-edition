@@ -518,7 +518,7 @@ pub fn on_window_event(event: GlobalWindowEvent) {
                 mini_mutex.set(false);
                 // size_mutex.set((physical_size.width, physical_size.height));
             }
-            info!("minimize = {}", mini_mutex.get());
+            // info!("minimize = {}", mini_mutex.get());
         }
         // tauri::WindowEvent::Moved(physical_position) => {
         // let position_mutex = constant::BRFORE_WINDOW_MINIMIZED_POSITION
