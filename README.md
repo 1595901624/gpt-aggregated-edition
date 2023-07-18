@@ -1,10 +1,10 @@
 <div align="center">
     <img src="demo/gpt_all_in_one.jpg" alt="chatgpt"/>
     <h1>OneGPT - GPT聚合版</h1>
-    <div><img src="https://img.shields.io/badge/stable%20version-v0.9.1-blue.svg?style=flat"></img>
+    <div><img src="https://img.shields.io/badge/latest%20version-v0.9.2-blue.svg?style=flat"></img>
     <img src="https://img.shields.io/badge/downloads-5,000+-orange.svg?style=flat"><img>
 <!-- <img src="https://img.shields.io/badge/preview%20version-v0.8.0%20Beta-orange.svg?style=flat"></img> -->
-<img src="https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg?style=flat"></img>
+<a href="https://github.com/1595901624/gpt-aggregated-edition/releases"><img src="https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg?style=flat"></img></a>
 <img src="https://img.shields.io/badge/language-简体中文-brightgreen.svg?style=flat"></img></div>
 <img src="https://img.shields.io/badge/-Windows-blue?logo=windows&logoColor=white" />
 <img src="https://img.shields.io/badge/-macOS-black?&logo=apple&logoColor=white" />
@@ -46,9 +46,6 @@
 * ChatGPT限额版——[ChatChat](https://chat.okis.dev/zh-CN?mode=chat)(推荐使用)
 这是一个ChatGPT镜像。无需注册账号、无需登录账号、稳定极速、每日限额，国内可正常访问。
 
-* ChatGPT免费线路1——[FreeGPT](https://freegpt.one/) 
-这是一个ChatGPT镜像。无需注册账号、无需登录账号、稳定极速(部分国家和地区无法正常访问)
-
 * ChatGPT免费线路2——[BAI Chat](https://chatbot.theb.ai/#/chat/1002)(推荐使用)
 这是一个ChatGPT镜像。无需注册账号、无需登录账号、稳定极速(部分国家和地区无法正常访问)
 
@@ -87,6 +84,7 @@
 - [x] 聚合更多平台
 - [x] 文心一言定制化功能
 - [x] 支持自定义平台（来自[ GPTFusion ](https://github.com/lpdswing/chatgpt)的灵感）
+- [x] 支持导出自定义平台配置文件
 - [x] QQ 模式（来自[ ESwordCn ](https://github.com/ESwordCn)的建议）
 - [ ] 自定义脚本支持
 - [ ] 更多功能敬请期待...
@@ -113,14 +111,14 @@
 
 #### 下载安装
 - Windows  
-`Windows (32位架构)`: 请下载 `OneGPT_版本号_x86_zh-CN.msi` 或者 `OneGPT_版本号_x86-setup.exe`   
-`Windows (64位架构)`: 请下载 `OneGPT_版本号_amd64_zh-CN.msi` 或者 `OneGPT_版本号_amd64-setup.exe`   
+`Windows (32位架构)`: 请下载 `OneGPT_版本号_x86_zh-CN.msi（推荐）` 或者 `OneGPT_版本号_x86-setup.exe`   
+`Windows (64位架构)`: 请下载 `OneGPT_版本号_amd64_zh-CN.msi（推荐）` 或者 `OneGPT_版本号_amd64-setup.exe`   
 `Windows (arm64架构 MS SQ/MS SQ2/高通处理器)`: 请下载  `OneGPT_版本号_arm64-setup.exe`   
 - Mac  
 `MacOs (Intel芯片)`: 请下载 `OneGPT_版本号_x64.dmg`  
 `MacOs (Apple芯片 M1/M2系列等)`: 请下载 `OneGPT_版本号_aarch64.dmg`   
 - Linux  
-`Linux (仅支持64位架构)`: 请下载 `one-gpt_版本号_amd64.AppImage（推荐）` 或者 `one-gpt_版本号_amd64.deb`   
+`Linux (仅支持64位架构)`: 请下载 `one-gpt_版本号_amd64.AppImage` 或者 `one-gpt_版本号_amd64.deb`   
 
 #### 《Rust学习日记》公众号
 <img src="demo/qrcode.jpg" height="240" />
