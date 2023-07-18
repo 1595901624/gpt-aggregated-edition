@@ -2,7 +2,7 @@
     <img src="demo/gpt_all_in_one.jpg" alt="chatgpt"/>
     <h1>OneGPT - GPT聚合版</h1>
     <div>
-    <a href="https://github.com/1595901624/gpt-aggregated-edition/releases">
+    <a target="_blank" href="https://github.com/1595901624/gpt-aggregated-edition/releases">
         <img src="https://img.shields.io/badge/latest%20version-v0.9.2-blue.svg?style=flat" />
     </a>
     <img src="https://img.shields.io/badge/downloads-5,000+-orange.svg?style=flat" />
