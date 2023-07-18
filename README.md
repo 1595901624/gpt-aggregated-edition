@@ -1,16 +1,17 @@
 <div align="center">
     <img src="demo/gpt_all_in_one.jpg" alt="chatgpt"/>
     <h1>OneGPT - GPT聚合版</h1>
-    <div><img src="https://img.shields.io/badge/latest%20version-v0.9.2-blue.svg?style=flat"></img>
-    <img src="https://img.shields.io/badge/downloads-5,000+-orange.svg?style=flat"><img>
+    <div>
+    <a href="https://github.com/1595901624/gpt-aggregated-edition/releases">
+        <img src="https://img.shields.io/badge/latest%20version-v0.9.2-blue.svg?style=flat" />
+    </a>
+    <img src="https://img.shields.io/badge/downloads-5,000+-orange.svg?style=flat" />
 <!-- <img src="https://img.shields.io/badge/preview%20version-v0.8.0%20Beta-orange.svg?style=flat"></img> -->
-<a href="https://github.com/1595901624/gpt-aggregated-edition/releases">
-<img src="https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg?style=flat">
-</a>
-<img src="https://img.shields.io/badge/language-简体中文-brightgreen.svg?style=flat"></img></div>
-<img src="https://img.shields.io/badge/-Windows-blue?logo=windows&logoColor=white" />
-<img src="https://img.shields.io/badge/-macOS-black?&logo=apple&logoColor=white" />
-<img src="https://img.shields.io/badge/-Linux-6C6694?&logo=linux&logoColor=white" />
+    <img src="https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg?style=flat" />
+    <img src="https://img.shields.io/badge/language-简体中文-brightgreen.svg?style=flat" /></div>
+    <img src="https://img.shields.io/badge/-Windows-blue?logo=windows&logoColor=white" />
+    <img src="https://img.shields.io/badge/-macOS-black?&logo=apple&logoColor=white" />
+    <img src="https://img.shields.io/badge/-Linux-6C6694?&logo=linux&logoColor=white" />
     <h4>聚合ChatGPT官方版、ChatGPT免费版、文心一言、POE、chat chat等多个平台。</h4>
 </div>
   
