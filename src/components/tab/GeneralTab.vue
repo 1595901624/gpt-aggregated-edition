@@ -3,7 +3,6 @@ import { onMounted, ref } from "vue";
 import { invoke } from "@tauri-apps/api/tauri";
 import { PREFERENCE_AUTO_HIDE_WHEN_CLICK_OUTSIDE } from "../../constant";
 import { Preference } from "../../model/preference";
-import { fa } from "element-plus/es/locale";
 import { WindowMode } from "../../model/preference";
 
 // 模式
