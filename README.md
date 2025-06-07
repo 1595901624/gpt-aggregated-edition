@@ -139,6 +139,8 @@ pnpm tauri dev
 pnpm tauri build
 ```
 
+[![Powered by DartNode](https://dartnode.com/branding/DN-Open-Source-sm.png)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source")
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=1595901624/gpt-aggregated-edition&type=Timeline)](https://star-history.com/#1595901624/gpt-aggregated-edition&Timeline)
